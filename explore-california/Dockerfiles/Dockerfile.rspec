@@ -1,0 +1,10 @@
+FROM ruby:alpine
+MAINTAINER ProtossGP32 <19353116+ProtossGP32@users.noreply.github.com>
+
+# Install XML parsing tools
+RUN apk add build-base ruby-nokogiri
+# Install required ruby gems packages for testing
+RUN gem install rspec capybara selenium-webdriver
+
+# Define the entrypoint
+ENTRYPOINT [ "rspec" ]

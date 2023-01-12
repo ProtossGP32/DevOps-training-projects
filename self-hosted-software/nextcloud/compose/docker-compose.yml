@@ -1,7 +1,7 @@
 version: '3.2'
 
 services:
-  db:
+  nextcloud_db:
     image: postgres
     container_name: nextcloud_db
     restart: always
@@ -29,7 +29,7 @@ services:
       - nextcloud:/var/www/html
     environment:
       - TZ=Europe/Madrid
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=nextcloud_db
       - POSTGRES_DB_FILE=/run/secrets/postgres_db
       - POSTGRES_USER_FILE=/run/secrets/postgres_user
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
@@ -37,7 +37,7 @@ services:
       - NEXTCLOUD_ADMIN_USER_FILE=/run/secrets/nextcloud_admin_user
       - NEXTCLOUD_TRUSTED_DOMAINS=192.168.1.7 localhost
     depends_on:
-      - db
+      - nextcloud_db
     secrets:
       - nextcloud_admin_password
       - nextcloud_admin_user

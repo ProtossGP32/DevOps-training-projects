@@ -1,4 +1,10 @@
-# Additional required files:
+# NextCloud Docker Compose deployment
+## Changes on services names
+
+- `db` service has been renamed to `nextcloud_db` as it collisioned with the OpenProject deployment that uses the same service name
+
+## Additional required files:
+
 Some secret files must be created and populated for nextCloud and postgreSQL admin user and password as well as db name:
 
 - `nextcloud_admin_user.txt`

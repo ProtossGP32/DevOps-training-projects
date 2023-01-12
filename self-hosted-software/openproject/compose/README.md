@@ -5,8 +5,14 @@ This Docker Compose deployment is based on the ones available in the official Do
 - [Additional examples](https://github.com/nextcloud/docker/tree/master/.examples)
 
 ## Custom docker-compose parameters
+TODO: Docker Compose doesn't seem to be applying the overridden parameters, so for now launch it with:
+
+```bash
+OPENPROJECT_HTTPS="false" OPENPROJECT_HOST__NAME="<server-ip>:8080" docker compose up -
+```
 
 Any additional parameter that should be configured or overridden from the base `docker-compose.yml` file can be defined inside the `docker-compose.override.yml` file; when launching `docker-compose up -d` docker will find it and apply the changes over the base config.
+
 
 ## Install
 

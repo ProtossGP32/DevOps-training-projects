@@ -1,4 +1,5 @@
 version: "3.7"
+name: openproject
 
 networks:
   frontend:
@@ -15,10 +16,12 @@ x-op-image: &image
 x-op-app: &app
   <<: [*image, *restart_policy]
   environment:
+    TZ: "Europe/Madrid"
     OPENPROJECT_HTTPS: "${OPENPROJECT_HTTPS:-true}"
     OPENPROJECT_HOST__NAME: "${OPENPROJECT_HOST__NAME:-localhost:8080}"
     OPENPROJECT_HSTS: "${OPENPROJECT_HSTS:-true}"
-    RAILS_CACHE_STORE: "memcache"
+    #RAILS_CACHE_STORE: "memcache"
+    OPENPROJECT_RAILS_CACHE_STORE: "memcache"
     OPENPROJECT_CACHE__MEMCACHE__SERVER: "cache:11211"
     OPENPROJECT_RAILS__RELATIVE__URL__ROOT: "${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}"
     DATABASE_URL: "${DATABASE_URL:-postgres://postgres:p4ssw0rd@db/openproject?pool=20&encoding=unicode&reconnect=true}"

@@ -1,44 +1,22 @@
 # OpenProject installation with Docker Compose
 
-This Docker Compose deployment is based on the ones available in the official Docker NextCloud repository:
-- [Examples with secrets](https://github.com/docker-library/docs/blob/master/nextcloud/README.md#docker-secrets)
-- [Additional examples](https://github.com/nextcloud/docker/tree/master/.examples)
-
-## Custom docker-compose parameters
-TODO: Docker Compose doesn't seem to be applying the overridden parameters, so for now launch it with:
-
-```bash
-OPENPROJECT_HTTPS="false" OPENPROJECT_HOST__NAME="<server-ip>:8080" docker compose up -
-```
-
-Any additional parameter that should be configured or overridden from the base `docker-compose.yml` file can be defined inside the `docker-compose.override.yml` file; when launching `docker-compose up -d` docker will find it and apply the changes over the base config.
-
-
 ## Install
 
 Clone this repository:
 
-```bash
-git clone https://github.com/opf/openproject-deploy --depth=1 --branch=stable/12 openproject
-```
+    git clone https://github.com/opf/openproject-deploy --depth=1 --branch=stable/12 openproject
 
 Go to the compose folder: 
 
-```bash
-cd openproject/compose
-```
+    cd openproject/compose
 
 Make sure you are using the latest version of the Docker images:
 
-```bash
-docker-compose pull
-```
+    docker-compose pull
 
 Launch the containers:
 
-```bash
-docker-compose up -d
-```
+    docker-compose up -d
 
 After a while, OpenProject should be up and running on <http://localhost:8080>.
 
@@ -62,7 +40,7 @@ OpenProject's configuration. Some are already defined and can be changed via the
 
 You can pass those variables directly when starting the stack as follows.
 
-```bash
+```
 VARIABLE=value docker-compose up -d
 ```
 
@@ -74,7 +52,7 @@ for details.
 
 You can disable OpenProject's HTTPS option via:
 
-```bash
+```
 OPENPROJECT_HTTPS=false
 ```
 
@@ -82,13 +60,13 @@ OPENPROJECT_HTTPS=false
 
 If you want to specify a different port, you can do so with:
 
-```bash
+```
 PORT=4000
 ```
 
 If you don't want OpenProject to bind to `0.0.0.0` you can bind it to localhost only like this:
 
-```bash
+```
 PORT=127.0.0.1:8080
 ```
 
@@ -96,7 +74,7 @@ PORT=127.0.0.1:8080
 
 If you want to specify a custom tag for the OpenProject docker image, you can do so with:
 
-```bash
+```
 TAG=my-docker-tag
 ```
 
@@ -104,43 +82,31 @@ TAG=my-docker-tag
 
 Go to the compose folder:
 
-```bash
-cd openproject/compose
-```
+    cd openproject/compose
 
 Retrieve any changes from the `openproject-deploy` repository:
 
-```bash
-git pull origin stable/12
-```
+    git pull origin stable/12
 
 Make sure you are using the latest version of the Docker images:
 
-```bash
-docker-compose pull
-```
+    docker-compose pull
 
 Relaunch the containers:
 
-```bash
-docker-compose up -d
-```
+    docker-compose up -d
 
 ## Uninstall
 
 You can remove the stack with:
 
-```bash
-docker-compose down
-```
+    docker-compose down
 
 ## Troubleshooting
 
 You can look at the logs with:
 
-```bash
-docker-compose logs -n 1000
-```
+    docker-compose logs -n 1000
 
 For the complete documentation, please refer to https://docs.openproject.org/installation-and-operations/.
 

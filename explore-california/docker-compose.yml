@@ -1,0 +1,54 @@
+# Docker compose manifest version
+version: '3.8'
+services:
+  # Terraform service for deployment
+  terraform:
+    image: hashicorp/terraform:1.3.6
+    volumes:
+      - $PWD/configs/terraform/:/infra
+    working_dir: /infra
+    #environment:
+    #  - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    #  - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    #  - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+
+  # (Obsolete) User nobody can't create .terraform initialization path
+  #terraform:
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfiles/Dockerfile.terraform_manual
+  #  user: nobody
+
+  # Selenium service required for unit tests
+  selenium:
+    image: selenium/standalone-chrome-debug
+    ports:
+      - 4444:4444
+      - 5901:5900 # VNC server
+
+  # Unit tests
+  unit-tests:
+    # Define environment variables for the rspec tests
+    environment:
+      SELENIUM_HOST: selenium
+      SELENIUM_PORT: 4444
+    # Mount the current path inside the container within the "/app" folder
+    volumes:
+      - "$PWD:/app"
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.rspec
+    # Additional parameters to pass to the entrypoint
+    command:
+      - --pattern
+      - /app/spec/unit/*_spec.rb
+
+  # Website
+  website:
+    # Build will look for a Dockerfile and build it
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.website
+    # Define what ports to expose
+    ports:
+      - 8480:80

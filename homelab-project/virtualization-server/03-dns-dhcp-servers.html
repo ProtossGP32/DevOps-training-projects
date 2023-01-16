@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>DevOps Training Projects - Part 3 - DNS and DHCP servers</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../homelab-project/virtualization-server/02-virtual-networks.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">DevOps Training Projects</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-devops-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">DevOps exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-devops-exercises">    
+        <li class="dropdown-header">Explore California</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-exercises/explore-california/00-introduction.html">
+ <span class="dropdown-text">Explore California - Static website debugging and deployment</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-homelab-project" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Homelab project</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-homelab-project">    
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/00-introduction.html">
+ <span class="dropdown-text">Homelab project introduction</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Requirements</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/requirements/00-requirements.html">
+ <span class="dropdown-text">Homelab Requirements</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtual Resources Creation</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/02-containers.html">
+ <span class="dropdown-text">LXC - Linux Containers on Proxmox</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html">
+ <span class="dropdown-text">Virtual Machines on Proxmox</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtualization Server</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/01-installing-proxmox.html">
+ <span class="dropdown-text">Part 1 - Installing Proxmox VE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/02-virtual-networks.html">
+ <span class="dropdown-text">Part 2 - Virtual Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+ <span class="dropdown-text">Part 3 - DNS and DHCP servers</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/protossgp32"><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Part 3 - DNS and DHCP servers</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/00-introduction.html" class="sidebar-item-text sidebar-link">Homelab project introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Requirements</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/requirements/00-requirements.html" class="sidebar-item-text sidebar-link">Homelab Requirements</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Virtual Resources Creation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">LXC - Linux Containers on Proxmox</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">Virtual Machines on Proxmox</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Virtualization Server</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Virtual Networks</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="sidebar-item-text sidebar-link active">Part 3 - DNS and DHCP servers</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#using-a-container" id="toc-using-a-container" class="nav-link active" data-scroll-target="#using-a-container">Using a container</a></li>
+  <li><a href="#test-the-set-up" id="toc-test-the-set-up" class="nav-link" data-scroll-target="#test-the-set-up">Test the Set-Up</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/virtualization-server/03-dns-dhcp-servers.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Part 3 - DNS and DHCP servers</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wait, more DHCP servers? Why?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You might be thinking about the DHCP server that provides the IP address to the Proxmox server and wondering why this server can’t handle the IP assignment of the future VMs. Here’s why:</p>
+<p>A DHCP server only serves IPs within a certain established range, and <strong>we might not have access to it</strong> (restricted MAC access, limited number of IPs, etc…). Furthermore, we’ve created an internal network interface whose IP range shouldn’t match with the upstream server and is also masquerading its IPs behind the Proxmox server one (remember NAT?). Having said that, the next course of action is to create custom DHCP and DNS servers for each internal network.</p>
+<p>Later on, we’ll discuss how to allow multiple internal networks to talk to each other, but for now we’ll only use one.</p>
+</div>
+</div>
+<p>We’ll be using <code>dnsmasq</code> to host a DHCP and DNS server either on the Proxmox server itself or on a machine or container running in Proxmox. What approach is better? It always depends on your needs:</p>
+<ul>
+<li><p>Running the service in a VM or a container separates the DHCP and DNS services from Proxmox itself, running on a separate operating system without access to all networks.</p>
+<p>This means that <strong>a misconfiguration should not affect your Proxmox server or even your outside network</strong> (e.g.&nbsp;accidentally launching a DHCP server on your external network, interfering with existing ones).</p></li>
+<li><p>Running the service on the Proxmox server itself means that no one can accidentally shut down or even delete your infrastructure container, the only way would be to manually stopping the server from within the Proxmox server or shutting it down completely. This means having a <strong>cleaner separation between infrastructure run on the host and machine clients</strong>.</p></li>
+</ul>
+<p>In order to touch the least the Proxmox internal configurations and avoid messing with other active DHCP servers, we’ll go with the Container route. If you want to go with the Proxmox Server set-up, Lars also explains it <a href="https://weblog.lkiesow.de/20220223-proxmox-test-machine-self-servic/dhcp-and-dns-in-internal-network.html">here</a>.</p>
+<section id="using-a-container" class="level2">
+<h2 class="anchored" data-anchor-id="using-a-container">Using a container</h2>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Container creation guide
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="../../homelab-project/virtual-resources-creation/02-containers.html">LXC - Linux Containers on Proxmox</a></p>
+</div>
+</div>
+<p>Create a Debian container with 128 MB of RAM and assign it a static IPv4 address on the internal network (<code>vmbr1</code> or check the interface comments). Make sure the IPv4 address is unique and does not clash with already assigned addresses. As DNS and DHCP services are quite important in a network, it’s usual to assign them the first or the last usable IP within the range; as we’re using <code>10.0.0.1</code> as our gateway (the Proxmox server), the next available one is <code>10.0.0.2</code>:</p>
+<ul>
+<li>Bridge: <code>vmbr1</code></li>
+<li>IPv4: Static</li>
+<li>IPv4/CIDR: <code>10.0.0.2/16</code></li>
+<li>Gateway (IPv4): <code>10.0.0.1</code></li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Alpine instead of Debian
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the sake of using even more minimal distributions, I’ve used Alpine as it is very lightweigh. When using it, just remember that its package manager is <code>apk</code> instead of <code>apt</code>, and that installing new packages is done with <code>add</code> instead of <code>install</code>.</p>
+</div>
+</div>
+<p>Make sure to update the container as usual:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Alpine</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">apk</span> update</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="ex">apk</span> upgrade</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Debian</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="ex">apt</span> update</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="ex">apt</span> upgrade</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Debian only!</strong> The Proxmox Debian container template comes with <code>systemd-resolved</code> enabled. This service conflicts with <code>dnsmasq</code> and we don’t actually need it, so we disable it:</p>
+<pre><code>systemctl stop systemd-resolved.service
+systemctl disable systemd-resolved.service</code></pre>
+<p>Now we install <code>dnsmasq</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Alpine</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">apk</span> add dnsmasq</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Debian</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ex">apt</span> install dnsmasq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As usual, Debian will automatically start the service after its installation (this doesn’t happen in Alpine). But by default <code>dnsmasq</code> is configured as a DNS server only, so we need to add additional configuration to enable the DHCP feature. In any case, create a file <code>/etc/dnsmasq.d/internal.conf</code> with the following configuration:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>/etc/dnsmasq.d/internal.conf</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Tells dnsmasq to never forward A or AAAA queries for plain names,</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># without dots or domain parts, to upstream nameservers.</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co"># If the name is not known from /etc/hosts or DHCP then a "not found" answer is</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># returned.</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="ex">domain-needed</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># All reverse lookups for private IP ranges (ie 192.168.x.x, etc) which are not</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co"># found in /etc/hosts or the DHCP leases file are answered with "no such domain"</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co"># rather than being forwarded upstream.</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="ex">bogus-priv</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co"># Don't read /etc/resolv.conf. Get upstream servers only from the command line</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co"># or the dnsmasq configuration file.</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="ex">no-resolv</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co"># Later  versions of windows make periodic DNS requests which don't get sensible</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co"># answers from the public DNS and can cause problems by triggering dial-on-</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co"># demand links. This flag turns on an option to filter such requests. The</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co"># requests blocked are for records of types SOA and SRV, and type  ANY  where</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co"># the requested name has underscores, to catch LDAP requests.</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="ex">filterwin2k</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co"># Add the domain to simple names (without a period) in /etc/hosts in the same</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co"># way as for DHCP-derived names. Note that this does not apply to domain names</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="co"># in cnames, PTR records, TXT records etc.</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="ex">expand-hosts</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="co"># Specifies DNS domains for the DHCP server. This  has  two  effects;</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="co"># firstly it causes the DHCP server to return the domain to any hosts which</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co"># request it, and secondly it sets the domain which is legal for DHCP-configured</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="co"># hosts to claim.  In addition, when a suffix is set then hostnames without a</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="co"># domain part have the suffix added as an optional domain part.</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="co"># Example: In Proxmox, you create a Debian container with the hostname `test`.</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co"># This host would be available as `test.pve-internal.home.lkiesow.io`.</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="va">domain</span><span class="op">=</span>pve-internal.protossnet.local</span>
+<span id="cb4-36"><a href="#cb4-36"></a></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="co"># This configures local-only domains.</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="co"># Queries in these domains are answered from /etc/hosts or DHCP only.</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="co"># Queries for these domains are never forwarded to upstream names servers.</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="va">local</span><span class="op">=</span>/pve-internal.protossnet.local/</span>
+<span id="cb4-41"><a href="#cb4-41"></a></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="co"># Listen on the given IP address(es) only to limit to what interfaces dnsmasq</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="co"># should respond to.</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="co"># This should be the IP address of your dnsmasq in your internal network.</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="ex">listen-address=127.0.0.1</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="ex">listen-address=10.0.0.2</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="co"># Upstream DNS servers</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a><span class="co"># We told dnsmasq to ignore the resolv.conf and thus need to explicitely specify</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="co"># the upstream name servers. Use Cloudflare's and Google's DNS server or specify</span></span>
+<span id="cb4-51"><a href="#cb4-51"></a><span class="co"># a custom one.</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="co">#server=1.1.1.1</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a><span class="co">#server=8.8.8.8</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a><span class="co"># Using the pi.hole deployed within Proxmox</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a><span class="va">server</span><span class="op">=</span>192.168.1.6</span>
+<span id="cb4-56"><a href="#cb4-56"></a></span>
+<span id="cb4-57"><a href="#cb4-57"></a><span class="co"># DHCP range</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a><span class="co"># Enable the DHCP server. Addresses will be given out from this range.</span></span>
+<span id="cb4-59"><a href="#cb4-59"></a><span class="co"># The following reserves 10.0.0.1 to 10.0.0.255 for static addresses not handled</span></span>
+<span id="cb4-60"><a href="#cb4-60"></a><span class="co"># by DHCP like the address for our Proxmox or dnsmasq server.</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a><span class="ex">dhcp-range=10.0.1.0,10.0.255.255</span></span>
+<span id="cb4-62"><a href="#cb4-62"></a></span>
+<span id="cb4-63"><a href="#cb4-63"></a><span class="co"># Set the advertised default route to the IP address of our Proxmox server.</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a><span class="ex">dhcp-option=option:router,10.0.0.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Careful with the <code>.conf</code> extension!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Lars doesn’t define an extension for the <code>dnsmasq</code> config file, but in Alpine distros this is the only extension accepted, so non-extension files are discarded. Bear this in mind when troubleshooting the service.</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Mind the DHCP range!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>dhcp-range</code> parameter is set between <code>10.0.1.0</code> and <code>10.0.255.255</code>, meaning that the range between <code>10.0.0.1</code> and <code>10.0.0.255</code> is excluded. This is intentionally done, as they should be static addresses assigned to critical servers such as the Proxmox server (<code>10.0.0.1</code>) or the <code>dnsmasq</code> server itself (<code>10.0.0.2</code>).</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+If pointing to an upstream DNS server, what’s the purpose of this one, then?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the <code>dnsmasq</code> config we define the <code>server</code> as our Pi-Hole server (<code>192.168.1.6</code>). This has upstream DNS servers that will resolve any domain name outside the internal network.</p>
+<p><code>dnsmasq</code> provides resolution for the FQDN and hostnames within the internal network.</p>
+</div>
+</div>
+<p>Finally, restart and enable <code>dnsmasq</code> and check that it is up and running:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Both Debian and Alpine - Service restart</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">service</span> dnsmasq restart</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co"># Debian - Enable service at boot time</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="ex">service</span> dnsmasq enable</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># Alpine - Add service at boot time</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="ex">rc-update</span> add dnsmasq</span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># Both Debian and Alpine - Service status</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="ex">service</span> dnsmasq.service status</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co"># Output for each command</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co"># Restart (Alpine)</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a> <span class="ex">*</span> Caching service dependencies ... [ ok ]</span>
+<span id="cb5-13"><a href="#cb5-13"></a> <span class="ex">*</span> /var/lib/misc/dnsmasq.leases: creating file</span>
+<span id="cb5-14"><a href="#cb5-14"></a> <span class="ex">*</span> /var/lib/misc/dnsmasq.leases: correcting owner</span>
+<span id="cb5-15"><a href="#cb5-15"></a> <span class="ex">*</span> Starting dnsmasq ... [ ok ]</span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co"># Enable (Alpine)</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a> <span class="ex">*</span> service dnsmasq added to runlevel default</span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co"># Status (Alpine)</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a> <span class="ex">*</span> status: started</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="test-the-set-up" class="level2">
+<h2 class="anchored" data-anchor-id="test-the-set-up">Test the Set-Up</h2>
+<p>Create two containers <code>test-a</code> and <code>test-b</code>, put them on the internal network by selecting <code>vmbr1</code> as network bridge and set the IPv4 network configuration to DHCP. The logs in the <code>dnsmasq</code> server should show how it has assigned an IP to both containers (<code>DHCPACK</code> are the lines that prove it):</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>/var/log/messages</strong></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">Jan</span> 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCP, IP range 10.0.1.0 <span class="at">--</span> 10.0.255.255, lease time 1h</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="ex">Jan</span> 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: using nameserver 192.168.1.6#53</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="ex">Jan</span> 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: using only locally-known addresses for pve-internal.protossnet.local</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="ex">Jan</span> 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: read /etc/hosts <span class="at">-</span> 4 addresses</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">c6:d8:bc:22:dc:4a</span> </span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.4.102</span> c6:d8:bc:22:dc:4a </span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">c6:d8:bc:22:dc:4a</span> </span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.4.102</span> c6:d8:bc:22:dc:4a </span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPREQUEST<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.4.102</span> c6:d8:bc:22:dc:4a</span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co"># DHCPACK for test-a: IP assigned is 10.0.4.102</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="ex">Jan</span> 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPACK<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.4.102</span> c6:d8:bc:22:dc:4a test-a</span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">4e:70:ba:1e:73:ff</span> </span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.61.210</span> 4e:70:ba:1e:73:ff </span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">4e:70:ba:1e:73:ff</span> </span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.61.210</span> 4e:70:ba:1e:73:ff </span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPREQUEST<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.61.210</span> 4e:70:ba:1e:73:ff </span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co"># DHCPACK for test-b: IP assigned is 10.0.61.210</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="ex">Jan</span> 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPACK<span class="er">(</span><span class="ex">eth0</span><span class="kw">)</span> <span class="ex">10.0.61.210</span> 4e:70:ba:1e:73:ff test-b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we should be able to ping to each other either by their IP or by their hostname/FQDN:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>test-a --&gt; test-b checks:</strong></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># test-a pings test-b using IP</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">test-a:~#</span> ping <span class="at">-c1</span> 10.0.61.210</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="ex">PING</span> 10.0.61.210 <span class="er">(</span><span class="ex">10.0.61.210</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">64</span> bytes from 10.0.61.210: seq=0 ttl=64 time=0.072 ms</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="ex">---</span> 10.0.61.210 ping statistics <span class="at">---</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="ex">round-trip</span> min/avg/max = 0.072/0.072/0.072 ms</span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co"># test-a pings test-b using hostname</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="ex">test-a:~#</span> ping <span class="at">-c1</span> test-b</span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="ex">PING</span> test-b <span class="er">(</span><span class="ex">10.0.61.210</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="ex">64</span> bytes from 10.0.61.210: seq=0 ttl=64 time=0.063 ms</span>
+<span id="cb7-14"><a href="#cb7-14"></a></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="ex">---</span> test-b ping statistics <span class="at">---</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="ex">round-trip</span> min/avg/max = 0.063/0.063/0.063 ms</span>
+<span id="cb7-18"><a href="#cb7-18"></a></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co"># test-a pings test-b using FQDN</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="ex">test-a:~#</span> ping <span class="at">-c1</span> test-b.pve-internal.protossnet.local</span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="ex">PING</span> test-b.pve-internal.protossnet.local <span class="er">(</span><span class="ex">10.0.61.210</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="ex">64</span> bytes from 10.0.61.210: seq=0 ttl=64 time=0.047 ms</span>
+<span id="cb7-23"><a href="#cb7-23"></a></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="ex">---</span> test-b.pve-internal.protossnet.local ping statistics <span class="at">---</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="ex">round-trip</span> min/avg/max = 0.047/0.047/0.047 ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>test-a &lt;-- test-b checks:</strong></pre>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># test-a pings test-b using IP</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">test-b:~#</span> ping <span class="at">-c1</span> 10.0.4.102</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="ex">PING</span> 10.0.4.102 <span class="er">(</span><span class="ex">10.0.4.102</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="ex">64</span> bytes from 10.0.4.102: seq=0 ttl=64 time=0.074 ms</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="ex">---</span> 10.0.4.102 ping statistics <span class="at">---</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="ex">round-trip</span> min/avg/max = 0.074/0.074/0.074 ms</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co"># test-a pings test-b using hostname</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="ex">PING</span> test-a <span class="er">(</span><span class="ex">10.0.4.102</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="ex">64</span> bytes from 10.0.4.102: seq=0 ttl=64 time=0.047 ms</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="ex">---</span> test-a ping statistics <span class="at">---</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ex">round-trip</span> min/avg/max = 0.047/0.047/0.047 ms</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co"># test-a pings test-b using FQDN</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="ex">test-b:~#</span> ping <span class="at">-c1</span> test-a.pve-internal.protossnet.local</span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="ex">PING</span> test-a.pve-internal.protossnet.local <span class="er">(</span><span class="ex">10.0.4.102</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="ex">64</span> bytes from 10.0.4.102: seq=0 ttl=64 time=0.031 ms</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="ex">---</span> test-a.pve-internal.protossnet.local ping statistics <span class="at">---</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="ex">round-trip</span> min/avg/max = 0.031/0.031/0.031 ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Bonus check: ping outside devices
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The <code>vmbr1</code> interface is NATed, so any device within the original range of the Proxmox server IP should be reachable:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>External servers check:</strong></pre>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Ping to Proxmox server through its external FQDN</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">test-b:~#</span> ping <span class="at">-c1</span> pve.protossnet.local</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">PING</span> pve.protossnet.local <span class="er">(</span><span class="ex">192.168.1.5</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">64</span> bytes from 192.168.1.5: seq=0 ttl=64 time=0.041 ms</span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="ex">---</span> pve.protossnet.local ping statistics <span class="at">---</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="ex">round-trip</span> min/avg/max = 0.041/0.041/0.041 ms</span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co"># Ping to PiHole through its given FQDN</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="ex">test-b:~#</span> ping <span class="at">-c1</span> pi.hole</span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="ex">PING</span> pi.hole <span class="er">(</span><span class="ex">192.168.1.6</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="ex">64</span> bytes from 192.168.1.6: seq=0 ttl=63 time=0.176 ms</span>
+<span id="cb9-14"><a href="#cb9-14"></a></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="ex">---</span> pi.hole ping statistics <span class="at">---</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="ex">round-trip</span> min/avg/max = 0.176/0.176/0.176 ms</span>
+<span id="cb9-18"><a href="#cb9-18"></a></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="co"># Ping to PiHole through its external FQDN</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a><span class="ex">test-b:~#</span> ping <span class="at">-c1</span> pi-hole.protossnet.local</span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="ex">PING</span> pi-hole.protossnet.local <span class="er">(</span><span class="ex">192.168.1.6</span><span class="kw">)</span><span class="bu">:</span> 56 data bytes</span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="ex">64</span> bytes from 192.168.1.6: seq=0 ttl=63 time=0.141 ms</span>
+<span id="cb9-23"><a href="#cb9-23"></a></span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="ex">---</span> pi-hole.protossnet.local ping statistics <span class="at">---</span></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="ex">1</span> packets transmitted, 1 packets received, 0% packet loss</span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="ex">round-trip</span> min/avg/max = 0.141/0.141/0.141 ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Part 2 - Virtual Networks</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+</ul>
+      </div>
+  </div>
+</footer>
+
+
+
+</body></html>

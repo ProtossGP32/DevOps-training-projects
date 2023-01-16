@@ -1,0 +1,224 @@
+---
+title: "Part 3 - DNS and DHCP servers"
+---
+:::{.callout-note}
+## Wait, more DHCP servers? Why?
+You might be thinking about the DHCP server that provides the IP address to the Proxmox server and wondering why this server can't handle the IP assignment of the future VMs. Here's why:
+
+A DHCP server only serves IPs within a certain established range, and **we might not have access to it** (restricted MAC access, limited number of IPs, etc...). Furthermore, we've created an internal network interface whose IP range shouldn't match with the upstream server and is also masquerading its IPs behind the Proxmox server one (remember NAT?). Having said that, the next course of action is to create custom DHCP and DNS servers for each internal network.
+
+Later on, we'll discuss how to allow multiple internal networks to talk to each other, but for now we'll only use one.
+:::
+
+We'll be using `dnsmasq` to host a DHCP and DNS server either on the Proxmox server itself or on a machine or container running in Proxmox. What approach is better? It always depends on your needs:
+
+-   Running the service in a VM or a container separates the DHCP and DNS services from Proxmox itself, running on a separate operating system without access to all networks.
+
+    This means that **a misconfiguration should not affect your Proxmox server or even your outside network** (e.g. accidentally launching a DHCP server on your external network, interfering with existing ones).
+-   Running the service on the Proxmox server itself means that no one can accidentally shut down or even delete your infrastructure container, the only way would be to manually stopping the server from within the Proxmox server or shutting it down completely. This means having a **cleaner separation between infrastructure run on the host and machine clients**.
+
+
+In order to touch the least the Proxmox internal configurations and avoid messing with other active DHCP servers, we'll go with the Container route. If you want to go with the Proxmox Server set-up, Lars also explains it [here](https://weblog.lkiesow.de/20220223-proxmox-test-machine-self-servic/dhcp-and-dns-in-internal-network.html).
+
+## Using a container
+
+:::{.callout-tip}
+## Container creation guide
+[LXC - Linux Containers on Proxmox](../virtual-resources-creation/02-containers.qmd)
+:::
+
+Create a Debian container with 128 MB of RAM and assign it a static IPv4 address on the internal network (`vmbr1` or check the interface comments). Make sure the IPv4 address is unique and does not clash with already assigned addresses. As DNS and DHCP services are quite important in a network, it's usual to assign them the first or the last usable IP within the range; as we're using `10.0.0.1` as our gateway (the Proxmox server), the next available one is `10.0.0.2`:
+
+- Bridge: `vmbr1`
+- IPv4: Static
+- IPv4/CIDR: `10.0.0.2/16`
+- Gateway (IPv4): `10.0.0.1`
+
+:::{.callout-note}
+## Alpine instead of Debian
+For the sake of using even more minimal distributions, I've used Alpine as it is very lightweigh. When using it, just remember that its package manager is `apk` instead of `apt`, and that installing new packages is done with `add` instead of `install`.
+:::
+
+Make sure to update the container as usual:
+```bash
+# Alpine
+apk update
+apk upgrade
+
+# Debian
+apt update
+apt upgrade
+```
+
+**Debian only!** The Proxmox Debian container template comes with `systemd-resolved` enabled. This service conflicts with `dnsmasq` and we don't actually need it, so we disable it:
+
+```
+systemctl stop systemd-resolved.service
+systemctl disable systemd-resolved.service
+```
+
+Now we install `dnsmasq`:
+```bash
+# Alpine
+apk add dnsmasq
+
+# Debian
+apt install dnsmasq
+```
+
+As usual, Debian will automatically start the service after its installation (this doesn't happen in Alpine). But by default `dnsmasq` is configured as a DNS server only, so we need to add additional configuration to enable the DHCP feature. In any case, create a file `/etc/dnsmasq.d/internal.conf` with the following configuration:
+```{.bash filename="/etc/dnsmasq.d/internal.conf" include="../../../homelab-project/proxmox/internal-dhcp-dns/etc-dnsmasq.d/internal.conf"}
+
+```
+:::{.callout-note}
+## Careful with the `.conf` extension!
+Lars doesn't define an extension for the `dnsmasq` config file, but in Alpine distros this is the only extension accepted, so non-extension files are discarded. Bear this in mind when troubleshooting the service.
+:::
+
+:::{.callout-note}
+## Mind the DHCP range!
+The `dhcp-range` parameter is set between `10.0.1.0` and `10.0.255.255`, meaning that the range between `10.0.0.1` and `10.0.0.255` is excluded. This is intentionally done, as they should be static addresses assigned to critical servers such as the Proxmox server (`10.0.0.1`) or the `dnsmasq` server itself (`10.0.0.2`).
+:::
+:::{.callout-note}
+## If pointing to an upstream DNS server, what's the purpose of this one, then?
+In the `dnsmasq` config we define the `server` as our Pi-Hole server (`192.168.1.6`). This has upstream DNS servers that will resolve any domain name outside the internal network.
+
+`dnsmasq` provides resolution for the FQDN and hostnames within the internal network.
+:::
+
+Finally, restart and enable `dnsmasq` and check that it is up and running:
+```bash
+# Both Debian and Alpine - Service restart
+service dnsmasq restart
+# Debian - Enable service at boot time
+service dnsmasq enable
+# Alpine - Add service at boot time
+rc-update add dnsmasq
+# Both Debian and Alpine - Service status
+service dnsmasq.service status
+
+# Output for each command
+# Restart (Alpine)
+ * Caching service dependencies ... [ ok ]
+ * /var/lib/misc/dnsmasq.leases: creating file
+ * /var/lib/misc/dnsmasq.leases: correcting owner
+ * Starting dnsmasq ... [ ok ]
+# Enable (Alpine)
+ * service dnsmasq added to runlevel default
+# Status (Alpine)
+ * status: started
+```
+
+## Test the Set-Up
+Create two containers `test-a` and `test-b`, put them on the internal network by selecting `vmbr1` as network bridge and set the IPv4 network configuration to DHCP. The logs in the `dnsmasq` server should show how it has assigned an IP to both containers (`DHCPACK` are the lines that prove it):
+
+```{.bash filename="/var/log/messages"}
+Jan 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCP, IP range 10.0.1.0 -- 10.0.255.255, lease time 1h
+Jan 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: using nameserver 192.168.1.6#53
+Jan 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: using only locally-known addresses for pve-internal.protossnet.local
+Jan 16 22:57:35 vmbr1-dnsmasq daemon.info dnsmasq[741]: read /etc/hosts - 4 addresses
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER(eth0) c6:d8:bc:22:dc:4a 
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER(eth0) 10.0.4.102 c6:d8:bc:22:dc:4a 
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER(eth0) c6:d8:bc:22:dc:4a 
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER(eth0) 10.0.4.102 c6:d8:bc:22:dc:4a 
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPREQUEST(eth0) 10.0.4.102 c6:d8:bc:22:dc:4a
+# DHCPACK for test-a: IP assigned is 10.0.4.102
+Jan 16 22:57:42 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPACK(eth0) 10.0.4.102 c6:d8:bc:22:dc:4a test-a
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER(eth0) 4e:70:ba:1e:73:ff 
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER(eth0) 10.0.61.210 4e:70:ba:1e:73:ff 
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPDISCOVER(eth0) 4e:70:ba:1e:73:ff 
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPOFFER(eth0) 10.0.61.210 4e:70:ba:1e:73:ff 
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPREQUEST(eth0) 10.0.61.210 4e:70:ba:1e:73:ff 
+# DHCPACK for test-b: IP assigned is 10.0.61.210
+Jan 16 22:57:48 vmbr1-dnsmasq daemon.info dnsmasq-dhcp[741]: DHCPACK(eth0) 10.0.61.210 4e:70:ba:1e:73:ff test-b
+```
+Now we should be able to ping to each other either by their IP or by their hostname/FQDN:
+
+```{.bash filename="test-a --> test-b checks:"}
+# test-a pings test-b using IP
+test-a:~# ping -c1 10.0.61.210
+PING 10.0.61.210 (10.0.61.210): 56 data bytes
+64 bytes from 10.0.61.210: seq=0 ttl=64 time=0.072 ms
+
+--- 10.0.61.210 ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.072/0.072/0.072 ms
+
+# test-a pings test-b using hostname
+test-a:~# ping -c1 test-b
+PING test-b (10.0.61.210): 56 data bytes
+64 bytes from 10.0.61.210: seq=0 ttl=64 time=0.063 ms
+
+--- test-b ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.063/0.063/0.063 ms
+
+# test-a pings test-b using FQDN
+test-a:~# ping -c1 test-b.pve-internal.protossnet.local
+PING test-b.pve-internal.protossnet.local (10.0.61.210): 56 data bytes
+64 bytes from 10.0.61.210: seq=0 ttl=64 time=0.047 ms
+
+--- test-b.pve-internal.protossnet.local ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.047/0.047/0.047 ms
+```
+```{.bash filename="test-a <-- test-b checks:"}
+# test-a pings test-b using IP
+test-b:~# ping -c1 10.0.4.102
+PING 10.0.4.102 (10.0.4.102): 56 data bytes
+64 bytes from 10.0.4.102: seq=0 ttl=64 time=0.074 ms
+
+--- 10.0.4.102 ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.074/0.074/0.074 ms
+
+# test-a pings test-b using hostname
+PING test-a (10.0.4.102): 56 data bytes
+64 bytes from 10.0.4.102: seq=0 ttl=64 time=0.047 ms
+
+--- test-a ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.047/0.047/0.047 ms
+
+# test-a pings test-b using FQDN
+test-b:~# ping -c1 test-a.pve-internal.protossnet.local
+PING test-a.pve-internal.protossnet.local (10.0.4.102): 56 data bytes
+64 bytes from 10.0.4.102: seq=0 ttl=64 time=0.031 ms
+
+--- test-a.pve-internal.protossnet.local ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.031/0.031/0.031 ms
+```
+
+:::{.callout-note collapse="true"}
+## Bonus check: ping outside devices
+The `vmbr1` interface is NATed, so any device within the original range of the Proxmox server IP should be reachable:
+```{.bash filename="External servers check:"}
+# Ping to Proxmox server through its external FQDN
+test-b:~# ping -c1 pve.protossnet.local
+PING pve.protossnet.local (192.168.1.5): 56 data bytes
+64 bytes from 192.168.1.5: seq=0 ttl=64 time=0.041 ms
+
+--- pve.protossnet.local ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.041/0.041/0.041 ms
+
+# Ping to PiHole through its given FQDN
+test-b:~# ping -c1 pi.hole
+PING pi.hole (192.168.1.6): 56 data bytes
+64 bytes from 192.168.1.6: seq=0 ttl=63 time=0.176 ms
+
+--- pi.hole ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.176/0.176/0.176 ms
+
+# Ping to PiHole through its external FQDN
+test-b:~# ping -c1 pi-hole.protossnet.local
+PING pi-hole.protossnet.local (192.168.1.6): 56 data bytes
+64 bytes from 192.168.1.6: seq=0 ttl=63 time=0.141 ms
+
+--- pi-hole.protossnet.local ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 0.141/0.141/0.141 ms
+```
+:::

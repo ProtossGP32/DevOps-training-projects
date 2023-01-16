@@ -1,0 +1,131 @@
+---
+title: "Part 2 - Virtual Networks"
+---
+# What are virtual networks?
+Virtual networks are network interfaces that act as fake NICs and allow multiple VM or LXC to communicate within the same subnet.
+A virtual network can be bridged or bonded to a physical NIC or can live on its own without access to external devices (we'll call them internal networks); the latter are useful when we have a cluster of resources that don't need to reach external networks.
+
+# Virtual networks in Proxmox
+## Build a Proxmox Internal Network
+
+First of all, we need to create a new network interface on our Proxmox server and assign it a network. This network bridge can then later be used to put machines on the internal network.
+
+This gives us a fully functional internal network to use.
+
+:::{.callout-important}
+## Mind the network transparency!
+As Lars explains, the downside of having internal networks for clusters of VM is that we lose network transparency in that if a VM starts to behave erratically, its effect on the network level will be masked behind the Proxmox real IP, thus being unable to quickly identify the actual culprit.
+
+On production environments, this would end in the IT department cutting down network access to the Proxmox server, and therefore to any VM machine inside it.
+:::
+
+As a starting point, create a new network bridge in the Proxmox web interface:
+
+- Head to `Datacenter` → `Proxmox server name` → `Network`, clic `Create` → `Linux Bridge` and set something like:
+
+    - Name: `vmbr1`
+    - IPv4/CIDR: `10.0.0.1/16`
+    - Autostart: ✓
+    - Comment: Internal network
+
+:::{.callout-tip}
+This example provides an internal `/16` network, more than enough for our inter machine configuration (65.536 IP addresses, being 65.534 usable!):
+
+- Network Address: `10.0.0.0`
+- Usable IP range: `10.0.0.1 ~ 10.0.255.254`
+- Broadcast Address: `10.0.255.255`
+
+In most cases, using a `/24` should be enough (253 IP addresses).
+:::
+
+The file `/etc/network/interfaces` keeps the network interfaces configuration of the server. Once created the new interface, you should see the following new configuration block:
+
+```{.bash filename="/etc/network/interfaces"}
+auto vmbr1
+iface vmbr1 inet static
+   address 10.0.0.1/16
+   bridge-ports none
+   bridge-stp off
+   bridge-fd 0
+```
+
+Once done, bring the new network interface up using:
+
+```bash
+ifup vmbr1
+```
+
+And check its status by running:
+```bash
+ip a
+...
+4: vmbr1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 32:7b:7f:8b:f8:9c brd ff:ff:ff:ff:ff:ff
+    inet 10.0.0.1/16 scope global vmbr1
+       valid_lft forever preferred_lft forever
+
+```
+
+With this, we have a fully functional network interface for our internal VMs and containers, but without access to the outside world.
+
+:::{.callout-note}
+## What about the state DOWN?
+That's because there's no host using it yet. What's important is that the `inet` is correctly configured as `10.0.0.1/16`.
+
+Once we attach this interface to some containers or VM, its state will change to `UP`.
+:::
+
+:::{.callout-tip}
+## Commenting on Networks
+Lars has a point when mentioning the importance of giving proper comments to each network interface. While it might seem unnecessary when dealing with just a few interfaces, we can forget about it once the number of appliances and services grow.
+
+Thus, the default `vmbr0` created on Proxmox installation time and with proper access to the outside shall be named _External network_, while the new `vmbr1` shall be called _Internal network_. This way we avoid any kind of doubt when picking one of them. Use similar criteria with any new network interface.
+:::
+
+### NAT Configuration
+Our current network interface `vmbr1` can be useful for appliances that don't require to access the internet (i.e. servers that simply execute local tasks and talk to each other). If we want this network interface to be able to reach the outside world, we need a **NAT configuration**.
+
+:::{.callout-tip}
+## NAT
+NAT is the process where all traffic from a network is routed through a single IP address outside that network, and then return results to the request source.
+:::
+
+In order to configure NAT in our interface, edit the file `/etc/network/interface` and add the following lines to the `vmbr1` config block:
+
+```{.bash filename="/etc/network/interface"}
+iface vmbr1 inet static
+   ...
+   post-up   echo 1 > /proc/sys/net/ipv4/ip_forward
+   post-up   iptables -t nat -A POSTROUTING -s '10.0.0.0/16' -o vmbr0 -j MASQUERADE
+   post-down iptables -t nat -D POSTROUTING -s '10.0.0.0/16' -o vmbr0 -j MASQUERADE
+```
+
+What we are doing here is add _rules_ to the interface, telling it how to route the packages in that network. This rule will create a dynamic source NAT where every packet from `10.0.0.0/16` will be sent to the interface `vmbr0` (the _External network_) and the source IP address of this packet will be replaced by the primary IP of `vmbr0` (the Proxmox server IP).
+
+- Setting `1` to `/proc/sys/net/ipv4/ip_forward` enables to forward packages to another interface (TODO: needs references)
+- The `-t nat -A POSTROUTING` rule means that it allows the `vmbr0` interface to route packages from the source `-s '10.0.0.0/16'`, only after the interface `vmbr1` is UP, that's why it is defined as a `post-up` rule
+- The `-t nat -D POSTROUTING` rule does the opposite, denies any routing of packages from source `-s '10.0.0.0'` once the `vmbr1` interface is DOWN, ensuring that no unexpected packages are routed through `vmbr0`
+
+### Testing your Configuration
+First, make sure that both interfaces are up, either by executing `ifup <interface name>` or by rebooting the whole server.
+
+Next setup a simple container or virtual machine, assign `vmbr1` interface as its Network interface and statically configure its IP and gateway according to the interface range. For example:
+
+- Bridge: vmbr1
+- IPv4/CIDR: `10.0.0.2/16`
+- Gateway (IPv4): `10.0.0.1`
+
+Once started, `ssh` into that server/container and try pinging any external server IP. Remember that there's no DNS server for this network, so we can't use domain names yet:
+
+```bash
+# Let's try pinging Google
+ping -4 -c 1 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=119 time=18.8 ms
+
+--- 8.8.8.8 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 18.764/18.764/18.764/0.000 ms
+```
+
+The `ping` command has returned results, so the network has access to external servers!

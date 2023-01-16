@@ -1,0 +1,15 @@
+---
+title: "Homelab project introduction"
+---
+# First of all
+Big thank you to [Lars Kiesow](https://github.com/lkiesow/) and his awesome guide on how to configure a home lab with Proxmox VE from the start and very well explained, no shortcuts at all.
+
+- Link to the guide [here](https://weblog.lkiesow.de/20220223-proxmox-test-machine-self-servic/part-0-the-idea.html)
+- You can also check the original MD files in its GitHub repository [here](https://github.com/lkiesow/weblog.lkiesow.de)
+- Also check the `proxmox` branch for some new insights still not pushed to the `main` branch [here](https://github.com/lkiesow/weblog.lkiesow.de/tree/proxmox)
+
+# Rationale
+:::{.callout-warning}
+## TODO
+Pending. Add some architecture diagram to better understand what we're trying to achieve.
+:::

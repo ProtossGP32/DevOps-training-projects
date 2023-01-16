@@ -1,0 +1,19 @@
+---
+title: "Homelab Requirements"
+---
+# Hardware
+Any relatively modern desktop computes can be used as a homelab. In my case I'll be using an HP Compaq Elite 8300 with an Intel Core i5 (4 cores), 24Gb or RAM and a single NIC.
+
+# Software
+Modern software tends to follow the microservices paradigm, so virtualization is a must. We need a means to easily provide sandbox environments as well as securely and efficiently maintain production deployments. We'll be using a combination of Virtual Machines (VM) and software deployed within Containers (Docker or LXC).
+
+## Virtualization suite
+In order to comply with the previous statement, we'll be using Proxmox VE, a Virtualization suite that acts as a HyperVisor as well as a Linux Containers deployer.
+
+## Network management
+Virtual hosts should have their own internal network so they don't interfere with other local DHCP servers or even access external networks at all.
+
+## Self-hosted software
+We'd like to host our own services, and again the best approach should be to deploy containers, either as-is or in an orchestrated environment such as Kubernetes.
+
+

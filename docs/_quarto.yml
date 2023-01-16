@@ -1,0 +1,77 @@
+project:
+  type: website
+
+filters:
+  - include-code-files
+
+editor:
+  render-on-save: true
+
+website:
+  # Website info
+  title: "DevOps Training Projects"
+  site-url: https://protossgp32.github.io/DevOps-training-projects
+
+  # Repository info
+  repo-url: https://github.com/protossgp32/DevOps-training-projects
+  repo-subdir: docs
+  repo-actions: [edit, issue]
+  navbar:
+    left:
+      - text: Home
+        file: index.qmd
+      - sidebar:devops-exercises
+      - sidebar:homelab-project
+      - text: About
+        file: about.qmd
+
+    # Right side
+    right:
+      - icon: github
+        href: https://github.com/protossgp32
+        aria-label: GitHub
+
+  # Sidebars
+  sidebar:
+    # Categories
+    - id: devops-exercises
+      title: "DevOps exercises"
+      style: "docked"
+      contents: devops-exercises/**
+
+    - id: homelab-project
+      title: "Homelab project"
+      style: "docked"
+      contents: homelab-project/**
+
+  # Page Footer
+  page-footer:
+    center:
+      - text: "About"
+        file: about.qmd
+
+  # Search options
+  search:
+    location: navbar
+    type: overlay
+
+  # Look and feel options
+  reader-mode: true
+  page-navigation: true
+
+
+format:
+  html:
+    # Theme options
+    theme:
+      light: yeti
+      dark: solar
+    css: styles.css
+    # Table of Contents options
+    toc: true
+    # Code snippets options
+    code-line-numbers: true
+    code-overflow: scroll
+    highlight-style: ayu
+
+

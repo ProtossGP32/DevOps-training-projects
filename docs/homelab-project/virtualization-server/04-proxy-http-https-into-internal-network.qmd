@@ -1,0 +1,82 @@
+---
+title: "Part 4 - Proxy HTTP(S) into the internal network"
+---
+
+# What's the idea here?
+We want to use Nginx as reverse proxy to make HTTP(S) requests to internal machines without noticing that they are actually on a private network.
+
+## Expected requests workflow
+
+1.  Someone requests `test-a.pve-internal.protossnet.local`
+    *   We need to make sure the domain resolves to our Proxmox server (**HOW???**)
+1.  If HTTPS is being used, Nginx provides a valid TLS certificate
+    *   We need a wildcard certificate for `*.pve-internal.protoss.local` (**HOW???**)
+1.  Nginx proxies the request to the internal machine
+    *   It uses the same protocol that is being requested
+
+# Reverse proxy for Specific Machines
+If only a single machine shall be available from outside the internal network, a machine-specific configuration can be added to nginx in the following path:
+
+```{.py filename="/etc/nginx/sites-available/test-a" include="../../../homelab-project/proxmox/etc-nginx/sites-available/test-a"}
+```
+
+:::{.callout-important}
+## Use the internal DNS!
+Make sure to use the internal DNS server to resolve the internal hostname. This will return the internal IP address, and Nginx can use that to proxy to the internal server.
+:::
+
+As always, we must create a softlink from the `sites-enabled` directory to make it available:
+
+```bash
+cd /etc/nginx/sites-enabled
+ln -s /etc/nginx/sites-available/test-a
+```
+
+We check if Nginx can spot any errors:
+```bash
+nginx -t
+
+```
+
+Finally, restart Nginx
+```bash
+# Restart the Nginx service
+systemctl restart nginx.service
+```
+
+# Reverse proxy for all machines
+
+:::{.callout-warning}
+## ATTENTION!!
+This will expose _all_ internal network machines to the external network via HTTP(S). Your internal network thus has only limited protection against attacks via HTTP.
+:::
+
+For automated proxying to any internal machine, use this file:
+
+```{.py filename="/etc/nginx/sites-available/internal-host-proxy" include="../../../homelab-project/proxmox/etc-nginx/sites-available/internal-host-proxy"}
+```
+
+This is a more generic version of the single-host configuration that uses wildcard to match any host and also now sets the backend dynamically
+
+Remember to create the softlink, test and restart the service as always:
+
+```bash
+cd /etc/nginx/sites-enabled
+ln -s /etc/nginx/sites-available/internal-host-proxy
+nginx -t
+systemctl restart nginx
+```
+
+# ⚠ Don't Proxy to External Servers!
+As we have deleted the `default` configuration, now our server proxies any unknown server name. We have to explicitly define a default server which just returns a static response instead. Create the following file:
+
+```{.py filename="/etc/nginx/sites-available/default" include="../../../homelab-project/proxmox/etc-nginx/sites-available/default"}
+```
+
+Remember to create the softlink, test and restart the service as always. Now any impersonation attempt will be answered with a `404 Not found`:
+
+```bash
+curl -i http://test-a.pve-internal.protossnet.local -H 'Host: google.com'
+HTTP/1.1 404 Not Found
+…
+```

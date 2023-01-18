@@ -1,5 +1,5 @@
 ---
-title: "Part 2 - Virtual Networks"
+title: "Part 2 - Internal Virtual Networks"
 ---
 # What are virtual networks?
 Virtual networks are network interfaces that act as fake NICs and allow multiple VM or LXC to communicate within the same subnet.
@@ -117,7 +117,7 @@ Next setup a simple container or virtual machine, assign `vmbr1` interface as it
 
 Once started, `ssh` into that server/container and try pinging any external server IP. Remember that there's no DNS server for this network, so we can't use domain names yet:
 
-```bash
+```{.bash filename="Ping test:"}
 # Let's try pinging Google
 ping -4 -c 1 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.

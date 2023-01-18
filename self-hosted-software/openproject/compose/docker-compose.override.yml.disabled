@@ -1,0 +1,6 @@
+version: "3.7"
+
+x-op-app: &app
+  environment:
+    OPENPROJECT_HTTPS: "false"
+    OPENPROJECT_HOST__NAME: "192.168.1.7:8080"

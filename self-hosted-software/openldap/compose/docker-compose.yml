@@ -11,9 +11,10 @@ services:
     environment:
       # Default LDAP_ROOT: dc=example,dc=org
       - LDAP_ROOT=dc=protossnet,dc=local
+      #- LDAP_ADMIN_USERNAME=admin
       - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_password
-      #- LDAP_USERS=user01,user02
-      #- LDAP_PASSWORDS=password1,password2
+      #- LDAP_USERS=user01
+      #- LDAP_PASSWORDS=password1
       - LDAP_ENABLE_TLS=no
     volumes:
       - 'openldap_data:/bitnami/openldap'
@@ -25,13 +26,9 @@ services:
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
-    # Don't know why this link attribute started to fail
-    #link:
-    #  openldap: ldap-server
     environment:
       # bitnami/openldap uses non-privileged port as default
       PHPLDAPADMIN_LDAP_HOSTS: "#PYTHON2BASH:[{'openldap': [{'server': [{ 'port': 1389 }]}]}]"
-      #PHPLDAPADMIN_LDAP_HOSTS: ldap-host
       PHPLDAPADMIN_HTTPS: "false"
       PHPLDAPADMIN_LDAP_CLIENT_TLS: "false"
     networks:

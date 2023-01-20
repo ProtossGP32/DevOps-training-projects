@@ -6,8 +6,9 @@ services:
     privileged: true
     user: root
     volumes:
-      - $(pwd)/init.sh:/mnt/init.sh
+      - $PWD/scripts/init.sh:/mnt/init.sh
     command: ["sh", "-e", "/mnt/init.sh"]
+
   sonarqube:
     image: sonarqube:community
     hostname: sonarqube
@@ -15,6 +16,7 @@ services:
     depends_on:
       - db
     environment:
+      TZ: Europe/Madrid
       SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
       SONAR_JDBC_USERNAME: sonar
       SONAR_JDBC_PASSWORD: sonar
@@ -38,6 +40,7 @@ services:
     hostname: postgresql
     container_name: postgresql
     environment:
+      TZ: Europe/Madrid
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
       POSTGRES_DB: sonar

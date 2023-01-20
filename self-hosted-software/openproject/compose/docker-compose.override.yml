@@ -1,6 +1,8 @@
 version: "3.7"
 
-x-op-app: &app
-  environment:
-    OPENPROJECT_HTTPS: "false"
-    OPENPROJECT_HOST__NAME: "192.168.1.7:8080"
+services:
+  web:
+    environment:
+      OPENPROJECT_HTTPS: "false"
+      OPENPROJECT_HOST__NAME: "sonic.protossnet.local:8080"
+      OPENPROJECT_LDAP__USERS__SYNC__STATUS: true

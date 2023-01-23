@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DevOps Training Projects - Part 2 - Internal Virtual Networks</title>
+<title>DevOps Training Projects - Part 4 - Proxy HTTP(S) into the internal network</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,8 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" rel="next">
-<link href="../../homelab-project/virtualization-server/01-installing-proxmox.html" rel="prev">
+<link href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -233,7 +232,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Part 2 - Internal Virtual Networks</h1>
+      <h1 class="quarto-secondary-nav-title">Part 4 - Proxy HTTP(S) into the internal network</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -301,7 +300,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link active">Part 2 - Internal Virtual Networks</a>
+  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Internal Virtual Networks</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -311,7 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link">Part 4 - Proxy HTTP(S) into the internal network</a>
+  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link active">Part 4 - Proxy HTTP(S) into the internal network</a>
   </div>
 </li>
       </ul>
@@ -325,24 +324,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-are-virtual-networks" id="toc-what-are-virtual-networks" class="nav-link active" data-scroll-target="#what-are-virtual-networks">What are virtual networks?</a></li>
-  <li><a href="#virtual-networks-in-proxmox" id="toc-virtual-networks-in-proxmox" class="nav-link" data-scroll-target="#virtual-networks-in-proxmox">Virtual networks in Proxmox</a>
+  <li><a href="#whats-the-idea-here" id="toc-whats-the-idea-here" class="nav-link active" data-scroll-target="#whats-the-idea-here">What’s the idea here?</a>
   <ul class="collapse">
-  <li><a href="#build-a-proxmox-internal-network" id="toc-build-a-proxmox-internal-network" class="nav-link" data-scroll-target="#build-a-proxmox-internal-network">Build a Proxmox Internal Network</a>
-  <ul class="collapse">
-  <li><a href="#nat-configuration" id="toc-nat-configuration" class="nav-link" data-scroll-target="#nat-configuration">NAT Configuration</a></li>
-  <li><a href="#testing-your-configuration" id="toc-testing-your-configuration" class="nav-link" data-scroll-target="#testing-your-configuration">Testing your Configuration</a></li>
+  <li><a href="#expected-requests-workflow" id="toc-expected-requests-workflow" class="nav-link" data-scroll-target="#expected-requests-workflow">Expected requests workflow</a></li>
   </ul></li>
-  </ul></li>
+  <li><a href="#reverse-proxy-for-specific-machines" id="toc-reverse-proxy-for-specific-machines" class="nav-link" data-scroll-target="#reverse-proxy-for-specific-machines">Reverse proxy for Specific Machines</a></li>
+  <li><a href="#reverse-proxy-for-all-machines" id="toc-reverse-proxy-for-all-machines" class="nav-link" data-scroll-target="#reverse-proxy-for-all-machines">Reverse proxy for all machines</a></li>
+  <li><a href="#dont-proxy-to-external-servers" id="toc-dont-proxy-to-external-servers" class="nav-link" data-scroll-target="#dont-proxy-to-external-servers">⚠ Don’t Proxy to External Servers!</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/virtualization-server/02-virtual-networks.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Part 2 - Internal Virtual Networks</h1>
+<h1 class="title d-none d-lg-block">Part 4 - Proxy HTTP(S) into the internal network</h1>
 </div>
 
 
@@ -357,171 +354,158 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="what-are-virtual-networks" class="level1">
-<h1>What are virtual networks?</h1>
-<p>Virtual networks are network interfaces that act as fake NICs and allow multiple VM or LXC to communicate within the same subnet. A virtual network can be bridged or bonded to a physical NIC or can live on its own without access to external devices (we’ll call them internal networks); the latter are useful when we have a cluster of resources that don’t need to reach external networks.</p>
+<section id="whats-the-idea-here" class="level1">
+<h1>What’s the idea here?</h1>
+<p>We want to use Nginx as reverse proxy to make HTTP(S) requests to internal machines without noticing that they are actually on a private network.</p>
+<section id="expected-requests-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="expected-requests-workflow">Expected requests workflow</h2>
+<ol type="1">
+<li>Someone requests <code>test-a.pve-internal.protossnet.local</code>
+<ul>
+<li>We need to make sure the domain resolves to our Proxmox server (<strong>HOW???</strong>)</li>
+</ul></li>
+<li>If HTTPS is being used, Nginx provides a valid TLS certificate
+<ul>
+<li>We need a wildcard certificate for <code>*.pve-internal.protoss.local</code> (<strong>HOW???</strong>)</li>
+</ul></li>
+<li>Nginx proxies the request to the internal machine
+<ul>
+<li>It uses the same protocol that is being requested</li>
+</ul></li>
+</ol>
 </section>
-<section id="virtual-networks-in-proxmox" class="level1">
-<h1>Virtual networks in Proxmox</h1>
-<section id="build-a-proxmox-internal-network" class="level2">
-<h2 class="anchored" data-anchor-id="build-a-proxmox-internal-network">Build a Proxmox Internal Network</h2>
-<p>First of all, we need to create a new network interface on our Proxmox server and assign it a network. This network bridge can then later be used to put machines on the internal network.</p>
-<p>This gives us a fully functional internal network to use.</p>
+</section>
+<section id="reverse-proxy-for-specific-machines" class="level1">
+<h1>Reverse proxy for Specific Machines</h1>
+<p>If only a single machine shall be available from outside the internal network, a machine-specific configuration can be added to nginx in the following path:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>/etc/nginx/sites-available/test-a</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource py number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>server {</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  listen <span class="dv">80</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>  listen [::]:<span class="dv">80</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>  listen <span class="dv">443</span> ssl http2<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  listen [::]:<span class="dv">443</span> ssl http2<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  server_name test<span class="op">-</span>a.pve<span class="op">-</span>internal.protossnet.local<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="co"># Certificate should be valid for the domain</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>  ssl_certificate_key <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.key<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>  ssl_certificate     <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.pem<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>  <span class="co"># Proxy configuration</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>  location <span class="op">/</span> {</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    <span class="co"># Use internal DNS server for name resolution</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>    resolver <span class="fl">10.0.0.2</span><span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>    <span class="bu">set</span> $backend $scheme:<span class="op">//</span>test<span class="op">-</span>a.pve<span class="op">-</span>internal.protossnet.local<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a>    proxy_pass $backend<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>    proxy_buffering off<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a>    client_max_body_size <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>    proxy_set_header Host $host<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>    proxy_ssl_name $host<span class="op">;</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a>  }</span>
+<span id="cb1-23"><a href="#cb1-23"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Mind the network transparency!
+Use the internal DNS!
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>As Lars explains, the downside of having internal networks for clusters of VM is that we lose network transparency in that if a VM starts to behave erratically, its effect on the network level will be masked behind the Proxmox real IP, thus being unable to quickly identify the actual culprit.</p>
-<p>On production environments, this would end in the IT department cutting down network access to the Proxmox server, and therefore to any VM machine inside it.</p>
+<p>Make sure to use the internal DNS server to resolve the internal hostname. This will return the internal IP address, and Nginx can use that to proxy to the internal server.</p>
 </div>
 </div>
-<p>As a starting point, create a new network bridge in the Proxmox web interface:</p>
-<ul>
-<li><p>Head to <code>Datacenter</code> → <code>Proxmox server name</code> → <code>Network</code>, clic <code>Create</code> → <code>Linux Bridge</code> and set something like:</p>
-<ul>
-<li>Name: <code>vmbr1</code></li>
-<li>IPv4/CIDR: <code>10.0.0.1/16</code></li>
-<li>Autostart: ✓</li>
-<li>Comment: Internal network</li>
-</ul></li>
-</ul>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This example provides an internal <code>/16</code> network, more than enough for our inter machine configuration (65.536 IP addresses, being 65.534 usable!):</p>
-<ul>
-<li>Network Address: <code>10.0.0.0</code></li>
-<li>Usable IP range: <code>10.0.0.1 ~ 10.0.255.254</code></li>
-<li>Broadcast Address: <code>10.0.255.255</code></li>
-</ul>
-<p>In most cases, using a <code>/24</code> should be enough (253 IP addresses).</p>
-</div>
-</div>
-<p>The file <code>/etc/network/interfaces</code> keeps the network interfaces configuration of the server. Once created the new interface, you should see the following new configuration block:</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>/etc/network/interfaces</strong></pre>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">auto</span> vmbr1</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">iface</span> vmbr1 inet static</span>
-<span id="cb1-3"><a href="#cb1-3"></a>   <span class="ex">address</span> 10.0.0.1/16</span>
-<span id="cb1-4"><a href="#cb1-4"></a>   <span class="ex">bridge-ports</span> none</span>
-<span id="cb1-5"><a href="#cb1-5"></a>   <span class="ex">bridge-stp</span> off</span>
-<span id="cb1-6"><a href="#cb1-6"></a>   <span class="ex">bridge-fd</span> 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Once done, bring the new network interface up using:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">ifup</span> vmbr1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>And check its status by running:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">ip</span> a</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">...</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="ex">4:</span> vmbr1: <span class="op">&lt;</span>NO-CARRIER,BROADCAST,MULTICAST,UP<span class="op">&gt;</span> mtu 1500 qdisc noqueue state DOWN group default qlen 1000</span>
-<span id="cb3-4"><a href="#cb3-4"></a>    <span class="ex">link/ether</span> 32:7b:7f:8b:f8:9c brd ff:ff:ff:ff:ff:ff</span>
-<span id="cb3-5"><a href="#cb3-5"></a>    <span class="ex">inet</span> 10.0.0.1/16 scope global vmbr1</span>
-<span id="cb3-6"><a href="#cb3-6"></a>       <span class="ex">valid_lft</span> forever preferred_lft forever</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>With this, we have a fully functional network interface for our internal VMs and containers, but without access to the outside world.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-What about the state DOWN?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>That’s because there’s no host using it yet. What’s important is that the <code>inet</code> is correctly configured as <code>10.0.0.1/16</code>.</p>
-<p>Once we attach this interface to some containers or VM, its state will change to <code>UP</code>.</p>
-</div>
-</div>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Commenting on Networks
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Lars has a point when mentioning the importance of giving proper comments to each network interface. While it might seem unnecessary when dealing with just a few interfaces, we can forget about it once the number of appliances and services grow.</p>
-<p>Thus, the default <code>vmbr0</code> created on Proxmox installation time and with proper access to the outside shall be named <em>External network</em>, while the new <code>vmbr1</code> shall be called <em>Internal network</em>. This way we avoid any kind of doubt when picking one of them. Use similar criteria with any new network interface.</p>
-</div>
-</div>
-<section id="nat-configuration" class="level3">
-<h3 class="anchored" data-anchor-id="nat-configuration">NAT Configuration</h3>
-<p>Our current network interface <code>vmbr1</code> can be useful for appliances that don’t require to access the internet (i.e.&nbsp;servers that simply execute local tasks and talk to each other). If we want this network interface to be able to reach the outside world, we need a <strong>NAT configuration</strong>.</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-NAT
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>NAT is the process where all traffic from a network is routed through a single IP address outside that network, and then return results to the request source.</p>
-</div>
-</div>
-<p>In order to configure NAT in our interface, edit the file <code>/etc/network/interface</code> and add the following lines to the <code>vmbr1</code> config block:</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>/etc/network/interface</strong></pre>
-</div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">iface</span> vmbr1 inet static</span>
-<span id="cb4-2"><a href="#cb4-2"></a>   <span class="ex">...</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>   <span class="ex">post-up</span>   echo 1 <span class="op">&gt;</span> /proc/sys/net/ipv4/ip_forward</span>
-<span id="cb4-4"><a href="#cb4-4"></a>   <span class="ex">post-up</span>   iptables <span class="at">-t</span> nat <span class="at">-A</span> POSTROUTING <span class="at">-s</span> <span class="st">'10.0.0.0/16'</span> <span class="at">-o</span> vmbr0 <span class="at">-j</span> MASQUERADE</span>
-<span id="cb4-5"><a href="#cb4-5"></a>   <span class="ex">post-down</span> iptables <span class="at">-t</span> nat <span class="at">-D</span> POSTROUTING <span class="at">-s</span> <span class="st">'10.0.0.0/16'</span> <span class="at">-o</span> vmbr0 <span class="at">-j</span> MASQUERADE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>What we are doing here is add <em>rules</em> to the interface, telling it how to route the packages in that network. This rule will create a dynamic source NAT where every packet from <code>10.0.0.0/16</code> will be sent to the interface <code>vmbr0</code> (the <em>External network</em>) and the source IP address of this packet will be replaced by the primary IP of <code>vmbr0</code> (the Proxmox server IP).</p>
-<ul>
-<li>Setting <code>1</code> to <code>/proc/sys/net/ipv4/ip_forward</code> enables to forward packages to another interface (TODO: needs references)</li>
-<li>The <code>-t nat -A POSTROUTING</code> rule means that it allows the <code>vmbr0</code> interface to route packages from the source <code>-s '10.0.0.0/16'</code>, only after the interface <code>vmbr1</code> is UP, that’s why it is defined as a <code>post-up</code> rule</li>
-<li>The <code>-t nat -D POSTROUTING</code> rule does the opposite, denies any routing of packages from source <code>-s '10.0.0.0'</code> once the <code>vmbr1</code> interface is DOWN, ensuring that no unexpected packages are routed through <code>vmbr0</code></li>
-</ul>
+<p>As always, we must create a softlink from the <code>sites-enabled</code> directory to make it available:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">cd</span> /etc/nginx/sites-enabled</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">ln</span> <span class="at">-s</span> /etc/nginx/sites-available/test-a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We check if Nginx can spot any errors:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">nginx</span> <span class="at">-t</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Finally, restart Nginx</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Restart the Nginx service</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">systemctl</span> restart nginx.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="testing-your-configuration" class="level3">
-<h3 class="anchored" data-anchor-id="testing-your-configuration">Testing your Configuration</h3>
-<p>First, make sure that both interfaces are up, either by executing <code>ifup &lt;interface name&gt;</code> or by rebooting the whole server.</p>
-<p>Next setup a simple container or virtual machine, assign <code>vmbr1</code> interface as its Network interface and statically configure its IP and gateway according to the interface range. For example:</p>
-<ul>
-<li>Bridge: vmbr1</li>
-<li>IPv4/CIDR: <code>10.0.0.2/16</code></li>
-<li>Gateway (IPv4): <code>10.0.0.1</code></li>
-</ul>
-<p>Once started, <code>ssh</code> into that server/container and try pinging any external server IP. Remember that there’s no DNS server for this network, so we can’t use domain names yet:</p>
+<section id="reverse-proxy-for-all-machines" class="level1">
+<h1>Reverse proxy for all machines</h1>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+ATTENTION!!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This will expose <em>all</em> internal network machines to the external network via HTTP(S). Your internal network thus has only limited protection against attacks via HTTP.</p>
+</div>
+</div>
+<p>For automated proxying to any internal machine, use this file:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Ping test:</strong></pre>
+<pre><strong>/etc/nginx/sites-available/internal-host-proxy</strong></pre>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Let's try pinging Google</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">ping</span> <span class="at">-4</span> <span class="at">-c</span> 1 8.8.8.8</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="ex">PING</span> 8.8.8.8 <span class="er">(</span><span class="ex">8.8.8.8</span><span class="kw">)</span> <span class="ex">56</span><span class="er">(</span><span class="ex">84</span><span class="kw">)</span> <span class="ex">bytes</span> of data.</span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="ex">64</span> bytes from 8.8.8.8: icmp_seq=1 ttl=119 time=18.8 ms</span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="ex">---</span> 8.8.8.8 ping statistics <span class="at">---</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="ex">1</span> packets transmitted, 1 received, 0% packet loss, time 0ms</span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="ex">rtt</span> min/avg/max/mdev = 18.764/18.764/18.764/0.000 ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource py number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>server {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  listen <span class="dv">80</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  listen [::]:<span class="dv">80</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  listen <span class="dv">443</span> ssl http2<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>  listen [::]:<span class="dv">443</span> ssl http2<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  server_name <span class="op">*</span>.pve<span class="op">-</span>internal.protossnet.local<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>  ssl_certificate_key <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.key<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>  ssl_certificate     <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.pem<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a>  <span class="co"># Proxy configuration</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>  location <span class="op">/</span> {</span>
+<span id="cb5-13"><a href="#cb5-13"></a>    <span class="co"># Use internal DNS server for name resolution</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>    resolver <span class="fl">10.0.0.2</span><span class="op">;</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>    <span class="bu">set</span> $backend $scheme:<span class="op">//</span>$host<span class="op">;</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a>    proxy_pass $backend<span class="op">;</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a>    proxy_buffering off<span class="op">;</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a>    client_max_body_size <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a>    proxy_set_header Host $host<span class="op">;</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a>    proxy_ssl_name $host<span class="op">;</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a>  }</span>
+<span id="cb5-22"><a href="#cb5-22"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>ping</code> command has returned results, so the network has access to external servers!</p>
+<p>This is a more generic version of the single-host configuration that uses wildcard to match any host and also now sets the backend dynamically</p>
+<p>Remember to create the softlink, test and restart the service as always:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="bu">cd</span> /etc/nginx/sites-enabled</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">ln</span> <span class="at">-s</span> /etc/nginx/sites-available/internal-host-proxy</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="ex">nginx</span> <span class="at">-t</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="ex">systemctl</span> restart nginx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dont-proxy-to-external-servers" class="level1">
+<h1>⚠ Don’t Proxy to External Servers!</h1>
+<p>As we have deleted the <code>default</code> configuration, now our server proxies any unknown server name. We have to explicitly define a default server which just returns a static response instead. Create the following file:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>/etc/nginx/sites-available/default</strong></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource py number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>server {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  listen <span class="dv">80</span> default_server<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  listen [::]:<span class="dv">80</span> default_server<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  listen <span class="dv">443</span> ssl http2 default_server<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>  listen [::]:<span class="dv">443</span> ssl http2 default_server<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>  server_name _<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  ssl_certificate_key <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.key<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  ssl_certificate     <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.pem<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  location <span class="op">/</span> {</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="cf">return</span> <span class="dv">404</span> <span class="st">'Not found</span><span class="ch">\n</span><span class="st">'</span><span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>  }</span>
+<span id="cb7-14"><a href="#cb7-14"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Remember to create the softlink, test and restart the service as always. Now any impersonation attempt will be answered with a <code>404 Not found</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">curl</span> <span class="at">-i</span> http://test-a.pve-internal.protossnet.local <span class="at">-H</span> <span class="st">'Host: google.com'</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">HTTP/1.1</span> 404 Not Found</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="ex">…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -775,14 +759,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Part 1 - Installing Proxmox VE</span>
+      <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Part 3 - DNS and DHCP servers</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="pagination-link">
-        <span class="nav-page-text">Part 3 - DNS and DHCP servers</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

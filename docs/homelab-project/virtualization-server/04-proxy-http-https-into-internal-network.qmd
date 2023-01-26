@@ -22,7 +22,7 @@ If only a single machine shall be available from outside the internal network, a
 
 :::{.callout-important}
 ## Use the internal DNS!
-Make sure to use the internal DNS server to resolve the internal hostname. This will return the internal IP address, and Nginx can use that to proxy to the internal server.
+Make sure to use the internal DNS server to resolve the internal hostname. This will return the internal IP address, and Nginx can use that to reverse proxy to the internal server.
 :::
 
 As always, we must create a softlink from the `sites-enabled` directory to make it available:

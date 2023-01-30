@@ -4,6 +4,7 @@ services:
   tunnel:
     #container_name: cloudflared-tunnel
     image: cloudflare/cloudflared
+    # This sysctl param change doesn't seem to work on Apache OSes
     sysctls:
       net.core.rmem_max: 2500000
     restart: unless-stopped

@@ -38,6 +38,9 @@ services:
       - NEXTCLOUD_ADMIN_PASSWORD_FILE=/run/secrets/nextcloud_admin_password
       - NEXTCLOUD_ADMIN_USER_FILE=/run/secrets/nextcloud_admin_user
       - NEXTCLOUD_TRUSTED_DOMAINS=192.168.1.7 sonic.protossnet.local nextcloud.cifoweb.dev localhost
+      # Change this if memory limits must be raised
+      # - PHP_MEMORY_LIMIT=512M
+      # - PHP_UPLOAD_LIMIT=512M
     depends_on:
       - db
     secrets:

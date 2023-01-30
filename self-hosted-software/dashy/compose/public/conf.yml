@@ -1,0 +1,70 @@
+appConfig:
+  theme: colorful
+  layout: auto
+  iconSize: large
+  language: en
+  auth:
+    enableGuestAccess: true
+    users:
+      - user: admin
+        hash: hash-of-a-password-you-choose-using-sha256-hashing
+        type: admin
+defaultOpeningMethod: newtab
+webSearch:
+    disableWebSearch: false
+    searchEngine: duckduckgo
+    openingMethod: newtab
+    searchBangs: {}
+  enableFontAwesome: true
+  enableMaterialDesignIcons: true
+  allowConfigEdit: true
+pageInfo:
+  title: Home Lab
+  description: Welcome to your Home Lab!
+  navLinks:
+    - title: GitHub
+      path: https://github.com/ProtossGP32/DevOps-training-projects
+    - title: Introduction to HomeLab
+      path: https://protossgp32.github.io/DevOps-training-projects/homelab-project/00-introduction.html
+  footerText: ''
+sections:
+  - name: Server administration
+    icon: fas fa-server
+    items:
+      - title: Proxmox
+        description: Virtualisation manager
+        url: https://pve.protossnet.local
+        icon: dashboard-icons/png/proxmox.png
+        statusCheck: true
+      - title: phpLDAPadmin
+        description: LDAP administrator
+        url: http://ldap-server.protossnet.local:8080
+        icon: dashboard-icons/png/phpldapadmin.png
+        statusCheck: true
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: true
+  - name: Productivity Tools
+    icon: fas fa-regular fa-window
+    items:
+      - title: NextCloud
+        description: Cloud office suite and collaboration platform
+        url: http://sonic.protossnet.local:8080
+        icon: dashboard-icons/png/nextcloud.png
+        statusCheck: true
+      - title: OpenProject
+        description: Projects management suite
+        url: http://sonic.protossnet.local:8081
+        icon: dashboard-icons/png/openproject.png
+        statusCheck: true
+      - title: SonarQube
+        description: Static code analysis suite
+        url: http://sonic.protossnet.local:9000
+        icon: dashboard-icons/png/sonarqube.png
+      - title: VS Code Web
+        description: Cloud based VS Code development environment
+        icon: dashboard-icons/png/vs-code.png
+        statusCheck: true

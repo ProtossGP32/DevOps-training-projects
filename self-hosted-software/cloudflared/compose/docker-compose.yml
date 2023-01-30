@@ -1,0 +1,13 @@
+version: '3.2'
+name: cloudflared
+services:
+  tunnel:
+    #container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    sysctls:
+      net.core.rmem_max: 2500000
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      # Add your cloudflare token inside a secured '.env' file
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}

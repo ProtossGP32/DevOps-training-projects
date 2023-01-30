@@ -1,0 +1,44 @@
+---
+title: "00 - External access - Cloudflare"
+---
+# Introduction
+# Getting started
+Follow this video and the next instructions:
+
+{{< video https://youtu.be/ey4u7OUAF3c >}}
+
+## Get a Domain name
+## Create a Cloudflare account
+## Setup the Domain name in Cloudflare
+# Creating tunnels to our applications
+## Zero Trust Dashboard
+## Deploying cloudflared as docker container
+
+Adapt the proposed docker compose file [in this link](https://community.cloudflare.com/t/can-i-use-cloudflared-in-a-docker-compose-yml/407168) to launch it as a standalone container.
+
+Cloudflare recommends to create only a tunnel for each network, so we'll deploy it on a container within our private network:
+
+```{.yml filename=docker-compose.yml include=../../../self-hosted-software/cloudflared/compose/docker-compose.yml}
+```
+
+Add the `CLOUDFLARE_TOKEN` value inside a secure `.env` file in the same dir as the `docker-compose.yml` file:
+
+```{.bash}
+CLOUDFLARE_TOKEN=token-provided-by-cloudflare
+```
+
+:::{.callout-warning}
+## Warning with system limits!
+If you see a message like this one when launching `docker compose logs tunnel`:
+```
+failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB)
+```
+Check the following link for a deep explanation: [LINK](https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size)
+
+What we must do is create an init container and change some system params, similar to [what we are doing with SonarQube]().
+
+Also, we could try configuring the `sysctl` parameters [using the docker compose file](https://www.cloudbees.com/blog/adjusting-linux-kernel-parameters-with-docker-compose).
+
+On some OS it doesn't seem to work, such as Alpine, but if Cloudflare shows that the tunnel is connected, then this shouldn't be a problem.
+:::
+

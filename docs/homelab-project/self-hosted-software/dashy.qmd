@@ -1,0 +1,52 @@
+---
+title: "01 - HomeLab dashboard: Dashy"
+---
+
+# Introduction
+[Dashy](https://dashy.to/) is a lightweight dashboard that allows users, devops and sysadmins to quickly access to its services:
+
+- [Github repository](https://github.com/Lissy93/dashy)
+- [Documentation](https://dashy.to/docs/)
+
+
+# Getting started
+## Installation
+Follow this video for a simple Docker deployment and initial configuration:
+
+{{< video https://youtu.be/QsQUzutGarA >}}
+
+### Synology
+
+The docker image can also be deployed inside a Synology NAS. Follow the [official Dashy's documentation](https://dashy.to/docs/deployment/#synology-nas) on how to do it.
+
+### Docker compose
+
+We can also create a `docker-compose.yml` file for an easier deployment. Follow [Dashy's documentation](https://dashy.to/docs/deployment#using-docker-compose) and modify it according to your own architecture.
+
+Just add some volumes for both `config.yml` and the `item-icons` folder so we don't lose them when restarting the container.
+
+```{.yml filename=docker-compose.yml include=../../../self-hosted-software/dashy/compose/docker-compose.yml}
+
+```
+
+Then locally clone the GitHub repository of icons to beautify the panels:
+
+```{.bash}
+cd public/item-icons
+git clone https://github.com/walkxcode/dashboard-icons.git
+```
+
+And here is a basic `config.yml` with enabled built-in authentication and some services already configured into its proper sections:
+
+```{.yml filename=docker-compose.yml include=../../../self-hosted-software/dashy/compose/public/config.yml}
+
+```
+
+
+:::{.callout-warning}
+## TODO
+`docker-compose` configs and extras are pending to push from the CIFO local machine!
+:::
+
+# Enabling authentication
+# Configuring additional shortcuts

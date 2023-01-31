@@ -3,6 +3,9 @@ version: "3.7"
 services:
   web:
     environment:
+      # When using a reverse proxy with HTTPS, configure the following variables
+      #OPENPROJECT_HTTPS: "true"
+      #OPENPROJECT_HOST__NAME: "subdomain.domain.extension"
       OPENPROJECT_HTTPS: "false"
       OPENPROJECT_HOST__NAME: "sonic.protossnet.local:8080"
       OPENPROJECT_LDAP__USERS__SYNC__STATUS: true

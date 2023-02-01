@@ -47,6 +47,7 @@ sections:
       cols: 1
       collapsed: false
       hideForGuests: true
+
   - name: Productivity Tools
     icon: fas fa-regular fa-window
     items:
@@ -67,4 +68,19 @@ sections:
       - title: VS Code Web
         description: Cloud based VS Code development environment
         icon: dashboard-icons/png/vs-code.png
+        statusCheck: true
+
+  - name: User management
+    icon: fas fa-light fa-user
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: Self Service Password
+        description: Allows to change your user password
+        icon: dashboard-icons/png/ltb-logo.png
+        url: https://ssp-protoss.cifoweb.dev/
         statusCheck: true

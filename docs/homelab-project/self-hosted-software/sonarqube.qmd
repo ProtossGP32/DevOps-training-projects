@@ -1,0 +1,8 @@
+---
+title: "04 - Code analysis - SonarQube"
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled
+:::

@@ -23,6 +23,7 @@ services:
     secrets:
       - ldap_admin_password
 
+  # LDAP administrator via web interface
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
@@ -35,6 +36,22 @@ services:
       - network
     ports:
       - "8080:80"
+    depends_on:
+      - openldap
+
+  # Simple web service for password restart
+  self-service-password:
+    image: ltbproject/self-service-password:latest
+    container_name: self-service-password
+    environment:
+      LDAP_BIND_PASSWORD: ${LDAP_BIND_PASSWORD}
+      SSP_KEYPHRASE: ${SSP_KEYPHRASE}
+    volumes:
+      - '$PWD/conf/config.inc.local.php:/var/www/conf/config.inc.local.php'
+    ports:
+      - "8081:80"
+    networks:
+      - network
     depends_on:
       - openldap
 

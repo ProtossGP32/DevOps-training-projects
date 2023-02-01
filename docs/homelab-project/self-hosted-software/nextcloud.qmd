@@ -1,0 +1,8 @@
+---
+title: "02 - Productivity tools - NextCloud"
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy NextCloud, both on internal network and accessible from outside with HTTPS partially enabled
+:::

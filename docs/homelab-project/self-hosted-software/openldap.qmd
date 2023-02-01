@@ -1,0 +1,60 @@
+---
+title: "05 - Authentication - OpenLDAP"
+---
+# Introduction
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled
+:::
+
+## OpenLDAP
+An open-source LDAP server
+
+- Web page: [Link](https://www.openldap.org/)
+- Source code: [GitLab](https://git.openldap.org/openldap/openldap) and [GitHub mirror](https://github.com/openldap/openldap)
+- Docker image: [Docker Hub - Non-privileged image](https://hub.docker.com/r/bitnami/openldap/)
+
+## phpLDAPadmin
+An open-source LDAP administration service with a web interface
+
+- Web page: [Link](https://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page)
+- Source code: [GitHub](https://github.com/leenooks/phpLDAPadmin) and [the repository which the Docker image that we use is based](https://github.com/osixia/docker-phpLDAPadmin)
+- Docker image: [Docker Hub](https://hub.docker.com/r/osixia/phpldapadmin/)
+
+## Self Service Password
+An open-source web interface that allows LDAP users to change their own passwords.
+
+- Web page: [Link](https://self-service-password.readthedocs.io/en/latest/)
+- Source code: [GitHub](https://github.com/ltb-project/self-service-password)
+- Docker image: [Docker Hub](https://hub.docker.com/r/ltbproject/self-service-password)
+
+The docker container needs a config file named `config.inc.local.php` that overwrites the default values defined in `config.inc.php`; this file is provided in the `docker-compose.yml` file as a volume.
+
+There are a lot of parameters that can be configured, but for the sake of simplicity only LDAP server parameters and password policies are defined here:
+
+```{.php filename=config.inc.local.php include=../../../self-hosted-software/openldap/compose/conf/config.inc.local.php}
+
+```
+
+# Docker compose
+
+Some sensitive data must be provided using two different methods:
+
+- The `.env` file that should exists in the same path as the `docker-compose.yml` must contain the LDAP admin password and a random string that will act as a keyphrase, both values required for Self Service Password:
+
+    ```{.bash filename=.env}
+    SSP_PASSPHRASE="yourRandomSecretString"
+    LDAP_BIND_PASSWORD="the-password-of-the-LDAP-admin"
+    ```
+
+- A `secret` file that also contains the LDAP admin password, this time required by the openLDAP service:
+
+    ```{.bash filename=secrets/ldap_admin_password.txt}
+    "the-password-of-the-LDAP-admin"
+    ```
+
+Finally, the `docker-compose.yml` file that creates all of the LDAP services is as follows:
+
+```{.yml filename=docker-compose.yml include=../../../self-hosted-software/openldap/compose/docker-compose.yml}
+```

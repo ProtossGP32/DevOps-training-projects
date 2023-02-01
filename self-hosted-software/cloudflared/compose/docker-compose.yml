@@ -8,7 +8,28 @@ services:
     sysctls:
       net.core.rmem_max: 2500000
     restart: unless-stopped
-    command: tunnel run
+    command: tunnel --metrics 0.0.0.0:3333 run
     environment:
       # Add your cloudflare token inside a secured '.env' file
       - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+    # Add autoheal feature to ensure it's restarted on failure
+    labels:
+      - autoheal=true
+    # TODO: Official cloudflared image doesn't have neither curl nor wget nor dig
+    # so we can't launch the healthcheck! We either create a new image that installs
+    # any of the required commands or try to get the health status from another container
+    # or from outside, exposing the port
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://0.0.0.0:3333/ready"]
+    #  interval: 10s
+    #  timeout: 3s
+    #  retries: 3
+    #  start_period: 30s
+
+  # Autoheal is a workaround to restart any container which healthcheck fails
+  #autoheal:
+  #  image: willfarrell/autoheal:1.2.0
+  #  volumes:
+  #    - "/var/run/docker.sock:/var/run/docker.sock"
+  #  environment:
+  #    AUTOHEAL_CONTAINER_LABEL: autoheal

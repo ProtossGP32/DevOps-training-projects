@@ -70,8 +70,9 @@ format:
     # Table of Contents options
     toc: true
     # Code snippets options
+    code-fold: true
     code-line-numbers: true
     code-overflow: scroll
     highlight-style: ayu
-
+    
 

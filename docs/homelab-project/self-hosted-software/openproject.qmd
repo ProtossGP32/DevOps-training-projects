@@ -1,0 +1,8 @@
+---
+title: "03 - Productivity tools - OpenProject"
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy OpenProject, both on internal network and accessible from outside with HTTPS partially enabled
+:::

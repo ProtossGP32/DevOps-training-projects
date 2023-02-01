@@ -1,5 +1,5 @@
 ---
-title: "01 - HomeLab dashboard: Dashy"
+title: "01 - HomeLab dashboard - Dashy"
 ---
 
 # Introduction
@@ -38,14 +38,22 @@ git clone https://github.com/walkxcode/dashboard-icons.git
 
 And here is a basic `config.yml` with enabled built-in authentication and some services already configured into its proper sections:
 
-```{.yml filename=docker-compose.yml include=../../../self-hosted-software/dashy/compose/public/config.yml}
+:::{.callout-note}
+## Remember to change the admin hash
+The `hash` parameter within `auth.users[admin].hash` is the password converted to a sha256 hash. You can obtain it by simply invoking the following command from a terminal:
+```{bash}
+echo -n "your-admin-super-secret-password" | sha256sum
+```
+The hash is the first 64 characters of the output (ignore the empty spaces and dashes at the end).
+
+:::
+
+```{.yml filename=public/conf.yml include=../../../self-hosted-software/dashy/compose/public/conf.yml}
 
 ```
 
-
+# Configuring additional shortcuts
 :::{.callout-warning}
 ## TODO
-`docker-compose` configs and extras are pending to push from the CIFO local machine!
+Add any additional information that could be useful
 :::
-
-# Configuring additional shortcuts

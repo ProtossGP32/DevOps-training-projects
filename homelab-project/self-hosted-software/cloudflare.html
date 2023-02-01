@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DevOps Training Projects - Explore California - Static website debugging and deployment</title>
+<title>DevOps Training Projects - 00 - External access - Cloudflare</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -30,6 +93,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../homelab-project/self-hosted-software/dashy.html" rel="next">
+<link href="../../homelab-project/requirements/00-requirements.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -178,7 +243,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Explore California - Static website debugging and deployment</h1>
+      <h1 class="quarto-secondary-nav-title">00 - External access - Cloudflare</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -191,9 +256,14 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/00-introduction.html" class="sidebar-item-text sidebar-link">Homelab project introduction</a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Explore California</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Requirements</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -201,7 +271,77 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../devops-exercises/explore-california/00-introduction.html" class="sidebar-item-text sidebar-link active">Explore California - Static website debugging and deployment</a>
+  <a href="../../homelab-project/requirements/00-requirements.html" class="sidebar-item-text sidebar-link">Homelab Requirements</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Self Hosted Software</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/cloudflare.html" class="sidebar-item-text sidebar-link active">00 - External access - Cloudflare</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/dashy.html" class="sidebar-item-text sidebar-link">01 - HomeLab dashboard: Dashy</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Virtual Resources Creation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">LXC - Linux Containers on Proxmox</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">Virtual Machines on Proxmox</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Virtualization Server</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Internal Virtual Networks</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="sidebar-item-text sidebar-link">Part 3 - DNS and DHCP servers</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link">Part 4 - Proxy HTTP(S) into the internal network</a>
   </div>
 </li>
       </ul>
@@ -216,15 +356,26 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#get-a-domain-name" id="toc-get-a-domain-name" class="nav-link" data-scroll-target="#get-a-domain-name">Get a Domain name</a></li>
+  <li><a href="#create-a-cloudflare-account" id="toc-create-a-cloudflare-account" class="nav-link" data-scroll-target="#create-a-cloudflare-account">Create a Cloudflare account</a></li>
+  <li><a href="#setup-the-domain-name-in-cloudflare" id="toc-setup-the-domain-name-in-cloudflare" class="nav-link" data-scroll-target="#setup-the-domain-name-in-cloudflare">Setup the Domain name in Cloudflare</a></li>
+  </ul></li>
+  <li><a href="#creating-tunnels-to-our-applications" id="toc-creating-tunnels-to-our-applications" class="nav-link" data-scroll-target="#creating-tunnels-to-our-applications">Creating tunnels to our applications</a>
+  <ul class="collapse">
+  <li><a href="#zero-trust-dashboard" id="toc-zero-trust-dashboard" class="nav-link" data-scroll-target="#zero-trust-dashboard">Zero Trust Dashboard</a></li>
+  <li><a href="#deploying-cloudflared-as-docker-container" id="toc-deploying-cloudflared-as-docker-container" class="nav-link" data-scroll-target="#deploying-cloudflared-as-docker-container">Deploying cloudflared as docker container</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-exercises/explore-california/00-introduction.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/cloudflare.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Explore California - Static website debugging and deployment</h1>
+<h1 class="title d-none d-lg-block">00 - External access - Cloudflare</h1>
 </div>
 
 
@@ -241,8 +392,85 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<p>Follow this video and the next instructions:</p>
+<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/ey4u7OUAF3c" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<section id="get-a-domain-name" class="level2">
+<h2 class="anchored" data-anchor-id="get-a-domain-name">Get a Domain name</h2>
+</section>
+<section id="create-a-cloudflare-account" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-cloudflare-account">Create a Cloudflare account</h2>
+</section>
+<section id="setup-the-domain-name-in-cloudflare" class="level2">
+<h2 class="anchored" data-anchor-id="setup-the-domain-name-in-cloudflare">Setup the Domain name in Cloudflare</h2>
+</section>
+</section>
+<section id="creating-tunnels-to-our-applications" class="level1">
+<h1>Creating tunnels to our applications</h1>
+<section id="zero-trust-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="zero-trust-dashboard">Zero Trust Dashboard</h2>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add some screenshots of the nameserver creation procedure in Zero Trust Dashboard</p>
+</div>
+</div>
+</section>
+<section id="deploying-cloudflared-as-docker-container" class="level2">
+<h2 class="anchored" data-anchor-id="deploying-cloudflared-as-docker-container">Deploying cloudflared as docker container</h2>
+<p>Adapt the proposed docker compose file <a href="https://community.cloudflare.com/t/can-i-use-cloudflared-in-a-docker-compose-yml/407168">in this link</a> to launch it as a standalone container.</p>
+<p>Cloudflare recommends to create only a tunnel for each network, so we’ll deploy it on a container within our private network:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>docker-compose.yml</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">'3.2'</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> cloudflared</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="at">  </span><span class="fu">tunnel</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">    #container_name: cloudflared-tunnel</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> cloudflare/cloudflared</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">    # This sysctl param change doesn't seem to work on Apache OSes</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="at">    </span><span class="fu">sysctls</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="at">      </span><span class="fu">net.core.rmem_max</span><span class="kw">:</span><span class="at"> </span><span class="dv">2500000</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="at">    </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> unless-stopped</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="at">    </span><span class="fu">command</span><span class="kw">:</span><span class="at"> tunnel run</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">      # Add your cloudflare token inside a secured '.env' file</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="at">      </span><span class="kw">-</span><span class="at"> TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Add the <code>CLOUDFLARE_TOKEN</code> value inside a secure <code>.env</code> file in the same dir as the <code>docker-compose.yml</code> file:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="va">CLOUDFLARE_TOKEN</span><span class="op">=</span>token-provided-by-cloudflare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Warning with system limits!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you see a message like this one when launching <code>docker compose logs tunnel</code>:</p>
+<pre><code>failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB)</code></pre>
+<p>Check the following link for a deep explanation: <a href="https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size">LINK</a></p>
+<p>What we must do is create an init container and change some system params, similar to <a href="">what we are doing with SonarQube</a>.</p>
+<p>Also, we could try configuring the <code>sysctl</code> parameters <a href="https://www.cloudbees.com/blog/adjusting-linux-kernel-parameters-with-docker-compose">using the docker compose file</a>.</p>
+<p>On some OS it doesn’t seem to work, such as Alpine, but if Cloudflare shows that the tunnel is connected, then this shouldn’t be a problem.</p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -494,6 +722,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../homelab-project/requirements/00-requirements.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Homelab Requirements</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../homelab-project/self-hosted-software/dashy.html" class="pagination-link">
+        <span class="nav-page-text">01 - HomeLab dashboard: Dashy</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

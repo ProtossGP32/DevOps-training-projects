@@ -49,6 +49,55 @@
     "text": "Self-hosted software\nWe’d like to host our own services, and again the best approach should be to deploy containers, either as-is or in an orchestrated environment such as Kubernetes."
   },
   {
+    "objectID": "homelab-project/self-hosted-software/cloudflare.html#get-a-domain-name",
+    "href": "homelab-project/self-hosted-software/cloudflare.html#get-a-domain-name",
+    "title": "00 - External access - Cloudflare",
+    "section": "Get a Domain name",
+    "text": "Get a Domain name"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/cloudflare.html#create-a-cloudflare-account",
+    "href": "homelab-project/self-hosted-software/cloudflare.html#create-a-cloudflare-account",
+    "title": "00 - External access - Cloudflare",
+    "section": "Create a Cloudflare account",
+    "text": "Create a Cloudflare account"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/cloudflare.html#setup-the-domain-name-in-cloudflare",
+    "href": "homelab-project/self-hosted-software/cloudflare.html#setup-the-domain-name-in-cloudflare",
+    "title": "00 - External access - Cloudflare",
+    "section": "Setup the Domain name in Cloudflare",
+    "text": "Setup the Domain name in Cloudflare"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/cloudflare.html#zero-trust-dashboard",
+    "href": "homelab-project/self-hosted-software/cloudflare.html#zero-trust-dashboard",
+    "title": "00 - External access - Cloudflare",
+    "section": "Zero Trust Dashboard",
+    "text": "Zero Trust Dashboard\n\n\n\n\n\n\nTODO\n\n\n\nAdd some screenshots of the nameserver creation procedure in Zero Trust Dashboard"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/cloudflare.html#deploying-cloudflared-as-docker-container",
+    "href": "homelab-project/self-hosted-software/cloudflare.html#deploying-cloudflared-as-docker-container",
+    "title": "00 - External access - Cloudflare",
+    "section": "Deploying cloudflared as docker container",
+    "text": "Deploying cloudflared as docker container\nAdapt the proposed docker compose file in this link to launch it as a standalone container.\nCloudflare recommends to create only a tunnel for each network, so we’ll deploy it on a container within our private network:\n\n\ndocker-compose.yml\n\nversion: '3.2'\nname: cloudflared\nservices:\n  tunnel:\n    #container_name: cloudflared-tunnel\n    image: cloudflare/cloudflared\n    # This sysctl param change doesn't seem to work on Apache OSes\n    sysctls:\n      net.core.rmem_max: 2500000\n    restart: unless-stopped\n    command: tunnel run\n    environment:\n      # Add your cloudflare token inside a secured '.env' file\n      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}\n\nAdd the CLOUDFLARE_TOKEN value inside a secure .env file in the same dir as the docker-compose.yml file:\nCLOUDFLARE_TOKEN=token-provided-by-cloudflare\n\n\n\n\n\n\nWarning with system limits!\n\n\n\nIf you see a message like this one when launching docker compose logs tunnel:\nfailed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB)\nCheck the following link for a deep explanation: LINK\nWhat we must do is create an init container and change some system params, similar to what we are doing with SonarQube.\nAlso, we could try configuring the sysctl parameters using the docker compose file.\nOn some OS it doesn’t seem to work, such as Alpine, but if Cloudflare shows that the tunnel is connected, then this shouldn’t be a problem."
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/dashy.html",
+    "href": "homelab-project/self-hosted-software/dashy.html",
+    "title": "01 - HomeLab dashboard: Dashy",
+    "section": "",
+    "text": "Dashy is a lightweight dashboard that allows users, devops and sysadmins to quickly access to its services:\n\nGithub repository\nDocumentation"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/dashy.html#installation",
+    "href": "homelab-project/self-hosted-software/dashy.html#installation",
+    "title": "01 - HomeLab dashboard: Dashy",
+    "section": "Installation",
+    "text": "Installation\nFollow this video for a simple Docker deployment and initial configuration:\n\n\nSynology\nThe docker image can also be deployed inside a Synology NAS. Follow the official Dashy’s documentation on how to do it.\n\n\nDocker compose\nWe can also create a docker-compose.yml file for an easier deployment. Follow Dashy’s documentation and modify it according to your own architecture.\nJust add some volumes for both config.yml and the item-icons folder so we don’t lose them when restarting the container.\n\n\ndocker-compose.yml\n\n---\nversion: \"3.8\"\nservices:\n  dashy:\n    # To build from source, replace 'image: lissy93/dashy' with 'build: .'\n    # build: .\n    image: lissy93/dashy\n    container_name: Dashy\n    # Pass in your config file below, by specifying the path on your host machine\n    # volumes:\n      # - /root/my-config.yml:/app/public/conf.yml\n    ports:\n      - 4000:80\n    # Set any environmental variables\n    environment:\n      - NODE_ENV=production\n    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`\n    #  - UID=1000\n    #  - GID=1000\n    # Specify restart policy\n    restart: unless-stopped\n    # Volumes\n    volumes:\n      - $PWD/public/conf.yml:/app/public/conf.yml\n      - $PWD/public/item-icons:/app/public/item-icons\n    # Configure healthchecks\n    healthcheck:\n      test: ['CMD', 'node', '/app/services/healthcheck']\n      interval: 1m30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n\nThen locally clone the GitHub repository of icons to beautify the panels:\ncd public/item-icons\ngit clone https://github.com/walkxcode/dashboard-icons.git\nAnd here is a basic config.yml with enabled built-in authentication and some services already configured into its proper sections:\n\n\ndocker-compose.yml\n\n\n\n\n\n\n\n\n\nTODO\n\n\n\ndocker-compose configs and extras are pending to push from the CIFO local machine!"
+  },
+  {
     "objectID": "homelab-project/virtualization-server/01-installing-proxmox.html",
     "href": "homelab-project/virtualization-server/01-installing-proxmox.html",
     "title": "Part 1 - Installing Proxmox VE",

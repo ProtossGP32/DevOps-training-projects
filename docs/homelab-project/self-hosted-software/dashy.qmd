@@ -48,5 +48,4 @@ And here is a basic `config.yml` with enabled built-in authentication and some s
 `docker-compose` configs and extras are pending to push from the CIFO local machine!
 :::
 
-# Enabling authentication
 # Configuring additional shortcuts

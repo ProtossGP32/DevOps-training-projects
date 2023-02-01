@@ -10,8 +10,15 @@ Follow this video and the next instructions:
 ## Get a Domain name
 ## Create a Cloudflare account
 ## Setup the Domain name in Cloudflare
+
 # Creating tunnels to our applications
 ## Zero Trust Dashboard
+
+:::{.callout-warning}
+## TODO
+Add some screenshots of the nameserver creation procedure in Zero Trust Dashboard
+:::
+
 ## Deploying cloudflared as docker container
 
 Adapt the proposed docker compose file [in this link](https://community.cloudflare.com/t/can-i-use-cloudflared-in-a-docker-compose-yml/407168) to launch it as a standalone container.

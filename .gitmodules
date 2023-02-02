@@ -1,0 +1,3 @@
+[submodule "self-hosted-software/dashy/compose/public/item-icons/dashboard-icons"]
+	path = self-hosted-software/dashy/compose/public/item-icons/dashboard-icons
+	url = https://github.com/walkxcode/dashboard-icons.git

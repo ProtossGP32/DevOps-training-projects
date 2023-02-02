@@ -1,6 +1,7 @@
 version: '2'
 name: ldap-service
 services:
+  # LDAP server
   openldap:
     image: docker.io/bitnami/openldap:2.6
     container_name: openldap

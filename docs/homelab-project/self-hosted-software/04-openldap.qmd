@@ -1,5 +1,9 @@
 ---
-title: "05 - Authentication - OpenLDAP"
+title: "04 - Authentication - OpenLDAP"
+description: "Centralize your user database for services authentication"
+author: "ProtossGP32"
+date: "2023/02/03"
+categories: ["Docker", "Self-hosted software", "OpenLDAP", "Authentication"]
 ---
 # Introduction
 

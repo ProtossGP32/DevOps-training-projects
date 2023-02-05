@@ -1,5 +1,30 @@
 ---
 title: "Home"
+listing:
+  contents:
+    - "devops-exercises"
+    - "homelab-project"
+  image-align: left
+  page-size: 10
+  fields:
+    - title
+    - description
+    - categories
+    - date
+    - image
+    - author
+    - reading-time
+  sort:
+    - "date desc"
+    - "title asc"
+  sort-ui: true
+  filter-ui: true
+  type: default
+  categories: cloud
+
+page-layout: full
 ---
 
-DevOps Projects
+Welcome to my DevOps repository of guides and exercises. Here you'll find (I hope) useful information about self-hosting your own services and managing them.
+
+# Latest posts

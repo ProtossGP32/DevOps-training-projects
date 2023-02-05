@@ -1,5 +1,9 @@
 ---
-title: "00 - External access - Cloudflare"
+title: "01 - External access - Cloudflare"
+description: "Secure remote access to your homelab"
+author: "ProtossGP32"
+date: "2023/01/30"
+categories: ["Docker", "Cloudflare", "Self-hosted software", "Containers", "DNS", "SSL"]
 ---
 # Introduction
 # Getting started

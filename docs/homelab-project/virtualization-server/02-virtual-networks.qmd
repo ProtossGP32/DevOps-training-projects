@@ -1,5 +1,9 @@
 ---
 title: "Part 2 - Internal Virtual Networks"
+description: "Create internal network for your VM and LXC"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Proxmox VE", "Network"]
 ---
 # What are virtual networks?
 Virtual networks are network interfaces that act as fake NICs and allow multiple VM or LXC to communicate within the same subnet.

@@ -1,0 +1,12 @@
+---
+title: "07 - Code analysis - SonarQube"
+description: "Analyze your projects' code and keep it well maintained"
+author: "ProtossGP32"
+date: "2023/02/03"
+categories: ["Docker", "Self-hosted software", "SonarQube", "Code analysis"]
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled
+:::

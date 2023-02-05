@@ -1,5 +1,9 @@
 ---
 title: "Part 4 - Proxy HTTP(S) into the internal network"
+description: "Make your internal network accessible from the outside"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Proxmox VE", "Remote access", "Network", "DNS", "Proxy", "Nginx"]
 ---
 
 # What's the idea here?

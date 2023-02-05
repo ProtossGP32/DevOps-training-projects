@@ -1,0 +1,68 @@
+---
+title: "02 - Routing and SSL certificates - Traefik and Portainer"
+description: "Route HTTP(s) requests to your services and secure them with Let's Encrypt SSL certificates with Traefik"
+author: "ProtossGP32"
+date: "2023/02/05"
+categories: ["Docker", "Traefik", "SSL"]
+---
+![](https://upload.wikimedia.org/wikipedia/commons/1/1b/Traefik.logo.png){height=150 fig-align="center"}
+![](https://www.portainer.io/hubfs/portainer-logo-black.svg){height=120 fig-align=center}
+
+# Introduction
+When deploying services in our homelab, they're usually accessed through the insecure HTTP protocol, and this is particularly dangerous if we decide to expose them to the Internet.
+
+We've already talked about Cloudflare and how it provides a secure point-to-point SSL tunnel to our internal network. Now we're going to use Traefik to do two things: automatically assign an SSL certificate to any deployed Docker service (thus also having encription within your internal network) and providing a secure endpoint to each of them.
+
+Also, we're going to install [Portainer](https://www.portainer.io/) to manage all of our Docker workloads.
+
+# Getting started
+Watch this video and follow the transcribe instructions to get an idea of what we're going to do:
+
+{{< video https://youtu.be/liV3c9m_OX8 >}}
+
+I advise to watch the full video, but here are some key moments:
+
+- [02:51](https://www.youtube.com/watch?v=liV3c9m_OX8&t=171s) - What is Traefik? 
+- [06:18](https://www.youtube.com/watch?v=liV3c9m_OX8&t=378s) - Traefik `docker-compose.yml`
+- [13:01](https://www.youtube.com/watch?v=liV3c9m_OX8&t=781s) - Deploy Portainer
+
+Transcribed instructions: [Link](https://docs.technotim.live/posts/traefik-portainer-ssl/)
+
+# Instructions
+## Prepare an entry-point VM
+We'll need an entry-point server that acts as both HTTP requests router and SSL provider (Traefik).
+
+## Make sure yo have a Domain name
+:::{.callout-important}
+## Use Cloudflare as DNS provider
+This will ease the process and secure connections even more
+:::
+
+## Install Traefik
+:::{.callout-caution}
+## I couldn't make it work!
+I don't know if it's because I'm using a Cloudflare Zero-Trust tunnel instead of assigning DNS records pointing towards my public IP, but either Traefik keeps responding with a `404 Page not found` error or it fails due to too many redirections.
+
+I'll try it again following the official documentation.
+
+There's another guide [here](https://www.smarthomebeginner.com/cloudflare-settings-for-traefik-docker/) that could be useful.
+:::
+
+## Install Portainer
+![](https://www.portainer.io/hubfs/portainer-logo-black.svg){width=300}
+
+Portainer is a tool that eases the management and deployment of Docker containers in your infrastructure. Its installation is also pretty straightforward:
+
+- For management purposes, we are going to create a `docker` folder in our `home` directory. This is where we'll store all of our Docker services configurations:
+
+```bash
+mkdir docker
+echo $PWD
+# This should return the following
+
+```
+
+:::{.callout-warning}
+## TODO
+Pending to install Portainer and control all Docker hosts
+:::

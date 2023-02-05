@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DevOps Training Projects - 01 - HomeLab dashboard: Dashy</title>
+<title>DevOps Training Projects - 01 - HomeLab dashboard - Dashy</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,7 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtual-resources-creation/02-containers.html" rel="next">
+<link href="../../homelab-project/self-hosted-software/nextcloud.html" rel="next">
 <link href="../../homelab-project/self-hosted-software/cloudflare.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -185,7 +185,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>  
         <li>
     <a class="dropdown-item" href="../../homelab-project/self-hosted-software/dashy.html">
- <span class="dropdown-text">01 - HomeLab dashboard: Dashy</span></a>
+ <span class="dropdown-text">01 - HomeLab dashboard - Dashy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/nextcloud.html">
+ <span class="dropdown-text">02 - Productivity tools - NextCloud</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/openproject.html">
+ <span class="dropdown-text">03 - Productivity tools - OpenProject</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/sonarqube.html">
+ <span class="dropdown-text">04 - Code analysis - SonarQube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/openldap.html">
+ <span class="dropdown-text">05 - Authentication - OpenLDAP</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">Virtual Resources Creation</li>
@@ -243,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">01 - HomeLab dashboard: Dashy</h1>
+      <h1 class="quarto-secondary-nav-title">01 - HomeLab dashboard - Dashy</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -291,7 +307,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/dashy.html" class="sidebar-item-text sidebar-link active">01 - HomeLab dashboard: Dashy</a>
+  <a href="../../homelab-project/self-hosted-software/dashy.html" class="sidebar-item-text sidebar-link active">01 - HomeLab dashboard - Dashy</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/nextcloud.html" class="sidebar-item-text sidebar-link">02 - Productivity tools - NextCloud</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/openproject.html" class="sidebar-item-text sidebar-link">03 - Productivity tools - OpenProject</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/sonarqube.html" class="sidebar-item-text sidebar-link">04 - Code analysis - SonarQube</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/openldap.html" class="sidebar-item-text sidebar-link">05 - Authentication - OpenLDAP</a>
   </div>
 </li>
       </ul>
@@ -373,7 +409,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">01 - HomeLab dashboard: Dashy</h1>
+<h1 class="title d-none d-lg-block">01 - HomeLab dashboard - Dashy</h1>
 </div>
 
 
@@ -451,12 +487,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">cd</span> public/item-icons</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="fu">git</span> clone https://github.com/walkxcode/dashboard-icons.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And here is a basic <code>config.yml</code> with enabled built-in authentication and some services already configured into its proper sections:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Remember to change the admin hash
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>hash</code> parameter within <code>auth.users[admin].hash</code> is the password converted to a sha256 hash. You can obtain it by simply invoking the following command from a terminal:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>echo -n "your-admin-super-secret-password" | sha256sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The hash is the first 64 characters of the output (ignore the empty spaces and dashes at the end).</p>
+</div>
+</div>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>docker-compose.yml</strong></pre>
+<pre><strong>public/conf.yml</strong></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">appConfig</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="at">  </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> colorful</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="at">  </span><span class="fu">layout</span><span class="kw">:</span><span class="at"> auto</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="at">  </span><span class="fu">iconSize</span><span class="kw">:</span><span class="at"> large</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="at">  </span><span class="fu">language</span><span class="kw">:</span><span class="at"> en</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="at">  </span><span class="fu">auth</span><span class="kw">:</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="at">    </span><span class="fu">enableGuestAccess</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="at">    </span><span class="fu">users</span><span class="kw">:</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">user</span><span class="kw">:</span><span class="at"> admin</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="at">        </span><span class="fu">hash</span><span class="kw">:</span><span class="at"> hash-of-a-password-you-choose-using-sha256-hashing</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> admin</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="fu">defaultOpeningMethod</span><span class="kw">:</span><span class="at"> newtab</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="fu">webSearch</span><span class="kw">:</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="at">    </span><span class="fu">disableWebSearch</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="at">    </span><span class="fu">searchEngine</span><span class="kw">:</span><span class="at"> duckduckgo</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="at">    </span><span class="fu">openingMethod</span><span class="kw">:</span><span class="at"> newtab</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="at">    </span><span class="fu">searchBangs</span><span class="kw">:</span><span class="at"> </span><span class="kw">{}</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="at">  </span><span class="fu">enableFontAwesome</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="at">  </span><span class="fu">enableMaterialDesignIcons</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="at">  </span><span class="fu">allowConfigEdit</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="fu">pageInfo</span><span class="kw">:</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> Home Lab</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Welcome to your Home Lab!</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="at">  </span><span class="fu">navLinks</span><span class="kw">:</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> GitHub</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="at">      </span><span class="fu">path</span><span class="kw">:</span><span class="at"> https://github.com/ProtossGP32/DevOps-training-projects</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> Introduction to HomeLab</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="at">      </span><span class="fu">path</span><span class="kw">:</span><span class="at"> https://protossgp32.github.io/DevOps-training-projects/homelab-project/00-introduction.html</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="at">  </span><span class="fu">footerText</span><span class="kw">:</span><span class="at"> </span><span class="st">''</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="fu">sections</span><span class="kw">:</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Server administration</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="at">    </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> fas fa-server</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="at">    </span><span class="fu">items</span><span class="kw">:</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> Proxmox</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Virtualisation manager</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://pve.protossnet.local</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/proxmox.png</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="at">        </span><span class="fu">statusCheck</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> phpLDAPadmin</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> LDAP administrator</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://ldap-server.protossnet.local:8080</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/phpldapadmin.png</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="at">        </span><span class="fu">statusCheck</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="at">    </span><span class="fu">displayData</span><span class="kw">:</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="at">      </span><span class="fu">sortBy</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="at">      </span><span class="fu">rows</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="at">      </span><span class="fu">cols</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="at">      </span><span class="fu">collapsed</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a><span class="at">      </span><span class="fu">hideForGuests</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Productivity Tools</span></span>
+<span id="cb4-51"><a href="#cb4-51"></a><span class="at">    </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> fas fa-regular fa-window</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="at">    </span><span class="fu">items</span><span class="kw">:</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> NextCloud</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Cloud office suite and collaboration platform</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://sonic.protossnet.local:8080</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/nextcloud.png</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a><span class="at">        </span><span class="fu">statusCheck</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> OpenProject</span></span>
+<span id="cb4-59"><a href="#cb4-59"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Projects management suite</span></span>
+<span id="cb4-60"><a href="#cb4-60"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://sonic.protossnet.local:8081</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/openproject.png</span></span>
+<span id="cb4-62"><a href="#cb4-62"></a><span class="at">        </span><span class="fu">statusCheck</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-63"><a href="#cb4-63"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> SonarQube</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Static code analysis suite</span></span>
+<span id="cb4-65"><a href="#cb4-65"></a><span class="at">        </span><span class="fu">url</span><span class="kw">:</span><span class="at"> http://sonic.protossnet.local:9000</span></span>
+<span id="cb4-66"><a href="#cb4-66"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/sonarqube.png</span></span>
+<span id="cb4-67"><a href="#cb4-67"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">title</span><span class="kw">:</span><span class="at"> VS Code Web</span></span>
+<span id="cb4-68"><a href="#cb4-68"></a><span class="at">        </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Cloud based VS Code development environment</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a><span class="at">        </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> dashboard-icons/png/vs-code.png</span></span>
+<span id="cb4-70"><a href="#cb4-70"></a><span class="at">        </span><span class="fu">statusCheck</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+</section>
+<section id="configuring-additional-shortcuts" class="level1">
+<h1>Configuring additional shortcuts</h1>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -467,14 +592,9 @@ TODO
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>docker-compose</code> configs and extras are pending to push from the CIFO local machine!</p>
+<p>Add any additional information that could be useful</p>
 </div>
 </div>
-</section>
-</section>
-</section>
-<section id="configuring-additional-shortcuts" class="level1">
-<h1>Configuring additional shortcuts</h1>
 
 
 </section>
@@ -735,8 +855,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="pagination-link">
-        <span class="nav-page-text">LXC - Linux Containers on Proxmox</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../homelab-project/self-hosted-software/nextcloud.html" class="pagination-link">
+        <span class="nav-page-text">02 - Productivity tools - NextCloud</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

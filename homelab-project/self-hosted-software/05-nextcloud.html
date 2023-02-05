@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-01-17">
-<meta name="description" content="Provision new containers in Proxmox">
+<meta name="dcterms.date" content="2023-02-03">
+<meta name="description" content="User your own productivity suite">
 
-<title>DevOps Training Projects - 02 - Provisioning - LXC (Linux Containers on Proxmox)</title>
+<title>DevOps Training Projects - 05 - Productivity tools - NextCloud</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtualization-server/01-installing-proxmox.html" rel="next">
-<link href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" rel="prev">
+<link href="../../homelab-project/self-hosted-software/06-openproject.html" rel="next">
+<link href="../../homelab-project/self-hosted-software/04-openldap.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -207,7 +207,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+      <h1 class="quarto-secondary-nav-title">05 - Productivity tools - NextCloud</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -275,7 +275,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="sidebar-item-text sidebar-link">05 - Productivity tools - NextCloud</a>
+  <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="sidebar-item-text sidebar-link active">05 - Productivity tools - NextCloud</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -305,7 +305,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link active">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
+  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
   </div>
 </li>
       </ul>
@@ -352,17 +352,18 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+<h1 class="title d-none d-lg-block">05 - Productivity tools - NextCloud</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Proxmox VE</div>
-    <div class="quarto-category">LXC</div>
-    <div class="quarto-category">Containers</div>
+    <div class="quarto-category">Docker</div>
+    <div class="quarto-category">Self-hosted software</div>
+    <div class="quarto-category">NextCloud</div>
+    <div class="quarto-category">Productivity tools</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Provision new containers in Proxmox
+    User your own productivity suite
   </div>
 </div>
 
@@ -379,7 +380,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 17, 2023</p>
+      <p class="date">February 3, 2023</p>
     </div>
   </div>
   
@@ -389,6 +390,19 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add properly explained procedure to deploy NextCloud, both on internal network and accessible from outside with HTTPS partially enabled</p>
+</div>
+</div>
 
 
 
@@ -643,13 +657,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">01 - Provisioning - Virtual Machines on Proxmox</span>
+      <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">04 - Authentication - OpenLDAP</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="pagination-link">
-        <span class="nav-page-text">Part 1 - Installing Proxmox VE</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../homelab-project/self-hosted-software/06-openproject.html" class="pagination-link">
+        <span class="nav-page-text">06 - Productivity tools - OpenProject</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

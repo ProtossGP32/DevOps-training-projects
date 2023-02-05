@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -60,7 +62,38 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-description','listing-categories','listing-date','listing-image','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      page: 10,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -93,7 +126,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="dropdown-header">Explore California</li>
         <li>
     <a class="dropdown-item" href="./devops-exercises/explore-california/00-introduction.html">
- <span class="dropdown-text">Explore California - Static website debugging and deployment</span></a>
+ <span class="dropdown-text">Explore California</span></a>
   </li>  
     </ul>
   </li>
@@ -115,22 +148,46 @@ ul.task-list li input[type="checkbox"] {
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">Self Hosted Software</li>
         <li>
-    <a class="dropdown-item" href="./homelab-project/self-hosted-software/cloudflare.html">
- <span class="dropdown-text">00 - External access - Cloudflare</span></a>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+ <span class="dropdown-text">00 - Containers - Docker &amp; Docker Compose</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./homelab-project/self-hosted-software/dashy.html">
- <span class="dropdown-text">01 - HomeLab dashboard: Dashy</span></a>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/01-cloudflare.html">
+ <span class="dropdown-text">01 - External access - Cloudflare</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+ <span class="dropdown-text">02 - Routing and SSL certificates - Traefik and Portainer</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/03-dashy.html">
+ <span class="dropdown-text">03 - Homelab dashboard - Dashy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/04-openldap.html">
+ <span class="dropdown-text">04 - Authentication - OpenLDAP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/05-nextcloud.html">
+ <span class="dropdown-text">05 - Productivity tools - NextCloud</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/06-openproject.html">
+ <span class="dropdown-text">06 - Productivity tools - OpenProject</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./homelab-project/self-hosted-software/07-sonarqube.html">
+ <span class="dropdown-text">07 - Code analysis - SonarQube</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">Virtual Resources Creation</li>
         <li>
-    <a class="dropdown-item" href="./homelab-project/virtual-resources-creation/02-containers.html">
- <span class="dropdown-text">LXC - Linux Containers on Proxmox</span></a>
+    <a class="dropdown-item" href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
+ <span class="dropdown-text">01 - Provisioning - Virtual Machines on Proxmox</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
- <span class="dropdown-text">Virtual Machines on Proxmox</span></a>
+    <a class="dropdown-item" href="./homelab-project/virtual-resources-creation/02-containers.html">
+ <span class="dropdown-text">02 - Provisioning - LXC (Linux Containers on Proxmox)</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">Virtualization Server</li>
@@ -178,14 +235,20 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    </div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#latest-posts" id="toc-latest-posts" class="nav-link active" data-scroll-target="#latest-posts">Latest posts</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-cloud"><div class="category" data-category="AWS"><span class="quarto-category-count category-cloud-1">AWS</span></div><div class="category" data-category="Authentication"><span class="quarto-category-count category-cloud-1">Authentication</span></div><div class="category" data-category="Cloudflare"><span class="quarto-category-count category-cloud-1">Cloudflare</span></div><div class="category" data-category="Code analysis"><span class="quarto-category-count category-cloud-1">Code analysis</span></div><div class="category" data-category="Containers"><span class="quarto-category-count category-cloud-3">Containers</span></div><div class="category" data-category="DHCP"><span class="quarto-category-count category-cloud-1">DHCP</span></div><div class="category" data-category="DNS"><span class="quarto-category-count category-cloud-2">DNS</span></div><div class="category" data-category="Dashboard"><span class="quarto-category-count category-cloud-1">Dashboard</span></div><div class="category" data-category="Dashy"><span class="quarto-category-count category-cloud-1">Dashy</span></div><div class="category" data-category="Docker"><span class="quarto-category-count category-cloud-6">Docker</span></div><div class="category" data-category="Integration tests"><span class="quarto-category-count category-cloud-1">Integration tests</span></div><div class="category" data-category="LXC"><span class="quarto-category-count category-cloud-1">LXC</span></div><div class="category" data-category="Network"><span class="quarto-category-count category-cloud-2">Network</span></div><div class="category" data-category="NextCloud"><span class="quarto-category-count category-cloud-1">NextCloud</span></div><div class="category" data-category="Nginx"><span class="quarto-category-count category-cloud-1">Nginx</span></div><div class="category" data-category="OpenLDAP"><span class="quarto-category-count category-cloud-1">OpenLDAP</span></div><div class="category" data-category="OpenProject"><span class="quarto-category-count category-cloud-1">OpenProject</span></div><div class="category" data-category="Portainer"><span class="quarto-category-count category-cloud-1">Portainer</span></div><div class="category" data-category="Productivity tools"><span class="quarto-category-count category-cloud-2">Productivity tools</span></div><div class="category" data-category="Project Management"><span class="quarto-category-count category-cloud-1">Project Management</span></div><div class="category" data-category="Proxmox VE"><span class="quarto-category-count category-cloud-5">Proxmox VE</span></div><div class="category" data-category="Proxy"><span class="quarto-category-count category-cloud-1">Proxy</span></div><div class="category" data-category="Remote access"><span class="quarto-category-count category-cloud-1">Remote access</span></div><div class="category" data-category="SSL"><span class="quarto-category-count category-cloud-2">SSL</span></div><div class="category" data-category="Scrum"><span class="quarto-category-count category-cloud-1">Scrum</span></div><div class="category" data-category="Selenium"><span class="quarto-category-count category-cloud-1">Selenium</span></div><div class="category" data-category="Self-hosted software"><span class="quarto-category-count category-cloud-5">Self-hosted software</span></div><div class="category" data-category="SonarQube"><span class="quarto-category-count category-cloud-1">SonarQube</span></div><div class="category" data-category="Terraform"><span class="quarto-category-count category-cloud-1">Terraform</span></div><div class="category" data-category="Traefik"><span class="quarto-category-count category-cloud-1">Traefik</span></div><div class="category" data-category="Unit tests"><span class="quarto-category-count category-cloud-1">Unit tests</span></div><div class="category" data-category="Virtual Machines"><span class="quarto-category-count category-cloud-1">Virtual Machines</span></div><div class="category" data-category="Virtualisation"><span class="quarto-category-count category-cloud-1">Virtualisation</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -204,11 +267,889 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>DevOps Projects</p>
+<p>Welcome to my DevOps repository of guides and exercises. Here you’ll find (I hope) useful information about self-hosting your own services and managing them.</p>
+<section id="latest-posts" class="level1">
+<h1>Latest posts</h1>
 
 
 
-</main> <!-- /main -->
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-title" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+         <option value="listing-author" data-direction="asc">
+          Author
+        </option>
+     </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<div class="list quarto-listing-default">
+<div class="quarto-post image-left" data-index="0" data-categories="Docker,Self-hosted software,Containers" data-listing-date-sort="1675551600000" data-listing-file-modified-sort="1675595370354" data-listing-reading-time-sort="1.72">
+<div class="thumbnail">
+<p><a href="./homelab-project/self-hosted-software/00-docker-and-docker-compose.html"> <img src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+<h3 class="no-anchor listing-title">
+00 - Containers - Docker &amp; Docker Compose
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Containers'); return false;">
+Containers
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+<div class="listing-description">
+<p>Pre-requisites to deploy services as containers</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+<div class="listing-date">
+Feb 5, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="1" data-categories="Docker,Traefik,SSL" data-listing-date-sort="1675551600000" data-listing-file-modified-sort="1675612402542" data-listing-reading-time-sort="1.57">
+<div class="thumbnail">
+<p><a href="./homelab-project/self-hosted-software/02-traefik-and-portainer.html"> <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Traefik.logo.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+<h3 class="no-anchor listing-title">
+02 - Routing and SSL certificates - Traefik and Portainer
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Traefik'); return false;">
+Traefik
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SSL'); return false;">
+SSL
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+<div class="listing-description">
+<p>Route HTTP(s) requests to your services and secure them with Let’s Encrypt SSL certificates with Traefik</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+<div class="listing-date">
+Feb 5, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="2" data-categories="Docker,Self-hosted software,OpenLDAP,Authentication" data-listing-date-sort="1675378800000" data-listing-file-modified-sort="1675586185983" data-listing-reading-time-sort="1.295">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/04-openldap.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/04-openldap.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/04-openldap.html">
+<h3 class="no-anchor listing-title">
+04 - Authentication - OpenLDAP
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('OpenLDAP'); return false;">
+OpenLDAP
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Authentication'); return false;">
+Authentication
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/04-openldap.html">
+<div class="listing-description">
+<p>Centralize your user database for services authentication</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/04-openldap.html">
+<div class="listing-date">
+Feb 3, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="3" data-categories="Docker,Self-hosted software,NextCloud,Productivity tools" data-listing-date-sort="1675378800000" data-listing-file-modified-sort="1675586538940" data-listing-reading-time-sort="0.095">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/05-nextcloud.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/05-nextcloud.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/05-nextcloud.html">
+<h3 class="no-anchor listing-title">
+05 - Productivity tools - NextCloud
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('NextCloud'); return false;">
+NextCloud
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Productivity tools'); return false;">
+Productivity tools
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/05-nextcloud.html">
+<div class="listing-description">
+<p>User your own productivity suite</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/05-nextcloud.html">
+<div class="listing-date">
+Feb 3, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="4" data-categories="Docker,Self-hosted software,OpenProject,Productivity tools,Project Management,Scrum" data-listing-date-sort="1675378800000" data-listing-file-modified-sort="1675586585730" data-listing-reading-time-sort="0.095">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/06-openproject.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/06-openproject.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/06-openproject.html">
+<h3 class="no-anchor listing-title">
+06 - Productivity tools - OpenProject
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('OpenProject'); return false;">
+OpenProject
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Productivity tools'); return false;">
+Productivity tools
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Project Management'); return false;">
+Project Management
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Scrum'); return false;">
+Scrum
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/06-openproject.html">
+<div class="listing-description">
+<p>Efficiently manage your projects</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/06-openproject.html">
+<div class="listing-date">
+Feb 3, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="5" data-categories="Docker,Self-hosted software,SonarQube,Code analysis" data-listing-date-sort="1675378800000" data-listing-file-modified-sort="1675586632039" data-listing-reading-time-sort="0.095">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/07-sonarqube.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/07-sonarqube.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/07-sonarqube.html">
+<h3 class="no-anchor listing-title">
+07 - Code analysis - SonarQube
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SonarQube'); return false;">
+SonarQube
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Code analysis'); return false;">
+Code analysis
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/07-sonarqube.html">
+<div class="listing-description">
+<p>Analyze your projects’ code and keep it well maintained</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/07-sonarqube.html">
+<div class="listing-date">
+Feb 3, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="6" data-categories="Docker,Cloudflare,Self-hosted software,Containers,DNS,SSL" data-listing-date-sort="1675033200000" data-listing-file-modified-sort="1675585555666" data-listing-reading-time-sort="1.01">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/01-cloudflare.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/01-cloudflare.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/01-cloudflare.html">
+<h3 class="no-anchor listing-title">
+01 - External access - Cloudflare
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Cloudflare'); return false;">
+Cloudflare
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Containers'); return false;">
+Containers
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DNS'); return false;">
+DNS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SSL'); return false;">
+SSL
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/01-cloudflare.html">
+<div class="listing-description">
+<p>Secure remote access to your homelab</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/01-cloudflare.html">
+<div class="listing-date">
+Jan 30, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="7" data-categories="Docker,Dashboard,Dashy" data-listing-date-sort="1675033200000" data-listing-file-modified-sort="1675586098544" data-listing-reading-time-sort="0.995">
+<div class="thumbnail">
+<a href="./homelab-project/self-hosted-software/03-dashy.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/self-hosted-software/03-dashy.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/self-hosted-software/03-dashy.html">
+<h3 class="no-anchor listing-title">
+03 - Homelab dashboard - Dashy
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Dashboard'); return false;">
+Dashboard
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Dashy'); return false;">
+Dashy
+</div>
+</div>
+<a href="./homelab-project/self-hosted-software/03-dashy.html">
+<div class="listing-description">
+<p>Add a centralized homepage for your services</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/self-hosted-software/03-dashy.html">
+<div class="listing-date">
+Jan 30, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="8" data-categories="Proxmox VE,Virtual Machines" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586418704" data-listing-reading-time-sort="0.005">
+<div class="thumbnail">
+<a href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/virtual-resources-creation/01-virtual-machines.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
+<h3 class="no-anchor listing-title">
+01 - Provisioning - Virtual Machines on Proxmox
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Virtual Machines'); return false;">
+Virtual Machines
+</div>
+</div>
+<a href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
+<div class="listing-description">
+<p>Provision new VMs in Proxmox</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtual-resources-creation/01-virtual-machines.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="9" data-categories="Proxmox VE,LXC,Containers" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586450654" data-listing-reading-time-sort="0.005">
+<div class="thumbnail">
+<a href="./homelab-project/virtual-resources-creation/02-containers.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/virtual-resources-creation/02-containers.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtual-resources-creation/02-containers.html">
+<h3 class="no-anchor listing-title">
+02 - Provisioning - LXC (Linux Containers on Proxmox)
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('LXC'); return false;">
+LXC
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Containers'); return false;">
+Containers
+</div>
+</div>
+<a href="./homelab-project/virtual-resources-creation/02-containers.html">
+<div class="listing-description">
+<p>Provision new containers in Proxmox</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtual-resources-creation/02-containers.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="10" data-categories="Docker,Selenium,AWS,Terraform,Unit tests,Integration tests" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586946401" data-listing-reading-time-sort="0">
+<div class="thumbnail">
+<a href="./devops-exercises/explore-california/00-introduction.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./devops-exercises/explore-california/00-introduction.html"></a></p>
+</div>
+<div class="body">
+<a href="./devops-exercises/explore-california/00-introduction.html">
+<h3 class="no-anchor listing-title">
+Explore California
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Selenium'); return false;">
+Selenium
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('AWS'); return false;">
+AWS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Terraform'); return false;">
+Terraform
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Unit tests'); return false;">
+Unit tests
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Integration tests'); return false;">
+Integration tests
+</div>
+</div>
+<a href="./devops-exercises/explore-california/00-introduction.html">
+<div class="listing-description">
+<p>Static website debugging and deployment</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./devops-exercises/explore-california/00-introduction.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="11" data-categories="Docker,Portainer,Self-hosted software,Containers" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586722134" data-listing-reading-time-sort="0.83">
+<div class="thumbnail">
+<a href="./homelab-project/requirements/00-requirements.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/requirements/00-requirements.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/requirements/00-requirements.html">
+<h3 class="no-anchor listing-title">
+Homelab Requirements
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Portainer'); return false;">
+Portainer
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Containers'); return false;">
+Containers
+</div>
+</div>
+<a href="./homelab-project/requirements/00-requirements.html">
+<div class="listing-description">
+<p>Things you need to start building your own homelab</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/requirements/00-requirements.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="12" data-categories="Proxmox VE,Self-hosted software" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675587229162" data-listing-reading-time-sort="0.4">
+<div class="thumbnail">
+<a href="./homelab-project/00-introduction.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/00-introduction.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/00-introduction.html">
+<h3 class="no-anchor listing-title">
+Homelab project introduction
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Self-hosted software'); return false;">
+Self-hosted software
+</div>
+</div>
+<a href="./homelab-project/00-introduction.html">
+<div class="listing-description">
+<p>Greetings and motivation behind this project</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/00-introduction.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="13" data-categories="Proxmox VE,Virtualisation" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586371732" data-listing-reading-time-sort="2.605">
+<div class="thumbnail">
+<p><a href="./homelab-project/virtualization-server/01-installing-proxmox.html"> <img data-src="./images/homelab-project/virtualization/proxmox-nginx-welcome-web-page.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtualization-server/01-installing-proxmox.html">
+<h3 class="no-anchor listing-title">
+Part 1 - Installing Proxmox VE
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Virtualisation'); return false;">
+Virtualisation
+</div>
+</div>
+<a href="./homelab-project/virtualization-server/01-installing-proxmox.html">
+<div class="listing-description">
+<p>Install your own virtualisation server</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtualization-server/01-installing-proxmox.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+2 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="14" data-categories="Proxmox VE,Network" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675586377357" data-listing-reading-time-sort="4.875">
+<div class="thumbnail">
+<a href="./homelab-project/virtualization-server/02-virtual-networks.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/virtualization-server/02-virtual-networks.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtualization-server/02-virtual-networks.html">
+<h3 class="no-anchor listing-title">
+Part 2 - Internal Virtual Networks
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Network'); return false;">
+Network
+</div>
+</div>
+<a href="./homelab-project/virtualization-server/02-virtual-networks.html">
+<div class="listing-description">
+<p>Create internal network for your VM and LXC</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtualization-server/02-virtual-networks.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+4 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="15" data-categories="Proxmox VE,Network,DNS,DHCP" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675585745748" data-listing-reading-time-sort="6.985">
+<div class="thumbnail">
+<a href="./homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/virtualization-server/03-dns-dhcp-servers.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+<h3 class="no-anchor listing-title">
+Part 3 - DNS and DHCP servers
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Network'); return false;">
+Network
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DNS'); return false;">
+DNS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DHCP'); return false;">
+DHCP
+</div>
+</div>
+<a href="./homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+<div class="listing-description">
+<p>Automatically assign IP and Domain Name to all your VM and LXC</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+6 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="16" data-categories="Proxmox VE,Remote access,Network,DNS,Proxy,Nginx" data-listing-date-sort="1673910000000" data-listing-file-modified-sort="1675585805457" data-listing-reading-time-sort="1.765">
+<div class="thumbnail">
+<a href="./homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+<div class="thumbnail-image">
+
+</div>
+</a><p><a href="./homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html"></a></p>
+</div>
+<div class="body">
+<a href="./homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+<h3 class="no-anchor listing-title">
+Part 4 - Proxy HTTP(S) into the internal network
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Proxmox VE'); return false;">
+Proxmox VE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Remote access'); return false;">
+Remote access
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Network'); return false;">
+Network
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DNS'); return false;">
+DNS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Proxy'); return false;">
+Proxy
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Nginx'); return false;">
+Nginx
+</div>
+</div>
+<a href="./homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+<div class="listing-description">
+<p>Make your internal network accessible from the outside</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+<div class="listing-date">
+Jan 17, 2023
+</div>
+<div class="listing-author">
+ProtossGP32
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

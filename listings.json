@@ -1,0 +1,24 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/homelab-project/self-hosted-software/00-docker-and-docker-compose.html",
+      "/homelab-project/self-hosted-software/02-traefik-and-portainer.html",
+      "/homelab-project/self-hosted-software/04-openldap.html",
+      "/homelab-project/self-hosted-software/05-nextcloud.html",
+      "/homelab-project/self-hosted-software/06-openproject.html",
+      "/homelab-project/self-hosted-software/07-sonarqube.html",
+      "/homelab-project/self-hosted-software/01-cloudflare.html",
+      "/homelab-project/self-hosted-software/03-dashy.html",
+      "/homelab-project/virtual-resources-creation/01-virtual-machines.html",
+      "/homelab-project/virtual-resources-creation/02-containers.html",
+      "/devops-exercises/explore-california/00-introduction.html",
+      "/homelab-project/requirements/00-requirements.html",
+      "/homelab-project/00-introduction.html",
+      "/homelab-project/virtualization-server/01-installing-proxmox.html",
+      "/homelab-project/virtualization-server/02-virtual-networks.html",
+      "/homelab-project/virtualization-server/03-dns-dhcp-servers.html",
+      "/homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html"
+    ]
+  }
+]

@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-01-17">
-<meta name="description" content="Provision new containers in Proxmox">
+<meta name="dcterms.date" content="2023-02-03">
+<meta name="description" content="Centralize your user database for services authentication">
 
-<title>DevOps Training Projects - 02 - Provisioning - LXC (Linux Containers on Proxmox)</title>
+<title>DevOps Training Projects - 04 - Authentication - OpenLDAP</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,6 +23,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -33,8 +96,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtualization-server/01-installing-proxmox.html" rel="next">
-<link href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" rel="prev">
+<link href="../../homelab-project/self-hosted-software/05-nextcloud.html" rel="next">
+<link href="../../homelab-project/self-hosted-software/03-dashy.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -207,7 +270,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+      <h1 class="quarto-secondary-nav-title">04 - Authentication - OpenLDAP</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -270,7 +333,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="sidebar-item-text sidebar-link">04 - Authentication - OpenLDAP</a>
+  <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="sidebar-item-text sidebar-link active">04 - Authentication - OpenLDAP</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -305,7 +368,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link active">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
+  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
   </div>
 </li>
       </ul>
@@ -345,24 +408,37 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#openldap" id="toc-openldap" class="nav-link" data-scroll-target="#openldap">OpenLDAP</a></li>
+  <li><a href="#phpldapadmin" id="toc-phpldapadmin" class="nav-link" data-scroll-target="#phpldapadmin">phpLDAPadmin</a></li>
+  <li><a href="#self-service-password" id="toc-self-service-password" class="nav-link" data-scroll-target="#self-service-password">Self Service Password</a></li>
+  </ul></li>
+  <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose">Docker compose</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/04-openldap.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+<h1 class="title d-none d-lg-block">04 - Authentication - OpenLDAP</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Proxmox VE</div>
-    <div class="quarto-category">LXC</div>
-    <div class="quarto-category">Containers</div>
+    <div class="quarto-category">Docker</div>
+    <div class="quarto-category">Self-hosted software</div>
+    <div class="quarto-category">OpenLDAP</div>
+    <div class="quarto-category">Authentication</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Provision new containers in Proxmox
+    Centralize your user database for services authentication
   </div>
 </div>
 
@@ -379,7 +455,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 17, 2023</p>
+      <p class="date">February 3, 2023</p>
     </div>
   </div>
   
@@ -389,8 +465,188 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled</p>
+</div>
+</div>
+<section id="openldap" class="level2">
+<h2 class="anchored" data-anchor-id="openldap">OpenLDAP</h2>
+<p>An open-source LDAP server</p>
+<ul>
+<li>Web page: <a href="https://www.openldap.org/">Link</a></li>
+<li>Source code: <a href="https://git.openldap.org/openldap/openldap">GitLab</a> and <a href="https://github.com/openldap/openldap">GitHub mirror</a></li>
+<li>Docker image: <a href="https://hub.docker.com/r/bitnami/openldap/">Docker Hub - Non-privileged image</a></li>
+</ul>
+</section>
+<section id="phpldapadmin" class="level2">
+<h2 class="anchored" data-anchor-id="phpldapadmin">phpLDAPadmin</h2>
+<p>An open-source LDAP administration service with a web interface</p>
+<ul>
+<li>Web page: <a href="https://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page">Link</a></li>
+<li>Source code: <a href="https://github.com/leenooks/phpLDAPadmin">GitHub</a> and <a href="https://github.com/osixia/docker-phpLDAPadmin">the repository which the Docker image that we use is based</a></li>
+<li>Docker image: <a href="https://hub.docker.com/r/osixia/phpldapadmin/">Docker Hub</a></li>
+</ul>
+</section>
+<section id="self-service-password" class="level2">
+<h2 class="anchored" data-anchor-id="self-service-password">Self Service Password</h2>
+<p>An open-source web interface that allows LDAP users to change their own passwords.</p>
+<ul>
+<li>Web page: <a href="https://self-service-password.readthedocs.io/en/latest/">Link</a></li>
+<li>Source code: <a href="https://github.com/ltb-project/self-service-password">GitHub</a></li>
+<li>Docker image: <a href="https://hub.docker.com/r/ltbproject/self-service-password">Docker Hub</a></li>
+</ul>
+<p>The docker container needs a config file named <code>config.inc.local.php</code> that overwrites the default values defined in <code>config.inc.php</code>; this file is provided in the <code>docker-compose.yml</code> file as a volume.</p>
+<p>There are a lot of parameters that can be configured, but for the sake of simplicity only LDAP server parameters and password policies are defined here:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>config.inc.local.php</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource php number-lines code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">&lt;?php</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">// A random keyphrase is required to initialize the service</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="va">$keyphrase</span> <span class="op">=</span> <span class="fu">getenv</span>(<span class="st">'SSP_KEYPHRASE'</span>)<span class="ot">;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="va">$debug</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">;</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">// LDAP server config</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="va">$ldap_url</span> <span class="op">=</span> <span class="st">"ldap://openldap:1389"</span><span class="ot">;</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="va">$ldap_starttls</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">;</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="va">$ldap_binddn</span> <span class="op">=</span> <span class="st">"cn=admin,dc=protossnet,dc=local"</span><span class="ot">;</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="va">$ldap_bindpw</span> <span class="op">=</span> <span class="fu">getenv</span>(<span class="st">'LDAP_BIND_PASSWORD'</span>)<span class="ot">;</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="va">$ldap_base</span> <span class="op">=</span> <span class="st">"ou=users,dc=protossnet,dc=local"</span><span class="ot">;</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="va">$ldap_login_attribute</span> <span class="op">=</span> <span class="st">"uid"</span><span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="va">$ldap_fullname_attribute</span> <span class="op">=</span> <span class="st">"displayName"</span><span class="ot">;</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="va">$ldap_filter</span> <span class="op">=</span> <span class="st">"(&amp;(objectClass=inetOrgPerson)(</span><span class="va">$ldap_login_attribute</span><span class="st">={login}))"</span><span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co">// Password policies that new passwords must comply</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="va">$pwd_min_length</span> <span class="op">=</span> <span class="dv">8</span><span class="ot">;</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="va">$pwd_max_length</span> <span class="op">=</span> <span class="dv">16</span><span class="ot">;</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="va">$pwd_min_lower</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">;</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="va">$pwd_min_upper</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">;</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="va">$pwd_min_digit</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">;</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="va">$pwd_min_special</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">;</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="va">$pwd_special_chars</span> <span class="op">=</span> <span class="st">"^@%!-_"</span><span class="ot">;</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="va">$pwd_no_reuse</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">;</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="va">$pwd_diff_login</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">;</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="va">$pwd_diff_last_min_chars</span> <span class="op">=</span> <span class="dv">0</span><span class="ot">;</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="va">$pwd_no_special_at_ends</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">;</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="co">// "manager" means that the user defined in ldap_binddn is the responsible of</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="co">// changing the user's passwords within LDAP (the rest of users don't have enough privileges)</span></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="va">$who_change_password</span> <span class="op">=</span> <span class="st">"manager"</span><span class="ot">;</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="va">$lang</span> <span class="op">=</span> <span class="st">"en"</span><span class="ot">;</span></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="va">$allowed_lang</span> <span class="op">=</span> <span class="dt">array</span>(<span class="st">"en"</span>)<span class="ot">;</span></span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="kw">?&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="docker-compose" class="level1">
+<h1>Docker compose</h1>
+<p>Some sensitive data must be provided using two different methods:</p>
+<ul>
+<li><p>The <code>.env</code> file that should exists in the same path as the <code>docker-compose.yml</code> must contain the LDAP admin password and a random string that will act as a keyphrase, both values required for Self Service Password:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>.env</strong></pre>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="va">SSP_PASSPHRASE</span><span class="op">=</span><span class="st">"yourRandomSecretString"</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="va">LDAP_BIND_PASSWORD</span><span class="op">=</span><span class="st">"the-password-of-the-LDAP-admin"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+<li><p>A <code>secret</code> file that also contains the LDAP admin password, this time required by the openLDAP service:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>secrets/ldap_admin_password.txt</strong></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="st">"the-password-of-the-LDAP-admin"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
+<p>Finally, the <code>docker-compose.yml</code> file that creates all of the LDAP services is as follows:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>docker-compose.yml</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">'2'</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> ldap-service</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="at">  </span><span class="fu">openldap</span><span class="kw">:</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> docker.io/bitnami/openldap:2.6</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> openldap</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="at">    </span><span class="fu">hostname</span><span class="kw">:</span><span class="at"> openldap</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">'1389:1389'</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">'1636:1636'</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">      # Default LDAP_ROOT: dc=example,dc=org</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="at">      </span><span class="kw">-</span><span class="at"> LDAP_ROOT=dc=protossnet,dc=local</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">      #- LDAP_ADMIN_USERNAME=admin</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="at">      </span><span class="kw">-</span><span class="at"> LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_password</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">      #- LDAP_USERS=user01</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co">      #- LDAP_PASSWORDS=password1</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="at">      </span><span class="kw">-</span><span class="at"> LDAP_ENABLE_TLS=no</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">'openldap_data:/bitnami/openldap'</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="at">    </span><span class="fu">networks</span><span class="kw">:</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="at">      </span><span class="kw">-</span><span class="at"> network</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="at">    </span><span class="fu">secrets</span><span class="kw">:</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ldap_admin_password</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co">  # LDAP administrator via web interface</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="at">  </span><span class="fu">phpldapadmin</span><span class="kw">:</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> osixia/phpldapadmin:latest</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> phpldapadmin</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="co">      # bitnami/openldap uses non-privileged port as default</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="at">      </span><span class="fu">PHPLDAPADMIN_LDAP_HOSTS</span><span class="kw">:</span><span class="at"> </span><span class="st">"#PYTHON2BASH:[{'openldap': [{'server': [{ 'port': 1389 }]}]}]"</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="at">      </span><span class="fu">PHPLDAPADMIN_HTTPS</span><span class="kw">:</span><span class="at"> </span><span class="st">"false"</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="at">      </span><span class="fu">PHPLDAPADMIN_LDAP_CLIENT_TLS</span><span class="kw">:</span><span class="at"> </span><span class="st">"false"</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="at">    </span><span class="fu">networks</span><span class="kw">:</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="at">      </span><span class="kw">-</span><span class="at"> network</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080:80"</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="at">      </span><span class="kw">-</span><span class="at"> openldap</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="co">  # Simple web service for password restart</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="at">  </span><span class="fu">self-service-password</span><span class="kw">:</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> ltbproject/self-service-password:latest</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> self-service-password</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="at">      </span><span class="fu">LDAP_BIND_PASSWORD</span><span class="kw">:</span><span class="at"> ${LDAP_BIND_PASSWORD}</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="at">      </span><span class="fu">SSP_KEYPHRASE</span><span class="kw">:</span><span class="at"> ${SSP_KEYPHRASE}</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">'$PWD/conf/config.inc.local.php:/var/www/conf/config.inc.local.php'</span></span>
+<span id="cb4-51"><a href="#cb4-51"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8081:80"</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a><span class="at">    </span><span class="fu">networks</span><span class="kw">:</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a><span class="at">      </span><span class="kw">-</span><span class="at"> network</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a><span class="at">      </span><span class="kw">-</span><span class="at"> openldap</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a></span>
+<span id="cb4-58"><a href="#cb4-58"></a><span class="fu">networks</span><span class="kw">:</span></span>
+<span id="cb4-59"><a href="#cb4-59"></a><span class="at">  </span><span class="fu">network</span><span class="kw">:</span></span>
+<span id="cb4-60"><a href="#cb4-60"></a><span class="at">    </span><span class="fu">driver</span><span class="kw">:</span><span class="at"> bridge</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a></span>
+<span id="cb4-62"><a href="#cb4-62"></a><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb4-63"><a href="#cb4-63"></a><span class="at">  </span><span class="fu">openldap_data</span><span class="kw">:</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a><span class="at">    </span><span class="fu">driver</span><span class="kw">:</span><span class="at"> local</span></span>
+<span id="cb4-65"><a href="#cb4-65"></a></span>
+<span id="cb4-66"><a href="#cb4-66"></a><span class="fu">secrets</span><span class="kw">:</span></span>
+<span id="cb4-67"><a href="#cb4-67"></a><span class="at">  </span><span class="fu">ldap_admin_password</span><span class="kw">:</span></span>
+<span id="cb4-68"><a href="#cb4-68"></a><span class="at">    </span><span class="fu">file</span><span class="kw">:</span><span class="at"> secrets/ldap_admin_password.txt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -643,13 +899,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">01 - Provisioning - Virtual Machines on Proxmox</span>
+      <a href="../../homelab-project/self-hosted-software/03-dashy.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">03 - Homelab dashboard - Dashy</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="pagination-link">
-        <span class="nav-page-text">Part 1 - Installing Proxmox VE</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="pagination-link">
+        <span class="nav-page-text">05 - Productivity tools - NextCloud</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

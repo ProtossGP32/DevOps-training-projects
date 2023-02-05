@@ -4,12 +4,12 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "Hi! My name is Marc Palacín and I’m a Data Engineer, Software Engineer and hopefully a future DevOps engineer!\nI love tinkering with electronics and hardware, and process automation is my passion."
   },
   {
     "objectID": "devops-exercises/explore-california/00-introduction.html",
     "href": "devops-exercises/explore-california/00-introduction.html",
-    "title": "Explore California - Static website debugging and deployment",
+    "title": "Explore California",
     "section": "",
     "text": "Introduction"
   },
@@ -49,53 +49,130 @@
     "text": "Self-hosted software\nWe’d like to host our own services, and again the best approach should be to deploy containers, either as-is or in an orchestrated environment such as Kubernetes."
   },
   {
-    "objectID": "homelab-project/self-hosted-software/cloudflare.html#get-a-domain-name",
-    "href": "homelab-project/self-hosted-software/cloudflare.html#get-a-domain-name",
-    "title": "00 - External access - Cloudflare",
+    "objectID": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html",
+    "href": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html",
+    "title": "00 - Containers - Docker & Docker Compose",
+    "section": "",
+    "text": "Docker"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html#docker-and-docker-compose",
+    "href": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html#docker-and-docker-compose",
+    "title": "00 - Containers - Docker & Docker Compose",
+    "section": "Docker and Docker compose",
+    "text": "Docker and Docker compose\n\nI’m going to follow Technotim’s guide as my server OS is Ubuntu.\nThere’s really nothing much to say here, just follow the instructions, make sure that you have Internet access to install the packages and check that your user can execute docker commands, like docker version, and docker compose.\nAlso, remember to add your user to the docker group so you don’t need privileged permissions to operate with it:\nsudo usermod -aG docker $USER\nOnce done, log out and log in again to your server to apply the changes on the user groups."
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html#overlay-network",
+    "href": "homelab-project/self-hosted-software/00-docker-and-docker-compose.html#overlay-network",
+    "title": "00 - Containers - Docker & Docker Compose",
+    "section": "Overlay network",
+    "text": "Overlay network\nAn overlay network is a type of virtual network in Docker that allows multiple Docker hosts to communicate between them. This is pretty handy if, for example, you need some services deployed with Docker in a host to access an authentication service that is hosted on a different Docker host.\n\n\n\n\n\n\nAttention!\n\n\n\nIn order to use this, do we need to install docker swarm?\n\n\nYou can find the official Docker docs regarding overlay networking here."
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/01-cloudflare.html#get-a-domain-name",
+    "href": "homelab-project/self-hosted-software/01-cloudflare.html#get-a-domain-name",
+    "title": "01 - External access - Cloudflare",
     "section": "Get a Domain name",
     "text": "Get a Domain name"
   },
   {
-    "objectID": "homelab-project/self-hosted-software/cloudflare.html#create-a-cloudflare-account",
-    "href": "homelab-project/self-hosted-software/cloudflare.html#create-a-cloudflare-account",
-    "title": "00 - External access - Cloudflare",
+    "objectID": "homelab-project/self-hosted-software/01-cloudflare.html#create-a-cloudflare-account",
+    "href": "homelab-project/self-hosted-software/01-cloudflare.html#create-a-cloudflare-account",
+    "title": "01 - External access - Cloudflare",
     "section": "Create a Cloudflare account",
     "text": "Create a Cloudflare account"
   },
   {
-    "objectID": "homelab-project/self-hosted-software/cloudflare.html#setup-the-domain-name-in-cloudflare",
-    "href": "homelab-project/self-hosted-software/cloudflare.html#setup-the-domain-name-in-cloudflare",
-    "title": "00 - External access - Cloudflare",
+    "objectID": "homelab-project/self-hosted-software/01-cloudflare.html#setup-the-domain-name-in-cloudflare",
+    "href": "homelab-project/self-hosted-software/01-cloudflare.html#setup-the-domain-name-in-cloudflare",
+    "title": "01 - External access - Cloudflare",
     "section": "Setup the Domain name in Cloudflare",
     "text": "Setup the Domain name in Cloudflare"
   },
   {
-    "objectID": "homelab-project/self-hosted-software/cloudflare.html#zero-trust-dashboard",
-    "href": "homelab-project/self-hosted-software/cloudflare.html#zero-trust-dashboard",
-    "title": "00 - External access - Cloudflare",
+    "objectID": "homelab-project/self-hosted-software/01-cloudflare.html#zero-trust-dashboard",
+    "href": "homelab-project/self-hosted-software/01-cloudflare.html#zero-trust-dashboard",
+    "title": "01 - External access - Cloudflare",
     "section": "Zero Trust Dashboard",
     "text": "Zero Trust Dashboard\n\n\n\n\n\n\nTODO\n\n\n\nAdd some screenshots of the nameserver creation procedure in Zero Trust Dashboard"
   },
   {
-    "objectID": "homelab-project/self-hosted-software/cloudflare.html#deploying-cloudflared-as-docker-container",
-    "href": "homelab-project/self-hosted-software/cloudflare.html#deploying-cloudflared-as-docker-container",
-    "title": "00 - External access - Cloudflare",
+    "objectID": "homelab-project/self-hosted-software/01-cloudflare.html#deploying-cloudflared-as-docker-container",
+    "href": "homelab-project/self-hosted-software/01-cloudflare.html#deploying-cloudflared-as-docker-container",
+    "title": "01 - External access - Cloudflare",
     "section": "Deploying cloudflared as docker container",
-    "text": "Deploying cloudflared as docker container\nAdapt the proposed docker compose file in this link to launch it as a standalone container.\nCloudflare recommends to create only a tunnel for each network, so we’ll deploy it on a container within our private network:\n\n\ndocker-compose.yml\n\nversion: '3.2'\nname: cloudflared\nservices:\n  tunnel:\n    #container_name: cloudflared-tunnel\n    image: cloudflare/cloudflared\n    # This sysctl param change doesn't seem to work on Apache OSes\n    sysctls:\n      net.core.rmem_max: 2500000\n    restart: unless-stopped\n    command: tunnel run\n    environment:\n      # Add your cloudflare token inside a secured '.env' file\n      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}\n\nAdd the CLOUDFLARE_TOKEN value inside a secure .env file in the same dir as the docker-compose.yml file:\nCLOUDFLARE_TOKEN=token-provided-by-cloudflare\n\n\n\n\n\n\nWarning with system limits!\n\n\n\nIf you see a message like this one when launching docker compose logs tunnel:\nfailed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB)\nCheck the following link for a deep explanation: LINK\nWhat we must do is create an init container and change some system params, similar to what we are doing with SonarQube.\nAlso, we could try configuring the sysctl parameters using the docker compose file.\nOn some OS it doesn’t seem to work, such as Alpine, but if Cloudflare shows that the tunnel is connected, then this shouldn’t be a problem."
+    "text": "Deploying cloudflared as docker container\nAdapt the proposed docker compose file in this link to launch it as a standalone container.\nCloudflare recommends to create only a tunnel for each network, so we’ll deploy it on a container within our private network:\n\n\ndocker-compose.yml\n\nversion: '3.2'\nname: cloudflared\nservices:\n  tunnel:\n    #container_name: cloudflared-tunnel\n    image: cloudflare/cloudflared\n    # This sysctl param change doesn't seem to work on Apache OSes\n    sysctls:\n      net.core.rmem_max: 2500000\n    restart: unless-stopped\n    command: tunnel --metrics 0.0.0.0:3333 run\n    environment:\n      # Add your cloudflare token inside a secured '.env' file\n      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}\n    # Add autoheal feature to ensure it's restarted on failure\n    labels:\n      - autoheal=true\n    # TODO: Official cloudflared image doesn't have neither curl nor wget nor dig\n    # so we can't launch the healthcheck! We either create a new image that installs\n    # any of the required commands or try to get the health status from another container\n    # or from outside, exposing the port\n    #healthcheck:\n    #  test: [\"CMD\", \"curl\", \"-f\", \"http://0.0.0.0:3333/ready\"]\n    #  interval: 10s\n    #  timeout: 3s\n    #  retries: 3\n    #  start_period: 30s\n\n  # Autoheal is a workaround to restart any container which healthcheck fails\n  #autoheal:\n  #  image: willfarrell/autoheal:1.2.0\n  #  volumes:\n  #    - \"/var/run/docker.sock:/var/run/docker.sock\"\n  #  environment:\n  #    AUTOHEAL_CONTAINER_LABEL: autoheal\n\nAdd the CLOUDFLARE_TOKEN value inside a secure .env file in the same dir as the docker-compose.yml file:\nCLOUDFLARE_TOKEN=token-provided-by-cloudflare\n\n\n\n\n\n\nWarning with system limits!\n\n\n\nIf you see a message like this one when launching docker compose logs tunnel:\nfailed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB)\nCheck the following link for a deep explanation: LINK\nWhat we must do is create an init container and change some system params, similar to what we are doing with SonarQube.\nAlso, we could try configuring the sysctl parameters using the docker compose file.\nOn some OS it doesn’t seem to work, such as Alpine, but if Cloudflare shows that the tunnel is connected, then this shouldn’t be a problem."
   },
   {
-    "objectID": "homelab-project/self-hosted-software/dashy.html",
-    "href": "homelab-project/self-hosted-software/dashy.html",
-    "title": "01 - HomeLab dashboard: Dashy",
+    "objectID": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#prepare-an-entry-point-vm",
+    "href": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#prepare-an-entry-point-vm",
+    "title": "02 - Routing and SSL certificates - Traefik and Portainer",
+    "section": "Prepare an entry-point VM",
+    "text": "Prepare an entry-point VM\nWe’ll need an entry-point server that acts as both HTTP requests router and SSL provider (Traefik)."
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#make-sure-yo-have-a-domain-name",
+    "href": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#make-sure-yo-have-a-domain-name",
+    "title": "02 - Routing and SSL certificates - Traefik and Portainer",
+    "section": "Make sure yo have a Domain name",
+    "text": "Make sure yo have a Domain name\n\n\n\n\n\n\nUse Cloudflare as DNS provider\n\n\n\nThis will ease the process and secure connections even more"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#install-traefik",
+    "href": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#install-traefik",
+    "title": "02 - Routing and SSL certificates - Traefik and Portainer",
+    "section": "Install Traefik",
+    "text": "Install Traefik\n\n\n\n\n\n\nI couldn’t make it work!\n\n\n\nI don’t know if it’s because I’m using a Cloudflare Zero-Trust tunnel instead of assigning DNS records pointing towards my public IP, but either Traefik keeps responding with a 404 Page not found error or it fails due to too many redirections.\nI’ll try it again following the official documentation.\nThere’s another guide here that could be useful."
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#install-portainer",
+    "href": "homelab-project/self-hosted-software/02-traefik-and-portainer.html#install-portainer",
+    "title": "02 - Routing and SSL certificates - Traefik and Portainer",
+    "section": "Install Portainer",
+    "text": "Install Portainer\n\nPortainer is a tool that eases the management and deployment of Docker containers in your infrastructure. Its installation is also pretty straightforward:\n\nFor management purposes, we are going to create a docker folder in our home directory. This is where we’ll store all of our Docker services configurations:\n\nmkdir docker\necho $PWD\n# This should return the following\n\n\n\n\n\n\nTODO\n\n\n\nPending to install Portainer and control all Docker hosts"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/03-dashy.html",
+    "href": "homelab-project/self-hosted-software/03-dashy.html",
+    "title": "03 - Homelab dashboard - Dashy",
     "section": "",
     "text": "Dashy is a lightweight dashboard that allows users, devops and sysadmins to quickly access to its services:\n\nGithub repository\nDocumentation"
   },
   {
-    "objectID": "homelab-project/self-hosted-software/dashy.html#installation",
-    "href": "homelab-project/self-hosted-software/dashy.html#installation",
-    "title": "01 - HomeLab dashboard: Dashy",
+    "objectID": "homelab-project/self-hosted-software/03-dashy.html#installation",
+    "href": "homelab-project/self-hosted-software/03-dashy.html#installation",
+    "title": "03 - Homelab dashboard - Dashy",
     "section": "Installation",
-    "text": "Installation\nFollow this video for a simple Docker deployment and initial configuration:\n\n\nSynology\nThe docker image can also be deployed inside a Synology NAS. Follow the official Dashy’s documentation on how to do it.\n\n\nDocker compose\nWe can also create a docker-compose.yml file for an easier deployment. Follow Dashy’s documentation and modify it according to your own architecture.\nJust add some volumes for both config.yml and the item-icons folder so we don’t lose them when restarting the container.\n\n\ndocker-compose.yml\n\n---\nversion: \"3.8\"\nservices:\n  dashy:\n    # To build from source, replace 'image: lissy93/dashy' with 'build: .'\n    # build: .\n    image: lissy93/dashy\n    container_name: Dashy\n    # Pass in your config file below, by specifying the path on your host machine\n    # volumes:\n      # - /root/my-config.yml:/app/public/conf.yml\n    ports:\n      - 4000:80\n    # Set any environmental variables\n    environment:\n      - NODE_ENV=production\n    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`\n    #  - UID=1000\n    #  - GID=1000\n    # Specify restart policy\n    restart: unless-stopped\n    # Volumes\n    volumes:\n      - $PWD/public/conf.yml:/app/public/conf.yml\n      - $PWD/public/item-icons:/app/public/item-icons\n    # Configure healthchecks\n    healthcheck:\n      test: ['CMD', 'node', '/app/services/healthcheck']\n      interval: 1m30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n\nThen locally clone the GitHub repository of icons to beautify the panels:\ncd public/item-icons\ngit clone https://github.com/walkxcode/dashboard-icons.git\nAnd here is a basic config.yml with enabled built-in authentication and some services already configured into its proper sections:\n\n\ndocker-compose.yml\n\n\n\n\n\n\n\n\n\nTODO\n\n\n\ndocker-compose configs and extras are pending to push from the CIFO local machine!"
+    "text": "Installation\nFollow this video for a simple Docker deployment and initial configuration:\n\n\nSynology\nThe docker image can also be deployed inside a Synology NAS. Follow the official Dashy’s documentation on how to do it.\n\n\nDocker compose\nWe can also create a docker-compose.yml file for an easier deployment. Follow Dashy’s documentation and modify it according to your own architecture.\nJust add some volumes for both config.yml and the item-icons folder so we don’t lose them when restarting the container.\n\n\ndocker-compose.yml\n\n---\nversion: \"3.8\"\nservices:\n  dashy:\n    # To build from source, replace 'image: lissy93/dashy' with 'build: .'\n    # build: .\n    image: lissy93/dashy\n    container_name: Dashy\n    # Pass in your config file below, by specifying the path on your host machine\n    # volumes:\n      # - /root/my-config.yml:/app/public/conf.yml\n    ports:\n      - 4000:80\n    # Set any environmental variables\n    environment:\n      - NODE_ENV=production\n    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`\n    #  - UID=1000\n    #  - GID=1000\n    # Specify restart policy\n    restart: unless-stopped\n    # Volumes\n    volumes:\n      - $PWD/public/conf.yml:/app/public/conf.yml\n      - $PWD/public/item-icons:/app/public/item-icons\n    # Configure healthchecks\n    healthcheck:\n      test: ['CMD', 'node', '/app/services/healthcheck']\n      interval: 1m30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n\nThen locally clone the GitHub repository of icons to beautify the panels:\ncd public/item-icons\ngit clone https://github.com/walkxcode/dashboard-icons.git\nAnd here is a basic config.yml with enabled built-in authentication and some services already configured into its proper sections:\n\n\n\n\n\n\nRemember to change the admin hash\n\n\n\nThe hash parameter within auth.users[admin].hash is the password converted to a sha256 hash. You can obtain it by simply invoking the following command from a terminal:\necho -n \"your-admin-super-secret-password\" | sha256sum\nThe hash is the first 64 characters of the output (ignore the empty spaces and dashes at the end).\n\n\n\n\npublic/conf.yml\n\nappConfig:\n  theme: colorful\n  layout: auto\n  iconSize: large\n  language: en\n  auth:\n    enableGuestAccess: true\n    users:\n      - user: admin\n        hash: hash-of-a-password-you-choose-using-sha256-hashing\n        type: admin\ndefaultOpeningMethod: newtab\nwebSearch:\n    disableWebSearch: false\n    searchEngine: duckduckgo\n    openingMethod: newtab\n    searchBangs: {}\n  enableFontAwesome: true\n  enableMaterialDesignIcons: true\n  allowConfigEdit: true\npageInfo:\n  title: Home Lab\n  description: Welcome to your Home Lab!\n  navLinks:\n    - title: GitHub\n      path: https://github.com/ProtossGP32/DevOps-training-projects\n    - title: Introduction to HomeLab\n      path: https://protossgp32.github.io/DevOps-training-projects/homelab-project/00-introduction.html\n  footerText: ''\nsections:\n  - name: Server administration\n    icon: fas fa-server\n    items:\n      - title: Proxmox\n        description: Virtualisation manager\n        url: https://pve.protossnet.local\n        icon: dashboard-icons/png/proxmox.png\n        statusCheck: true\n      - title: phpLDAPadmin\n        description: LDAP administrator\n        url: http://ldap-server.protossnet.local:8080\n        icon: dashboard-icons/png/phpldapadmin.png\n        statusCheck: true\n    displayData:\n      sortBy: default\n      rows: 1\n      cols: 1\n      collapsed: false\n      hideForGuests: true\n\n  - name: Productivity Tools\n    icon: fas fa-regular fa-window\n    items:\n      - title: NextCloud\n        description: Cloud office suite and collaboration platform\n        url: http://sonic.protossnet.local:8080\n        icon: dashboard-icons/png/nextcloud.png\n        statusCheck: true\n      - title: OpenProject\n        description: Projects management suite\n        url: http://sonic.protossnet.local:8081\n        icon: dashboard-icons/png/openproject.png\n        statusCheck: true\n      - title: SonarQube\n        description: Static code analysis suite\n        url: http://sonic.protossnet.local:9000\n        icon: dashboard-icons/png/sonarqube.png\n      - title: VS Code Web\n        description: Cloud based VS Code development environment\n        icon: dashboard-icons/png/vs-code.png\n        statusCheck: true\n\n  - name: User management\n    icon: fas fa-light fa-user\n    displayData:\n      sortBy: default\n      rows: 1\n      cols: 1\n      collapsed: false\n      hideForGuests: false\n    items:\n      - title: Self Service Password\n        description: Allows to change your user password\n        icon: dashboard-icons/png/ltb-logo.png\n        url: https://ssp-protoss.cifoweb.dev/\n        statusCheck: true"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/04-openldap.html",
+    "href": "homelab-project/self-hosted-software/04-openldap.html",
+    "title": "04 - Authentication - OpenLDAP",
+    "section": "",
+    "text": "TODO\n\n\n\nAdd properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled\n\n\n\n\nAn open-source LDAP server\n\nWeb page: Link\nSource code: GitLab and GitHub mirror\nDocker image: Docker Hub - Non-privileged image\n\n\n\n\nAn open-source LDAP administration service with a web interface\n\nWeb page: Link\nSource code: GitHub and the repository which the Docker image that we use is based\nDocker image: Docker Hub\n\n\n\n\nAn open-source web interface that allows LDAP users to change their own passwords.\n\nWeb page: Link\nSource code: GitHub\nDocker image: Docker Hub\n\nThe docker container needs a config file named config.inc.local.php that overwrites the default values defined in config.inc.php; this file is provided in the docker-compose.yml file as a volume.\nThere are a lot of parameters that can be configured, but for the sake of simplicity only LDAP server parameters and password policies are defined here:\n\n\nconfig.inc.local.php\n\n<?php\n// A random keyphrase is required to initialize the service\n$keyphrase = getenv('SSP_KEYPHRASE');\n$debug = false;\n\n// LDAP server config\n$ldap_url = \"ldap://openldap:1389\";\n$ldap_starttls = false;\n$ldap_binddn = \"cn=admin,dc=protossnet,dc=local\";\n$ldap_bindpw = getenv('LDAP_BIND_PASSWORD');\n\n$ldap_base = \"ou=users,dc=protossnet,dc=local\";\n$ldap_login_attribute = \"uid\";\n$ldap_fullname_attribute = \"displayName\";\n$ldap_filter = \"(&(objectClass=inetOrgPerson)($ldap_login_attribute={login}))\";\n\n// Password policies that new passwords must comply\n$pwd_min_length = 8;\n$pwd_max_length = 16;\n$pwd_min_lower = 1;\n$pwd_min_upper = 1;\n$pwd_min_digit = 1;\n$pwd_min_special = 1;\n$pwd_special_chars = \"^@%!-_\";\n$pwd_no_reuse = true;\n$pwd_diff_login = true;\n$pwd_diff_last_min_chars = 0;\n$pwd_no_special_at_ends = false;\n\n// \"manager\" means that the user defined in ldap_binddn is the responsible of\n// changing the user's passwords within LDAP (the rest of users don't have enough privileges)\n$who_change_password = \"manager\";\n$lang = \"en\";\n$allowed_lang = array(\"en\");\n?>"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/05-nextcloud.html",
+    "href": "homelab-project/self-hosted-software/05-nextcloud.html",
+    "title": "05 - Productivity tools - NextCloud",
+    "section": "",
+    "text": "TODO\n\n\n\nAdd properly explained procedure to deploy NextCloud, both on internal network and accessible from outside with HTTPS partially enabled"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/06-openproject.html",
+    "href": "homelab-project/self-hosted-software/06-openproject.html",
+    "title": "06 - Productivity tools - OpenProject",
+    "section": "",
+    "text": "TODO\n\n\n\nAdd properly explained procedure to deploy OpenProject, both on internal network and accessible from outside with HTTPS partially enabled"
+  },
+  {
+    "objectID": "homelab-project/self-hosted-software/07-sonarqube.html",
+    "href": "homelab-project/self-hosted-software/07-sonarqube.html",
+    "title": "07 - Code analysis - SonarQube",
+    "section": "",
+    "text": "TODO\n\n\n\nAdd properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled"
   },
   {
     "objectID": "homelab-project/virtualization-server/01-installing-proxmox.html",
@@ -165,6 +242,6 @@
     "href": "index.html",
     "title": "Home",
     "section": "",
-    "text": "DevOps Projects"
+    "text": "Welcome to my DevOps repository of guides and exercises. Here you’ll find (I hope) useful information about self-hosting your own services and managing them.\n\nLatest posts\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n  \n\n\n\n\n00 - Containers - Docker & Docker Compose\n\n\n\n\n\n\n\nDocker\n\n\nSelf-hosted software\n\n\nContainers\n\n\n\n\nPre-requisites to deploy services as containers\n\n\n\n\n\n\nFeb 5, 2023\n\n\nProtossGP32\n\n\n1 min\n\n\n\n\n\n\n  \n\n\n\n\n02 - Routing and SSL certificates - Traefik and Portainer\n\n\n\n\n\n\n\nDocker\n\n\nTraefik\n\n\nSSL\n\n\n\n\nRoute HTTP(s) requests to your services and secure them with Let’s Encrypt SSL certificates with Traefik\n\n\n\n\n\n\nFeb 5, 2023\n\n\nProtossGP32\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n04 - Authentication - OpenLDAP\n\n\n\n\n\n\n\nDocker\n\n\nSelf-hosted software\n\n\nOpenLDAP\n\n\nAuthentication\n\n\n\n\nCentralize your user database for services authentication\n\n\n\n\n\n\nFeb 3, 2023\n\n\nProtossGP32\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n05 - Productivity tools - NextCloud\n\n\n\n\n\n\n\nDocker\n\n\nSelf-hosted software\n\n\nNextCloud\n\n\nProductivity tools\n\n\n\n\nUser your own productivity suite\n\n\n\n\n\n\nFeb 3, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n06 - Productivity tools - OpenProject\n\n\n\n\n\n\n\nDocker\n\n\nSelf-hosted software\n\n\nOpenProject\n\n\nProductivity tools\n\n\nProject Management\n\n\nScrum\n\n\n\n\nEfficiently manage your projects\n\n\n\n\n\n\nFeb 3, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n07 - Code analysis - SonarQube\n\n\n\n\n\n\n\nDocker\n\n\nSelf-hosted software\n\n\nSonarQube\n\n\nCode analysis\n\n\n\n\nAnalyze your projects’ code and keep it well maintained\n\n\n\n\n\n\nFeb 3, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n01 - External access - Cloudflare\n\n\n\n\n\n\n\nDocker\n\n\nCloudflare\n\n\nSelf-hosted software\n\n\nContainers\n\n\nDNS\n\n\nSSL\n\n\n\n\nSecure remote access to your homelab\n\n\n\n\n\n\nJan 30, 2023\n\n\nProtossGP32\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n03 - Homelab dashboard - Dashy\n\n\n\n\n\n\n\nDocker\n\n\nDashboard\n\n\nDashy\n\n\n\n\nAdd a centralized homepage for your services\n\n\n\n\n\n\nJan 30, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n01 - Provisioning - Virtual Machines on Proxmox\n\n\n\n\n\n\n\nProxmox VE\n\n\nVirtual Machines\n\n\n\n\nProvision new VMs in Proxmox\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n02 - Provisioning - LXC (Linux Containers on Proxmox)\n\n\n\n\n\n\n\nProxmox VE\n\n\nLXC\n\n\nContainers\n\n\n\n\nProvision new containers in Proxmox\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExplore California\n\n\n\n\n\n\n\nDocker\n\n\nSelenium\n\n\nAWS\n\n\nTerraform\n\n\nUnit tests\n\n\nIntegration tests\n\n\n\n\nStatic website debugging and deployment\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHomelab Requirements\n\n\n\n\n\n\n\nDocker\n\n\nPortainer\n\n\nSelf-hosted software\n\n\nContainers\n\n\n\n\nThings you need to start building your own homelab\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHomelab project introduction\n\n\n\n\n\n\n\nProxmox VE\n\n\nSelf-hosted software\n\n\n\n\nGreetings and motivation behind this project\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n0 min\n\n\n\n\n\n\n  \n\n\n\n\nPart 1 - Installing Proxmox VE\n\n\n\n\n\n\n\nProxmox VE\n\n\nVirtualisation\n\n\n\n\nInstall your own virtualisation server\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n2 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPart 2 - Internal Virtual Networks\n\n\n\n\n\n\n\nProxmox VE\n\n\nNetwork\n\n\n\n\nCreate internal network for your VM and LXC\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPart 3 - DNS and DHCP servers\n\n\n\n\n\n\n\nProxmox VE\n\n\nNetwork\n\n\nDNS\n\n\nDHCP\n\n\n\n\nAutomatically assign IP and Domain Name to all your VM and LXC\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n6 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPart 4 - Proxy HTTP(S) into the internal network\n\n\n\n\n\n\n\nProxmox VE\n\n\nRemote access\n\n\nNetwork\n\n\nDNS\n\n\nProxy\n\n\nNginx\n\n\n\n\nMake your internal network accessible from the outside\n\n\n\n\n\n\nJan 17, 2023\n\n\nProtossGP32\n\n\n1 min\n\n\n\n\n\n\nNo matching items"
   }
 ]

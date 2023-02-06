@@ -1,0 +1,12 @@
+---
+title: "06 - Productivity tools - OpenProject"
+description: "Efficiently manage your projects"
+author: "ProtossGP32"
+date: "2023/02/03"
+categories: ["Docker", "Self-hosted software", "OpenProject", "Productivity tools", "Project Management", "Scrum"]
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy OpenProject, both on internal network and accessible from outside with HTTPS partially enabled
+:::

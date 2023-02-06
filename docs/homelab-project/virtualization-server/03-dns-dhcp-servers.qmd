@@ -1,5 +1,9 @@
 ---
 title: "Part 3 - DNS and DHCP servers"
+description: "Automatically assign IP and Domain Name to all your VM and LXC"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Proxmox VE", "Network", "DNS", "DHCP"]
 ---
 :::{.callout-note}
 ## Wait, more DHCP servers? Why?

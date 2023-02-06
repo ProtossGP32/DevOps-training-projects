@@ -1,4 +1,8 @@
 ---
-title: Explore California - Static website debugging and deployment
+title: Explore California
+description: "Static website debugging and deployment"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Docker", "Selenium", "AWS", "Terraform", "Unit tests", "Integration tests"]
 ---
 # Introduction

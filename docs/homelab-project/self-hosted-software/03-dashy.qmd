@@ -1,5 +1,9 @@
 ---
-title: "01 - HomeLab dashboard - Dashy"
+title: "03 - Homelab dashboard - Dashy"
+description: "Add a centralized homepage for your services"
+author: "ProtossGP32"
+date: "2023/01/30"
+categories: ["Docker", "Dashboard", "Dashy"]
 ---
 
 # Introduction

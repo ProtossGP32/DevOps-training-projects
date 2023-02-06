@@ -1,5 +1,9 @@
 ---
 title: "Homelab Requirements"
+description: "Things you need to start building your own homelab"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Docker", "Portainer", "Self-hosted software", "Containers"]
 ---
 # Hardware
 Any relatively modern desktop computes can be used as a homelab. In my case I'll be using an HP Compaq Elite 8300 with an Intel Core i5 (4 cores), 24Gb or RAM and a single NIC.

@@ -1,0 +1,12 @@
+---
+title: "05 - Productivity tools - NextCloud"
+description: "User your own productivity suite"
+author: "ProtossGP32"
+date: "2023/02/03"
+categories: ["Docker", "Self-hosted software", "NextCloud", "Productivity tools"]
+---
+
+:::{.callout-warning}
+## TODO
+Add properly explained procedure to deploy NextCloud, both on internal network and accessible from outside with HTTPS partially enabled
+:::

@@ -1,0 +1,58 @@
+---
+title: "00 - Containers - Docker & Docker Compose"
+description: "Pre-requisites to deploy services as containers"
+author: ProtossGP32
+date: "2023/02/05"
+categories: ["Docker", "Self-hosted software", "Containers"]
+---
+
+![Docker](https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png){width=200 fig-align=center}
+
+# Introduction
+A **Container** is the virtualization of an operation system with the purpose of executing one service in an isolated environment. A container is very lightweight compared to a virtual machine as it doesn't recreate a whole computer, but reuses the host kernel and accesses its resources natively.
+
+Containers are the best way to deploy and test new self-hosted software as they encapsulate the main process into its own eco-system and don't interfere with the rest of services running in that host.
+
+![Docker architecture](https://docs.docker.com/engine/images/architecture.svg)
+
+The following video does an excellent job at trying to explain the differences between bare-metal, virtualization and containerization, give it a watch:
+
+{{< video https://youtu.be/pxwUXJmAER4 >}}
+
+So for the sake of simplicity and fast testing, we're going to use Docker as the container engine and docker compose for the workload deployment.
+
+# Getting started
+Go to the official Docker documentation to check how to install Docker and Docker Compose on your operating system:
+
+- [Docker Engine installation](https://docs.docker.com/engine/install/)
+
+Follow the excellent instructions of [TechnoTim](https://docs.technotim.live/) to get an idea of what we need to do:
+
+- Docker and Docker compose installation: [Link](https://docs.technotim.live/posts/docker-compose-install/)
+
+# Installation steps
+## Docker and Docker compose
+![](https://www.docker.com/wp-content/uploads/2022/03/horizontal-logo-monochromatic-white.png){width=300}
+
+I'm going to follow [Technotim](https://docs.technotim.live/posts/docker-compose-install/#install-docker-engine-containerd-and-docker-compose-on-ubuntu)'s guide as my server OS is Ubuntu.
+
+There's really nothing much to say here, just follow the instructions, make sure that you have Internet access to install the packages and check that your user can execute `docker` commands, like `docker version`, and `docker compose`.
+
+Also, remember to add your user to the `docker` group so you don't need privileged permissions to operate with it:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Once done, log out and log in again to your server to apply the changes on the user groups.
+
+# Networking in Docker
+## Overlay network
+An `overlay` network is a type of virtual network in Docker that allows multiple Docker hosts to communicate between them. This is pretty handy if, for example, you need some services deployed with Docker in a host to access an authentication service that is hosted on a different Docker host.
+
+:::{.callout-warning}
+## Attention!
+In order to use this, do we need to install `docker swarm`?
+:::
+
+You can find the official Docker docs regarding overlay networking [here](https://docs.docker.com/network/overlay/).

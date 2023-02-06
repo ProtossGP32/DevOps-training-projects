@@ -1,5 +1,9 @@
 ---
 title: "Part 1 - Installing Proxmox VE"
+description: "Install your own virtualisation server"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Proxmox VE", "Virtualisation"]
 ---
 # What is Proxmox VE?
 :::{.callout-warning}

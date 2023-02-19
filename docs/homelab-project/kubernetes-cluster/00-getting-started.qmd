@@ -1,0 +1,141 @@
+---
+title: "00 - Kubernetes - Getting Started"
+description: "Building our first Kubernetes Cluster"
+author: ProtossGP32
+date: "2023/02/18"
+categories: ["Kubernetes", "Ansible", "k3s"]
+---
+![](https://cncf-branding.netlify.app/img/projects/kubernetes/stacked/color/kubernetes-stacked-color.png){height=200 fig-align="center"}
+
+# Introduction
+Read the [_Kubernetes Official Docs_](https://kubernetes.io/docs/home/) for a deeper explanation.
+
+Kubernetes is a container orchestrator engine. What this means is that it manages all the infrastructure resources involved in a microservice deployment, such as networking, number of replicas, access to their endpoints, load balancing requests, etc... Its main purpose is to automate the deployment, scaling and management of containerized applications.
+
+It can be daunting and complex due to the extension of its features, so we'll try to approach it in the most simple and maintainable way.
+
+## Main concepts
+[_Kubernetes components_:](https://kubernetes.io/docs/concepts/overview/components/) A Kubernetes cluster is mainly composed of the following components:
+
+- _Control Plane components_: these make global decisions about the cluster (scheduling pods) as well as detecting and responding to cluster events
+    - They can be run on any machine in the cluster; however, for simplicity, set up scripts typically start all control plane components on the same machine and do not run user containers there
+    - Some of the common control plane components are: [kube-apiserver](https://kubernetes.io/docs/concepts/overview/components/#kube-apiserver), [etcd](https://kubernetes.io/docs/concepts/overview/components/#etcd), [kube-scheduler](https://kubernetes.io/docs/concepts/overview/components/#kube-scheduler), [kube-control-manager](https://kubernetes.io/docs/concepts/overview/components/#kube-controller-manager) and [cloud-control-manager](https://kubernetes.io/docs/concepts/overview/components/#cloud-controller-manager)
+- _Node components_: these run on every node, maintaining running pods and providing the Kubernetes runtime environment
+    - Some of the common node components are: [kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet), [kube-proxy](https://kubernetes.io/docs/concepts/overview/components/#kube-proxy) and [container runtime](https://kubernetes.io/docs/concepts/overview/components/#container-runtime)
+- _Addons_: they use Kubernetes resources (DaemonSet, Deployment, etc) to implement cluster features
+    - Because these are providing cluster-level features, namespaced resources for addons belong within the `kube-system` namespace
+    - Selected addons are [DNS](https://kubernetes.io/docs/concepts/overview/components/#dns), [Web UI (Dashboard)](https://kubernetes.io/docs/concepts/overview/components/#web-ui-dashboard), [Container Resource Monitoring](https://kubernetes.io/docs/concepts/overview/components/#container-resource-monitoring) and [Cluster-level Logging](https://kubernetes.io/docs/concepts/overview/components/#cluster-level-logging)
+
+As described above, usually all control plane components are deployed into the same machine or node. Another usual thing to do is to isolate the control plane nodes to prevent them to act as _workers_; this ensures that their critical mission of overseeing the whole cluster isn't compromised due to a highly demanding user container.
+
+When dealing with High-Availability, we'll configure more than one control plane node to ensure redundancy.
+
+# Requirements
+In order for us to easily deploy our first Kubernetes cluster, we'll rely on [TechnoTim's guide to deploy k3s with Ansible playbooks](https://docs.technotim.live/posts/k3s-etcd-ansible/). This guide guarantees a 100% automated k3s deployment, so we'll give it a try.
+
+For this guide, we'll need the following resources:
+
+- A central machine from where we'll launch Ansible playbooks and access our k3s cluster:
+    - Ansible on Debian/Ubuntu distros: [Installation process](https://docs.technotim.live/posts/ansible-automation/)
+    - Ansible on Alpine: [Installation process](https://wiki.alpinelinux.org/wiki/Ansible)
+
+    **We'll be using an LXC with Alpine installed (128MB of RAM and 2GB of disk)**
+
+
+    ```{.bash filename="Installing kubectl and ansible on alpine"}
+    # Installing kubectl
+    apk add curl
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    mv kubectl /sbin/
+    chmod u+x /sbin/kubectl
+
+    # Installing ansible
+    apk add ansible
+    ```
+
+- At least 5 VMs for our cluster:
+    - 3 for control plane:
+        - k3s-control-1
+        - k3s-control-2
+        - k3s-control-3
+    - 2 for workers:
+        - k3s-worker-1
+        - k3s-worker-2
+
+## Ansible configuration
+Follow the guide's instructions, clone its `git` repository and make sure you update the following files. Make a copy of the `/inventory/sample` directory and name it `/inventory/my-cluster`. After that, modify the following files according to your servers:
+
+```{.yaml filename=inventory/my-cluster/hosts.ini}
+[master]
+k3s-control-1
+k3s-control-2
+k3s-control-3
+
+[node]
+k3s-worker-1
+k3s-worker-2
+```
+
+:::{.callout-note}
+## SSH keys
+Remember to exchange your SSH public key with the rest of the servers, else Ansible will fail to launch the commands.
+
+:::
+
+```{.yaml filename=inventory/my-cluster/group_vars/all.yml}
+# this is the user that has ssh access to these machines
+# You have to exchange your public SSH key with them
+ansible_user: "common-user-to-all-servers"
+
+# k3s_token is required  masters can talk together securely
+# this token should be alpha numeric only
+k3s_token: "some-SUPER-DEDEUPER-secret-password"
+
+# metallb ip range for load balancer
+# You might want to avoid matching ranges with your network     
+metal_lb_ip_range: "192.168.30.80-192.168.30.90"
+```
+
+:::{.callout-note}
+## Using Alpine server for Ansible
+You may need to launch the following commands:
+
+```{.bash}
+# For cluster servers in different subnets
+apk add py3-netaddr
+
+# For installing ansible-galaxy requirements
+# Regenerate SSL certificates
+# Guide: https://wiki.alpinelinux.org/wiki/Generating_SSL_certs_with_ACF
+/sbin/setup-acf
+apk add acf-openssl
+```
+:::
+
+Now launch the following command from the repository root:
+
+```{.bash filename="Ansible command"}
+# Install ansible requirements
+ansible-galaxy install -r ./collections/requirements.yml
+
+# Launch the installation playbook
+ansible-playbook ./site.yml -i ./inventory/my-cluster/hosts.ini
+```
+
+Check for any errors during the ansible-playbook execution. If everything is OK, proceed to copy the k3s cluster config into the central server:
+
+```{.bash filename="Copying cluster config and testing"}
+# Make sure the '.kube' folder exists in the local server
+mkdir ~/.kube
+
+# Copy the config from one of the master nodes
+scp common-user-to-all-servers@k3s-control-1:~/.kube/config ~/.kube/config
+
+# Check that we can access the cluster
+sudo kubectl get nodes
+```
+
+:::{.callout-warning}
+## Worker nodes not showing in the cluster
+Check what's wrong with the ansible steps when reaching workers
+:::

@@ -440,7 +440,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a>
   <ul class="collapse">
   <li><a href="#ansible-configuration" id="toc-ansible-configuration" class="nav-link" data-scroll-target="#ansible-configuration">Ansible configuration</a></li>
+  </ul></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a>
+  <ul class="collapse">
   <li><a href="#ansible-playbook-launch" id="toc-ansible-playbook-launch" class="nav-link" data-scroll-target="#ansible-playbook-launch">Ansible playbook launch</a></li>
+  <li><a href="#deployment-example" id="toc-deployment-example" class="nav-link" data-scroll-target="#deployment-example">Deployment example</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/kubernetes-cluster/00-getting-started.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -596,13 +600,17 @@ SSH keys
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co"># You have to exchange your public SSH key with them</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="fu">ansible_user</span><span class="kw">:</span><span class="at"> </span><span class="st">"common-user-to-all-servers"</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># k3s_token is required  masters can talk together securely</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># this token should be alpha numeric only</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="fu">k3s_token</span><span class="kw">:</span><span class="at"> </span><span class="st">"some-SUPER-DEDEUPER-secret-password"</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># apiserver_endpoint is virtual ip-address which will be configured on each master</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># Make sure this IP is within the network range and is reachable</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="fu">apiserver_endpoint</span><span class="kw">:</span><span class="at"> </span><span class="st">"192.168.30.222"</span></span>
 <span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># metallb ip range for load balancer</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># You might want to avoid matching ranges with your network     </span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="fu">metal_lb_ip_range</span><span class="kw">:</span><span class="at"> </span><span class="st">"192.168.30.80-192.168.30.90"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># k3s_token is required  masters can talk together securely</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># this token should be alpha numeric only</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="fu">k3s_token</span><span class="kw">:</span><span class="at"> </span><span class="st">"some-SUPER-DEDEUPER-secret-password"</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># metallb ip range for load balancer</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co"># You might want to avoid matching ranges with your network     </span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="fu">metal_lb_ip_range</span><span class="kw">:</span><span class="at"> </span><span class="st">"192.168.30.80-192.168.30.90"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -626,6 +634,9 @@ Using Alpine server for Ansible
 </div>
 </div>
 </section>
+</section>
+<section id="installation" class="level1">
+<h1>Installation</h1>
 <section id="ansible-playbook-launch" class="level2">
 <h2 class="anchored" data-anchor-id="ansible-playbook-launch">Ansible playbook launch</h2>
 <p>Now launch the following command from the repository root:</p>
@@ -659,12 +670,81 @@ Using Alpine server for Ansible
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Worker nodes not showing in the cluster
+Worker nodes not showing in the cluster in the first attempt
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Check what’s wrong with the ansible steps when reaching workers</p>
 </div>
+</div>
+<p>After restarting the nodes and launching the playbook several times, now all nodes appear in the k3s cluster:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>kubectl check of nodes</strong></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">~/k3s-ansible</span> <span class="co"># kubectl get nodes</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">NAME</span>            STATUS   ROLES                       AGE     VERSION</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="ex">k3s-control-1</span>   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">k3s-control-2</span>   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1</span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="ex">k3s-control-3</span>   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1</span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="ex">k3s-worker-1</span>    Ready    <span class="op">&lt;</span>none<span class="op">&gt;</span>                      5m14s   v1.24.10+k3s1</span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="ex">k3s-worker-2</span>    Ready    <span class="op">&lt;</span>none<span class="op">&gt;</span>                      5m2s    v1.24.10+k3s1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="deployment-example" class="level2">
+<h2 class="anchored" data-anchor-id="deployment-example">Deployment example</h2>
+<p>The <code>git</code> repository has a deployment example of nginx web servers configured to 3 replicas as well as a load balancer service for it.</p>
+<p>Once deployed with the following commands:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Deploying our first application</strong></pre>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> example/deployment.yml</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> example/service.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We should see 3 nginx pods and a service:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Pods deployed on different nodes</strong></pre>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">~/k3s-ansible</span> <span class="co"># kubectl get pods -o wide</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">NAME</span>                     READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">nginx-6fb79bc456-79v99</span>   1/1     Running   0          5m47s   10.42.4.3   k3s-worker-2   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">nginx-6fb79bc456-gj6zh</span>   1/1     Running   0          5m47s   10.42.3.3   k3s-worker-1   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">nginx-6fb79bc456-qj472</span>   1/1     Running   0          5m47s   10.42.4.2   k3s-worker-2   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Load-balancer service for the Nginx replicas</strong></pre>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">~/k3s-ansible</span> <span class="co"># kubectl get service -o wide</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="ex">NAME</span>         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT<span class="er">(</span><span class="ex">S</span><span class="kw">)</span>        <span class="ex">AGE</span>     SELECTOR</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="ex">kubernetes</span>   ClusterIP      10.43.0.1      <span class="op">&lt;</span>none<span class="op">&gt;</span>        443/TCP        34m     <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="ex">nginx</span>        LoadBalancer   10.43.170.67   10.0.0.11     80:30466/TCP   6m16s   app=nginx</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="ex">~/k3s-ansible</span> <span class="co"># kubectl describe service nginx</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="ex">Name:</span>                     nginx</span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="ex">Namespace:</span>                default</span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="ex">Labels:</span>                   <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="ex">Annotations:</span>              <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="ex">Selector:</span>                 app=nginx</span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="ex">Type:</span>                     LoadBalancer</span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="ex">IP</span> Family Policy:         PreferDualStack</span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="ex">IP</span> Families:              IPv4</span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="ex">IP:</span>                       10.43.170.67</span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="ex">IPs:</span>                      10.43.170.67</span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="ex">LoadBalancer</span> Ingress:     10.0.0.11</span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="ex">Port:</span>                     <span class="op">&lt;</span>unset<span class="op">&gt;</span>  80/TCP</span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="ex">TargetPort:</span>               80/TCP</span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="ex">NodePort:</span>                 <span class="op">&lt;</span>unset<span class="op">&gt;</span>  30466/TCP</span>
+<span id="cb10-21"><a href="#cb10-21"></a><span class="ex">Endpoints:</span>                10.42.3.3:80,10.42.4.2:80,10.42.4.3:80 <span class="co"># Here we can see the endpoints of the nginx replicas</span></span>
+<span id="cb10-22"><a href="#cb10-22"></a><span class="ex">Session</span> Affinity:         None</span>
+<span id="cb10-23"><a href="#cb10-23"></a><span class="ex">External</span> Traffic Policy:  Cluster</span>
+<span id="cb10-24"><a href="#cb10-24"></a><span class="ex">Events:</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a>  <span class="ex">Type</span>    Reason        Age    From                Message</span>
+<span id="cb10-26"><a href="#cb10-26"></a>  <span class="ex">----</span>    <span class="at">------</span>        <span class="at">----</span>   <span class="at">----</span>                <span class="at">-------</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a>  <span class="ex">Normal</span>  IPAllocated   6m34s  metallb-controller  Assigned IP [<span class="st">"10.0.0.11"</span>]</span>
+<span id="cb10-28"><a href="#cb10-28"></a>  <span class="ex">Normal</span>  nodeAssigned  6m34s  metallb-speaker     announcing from node <span class="st">"k3s-control-2"</span> with protocol <span class="st">"layer2"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

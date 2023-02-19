@@ -1,0 +1,342 @@
+---
+title: "01 - Kubernetes - Traefik + cert-manager"
+description: "Adding reverse proxy and load balancing to our Kubernetes services"
+author: ProtossGP32
+date: "2023/02/19"
+categories: ["Kubernetes", "Traefik", "cert-manager", "k3s"]
+---
+
+# Introduction
+Now that we have our K3S cluster deployed and some apps running, the next logical step is to make them accessible. We're going to install the following components to our cluster for this:
+
+- [Traefik:](https://traefik.io/traefik/) Traefik acts as both a load balancer and a reverse proxy that makes deploying microservices easy
+- [cert-manager:](https://cert-manager.io/) cert-manager is a powerful and extensive X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry
+
+# Getting started
+Again, we'll be following [this guide from TehcnoTim](https://docs.technotim.live/posts/kube-traefik-cert-manager-le/) with minor changes that will be explained during the process.
+
+We'll use [Helm](https://helm.sh/) to install some of the resources.
+
+- Helm is a package manager for Kubernetes. It's an easy way to find, share and use software built for Kubernetes
+- Each Kubernetes package is called a _chart_
+
+## Installing Helm
+Helm is an executable which is implemented into two distinct parts:
+
+- _Helm Client:_ command-line client for end users. It is responsible for the following:
+    - Local chart development
+    - Managing repositories
+    - Managing releases
+    - Interfacing with the Helm library
+        - Sending charts to be installed
+        - Requesting upgrading or uninstalling of existing releases
+- _Helm Library:_ it provides the logic for executing all Helm operations. It interfaces with the Kubernetes API serer and provides the following capability:
+    - Combining a chart and configuration to build a release
+    - Installing charts into Kubernetes, and providing the subsequent release object
+    - Upgrading and uninstalling charts by interacting with Kubernetes
+
+The following commands automate the helm installation:
+
+:::{.callout-note}
+## Install it on a server with access to the k3s cluster!
+If the server doesn't have the `kubectl` binary and access to the cluster, Helm won't be able to communicate with the Kubernetes API
+:::
+
+We'll install helm on the LXC Alpine container where we previously installed `ansible` and `kubectl`:
+
+```{.bash filename="Helm installation"}
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+# Use `sh` instead of `bash` in alpine
+sh get_helm.sh
+```
+
+:::{.callout-warning}
+## Failure on helm download script
+In Alpine, we don't have `bash` shell, so we have to execute the script using `sh`; thus, some commands don't execute as expected. Executing as `sh -x get_helm.sh`, we see that the error is in the comparison of the result of the `runAsRoot` function:
+
+```{.sh}
++ runAsRoot cp /tmp/helm-installer-bOIFjI/helm/linux-amd64/helm /usr/local/bin/helm
++ '[' -ne 0 -a true '=' true ]
+sh: 0: unknown operand
+```
+
+Even though the verification fails, the binary is correctly installed:
+
+```{.sh}
+ls -l /usr/local/bin/helm
+-rwxr-xr-x    1 root     root      46870528 Feb 19 12:31 /usr/local/bin/helm
+```
+:::
+
+Verify once again that we can reach the k3s cluster and that helm is correctly installed:
+
+```{.bash filename="Helm verification"}
+kubectl get nodes
+NAME            STATUS   ROLES                       AGE   VERSION
+k3s-control-1   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1
+k3s-control-2   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1
+k3s-control-3   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1
+k3s-worker-1    Ready    <none>                      8h    v1.24.10+k3s1
+k3s-worker-2    Ready    <none>                      8h    v1.24.10+k3s1
+
+helm version
+version.BuildInfo{Version:"v3.11.1", GitCommit:"293b50c65d4d56187cd4e2f390f0ada46b4c4737", GitTreeState:"clean", GoVersion:"go1.18.10"}
+```
+
+:::{.callout-note}
+## Clone the resources!
+From now on, we'll be deploying components using the resources that the guide provides to us in [this github repository](https://github.com/techno-tim/launchpad/tree/master/kubernetes/traefik-cert-manager). Make sure to clone them into the Helm server!
+
+You can use this [StackOverflow response](https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository) to only checkout a subfolder of the whole repository.
+:::
+
+## Installing Traefik
+Now we'll use Helm to install Traefik. First of all, modify the `kubernetes/traefik-cert-manager/traefik/values.yaml` so the `service.spec.loadBalancerIP` points towards an available IP within the MetalLB range:
+
+```{.yaml filename="values.yaml"}
+service:
+    [...]
+    spec:
+        loadBalancerIP: 10.0.0.12 # We use .12 as .11 is currently used by the nginx example
+```
+
+Then, follow these steps to add the traefik repo and install it:
+
+```{.bash filename="Traefik installation"}
+# Add the traefik repository
+$ helm repo add traefik https://helm.traefik.io/traefik
+"traefik" has been added to your repositories
+
+# Update the traefik repository
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "traefik" chart repository
+Update Complete. ⎈Happy Helming!⎈
+
+# Create a new namespace for traefik
+$ kubectl create namespace traefik
+namespace/traefik created
+
+# Get all namespaces
+$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   8h
+kube-node-lease   Active   8h
+kube-public       Active   8h
+kube-system       Active   8h
+metallb-system    Active   8h
+traefik           Active   31s
+
+# Now install traefik using the values defined in the resources. We must be on the same folder than the 'values.yaml' file
+$ cd kubernetes/traefik-cert-manager/traefik
+# Launch the installation
+$ helm install --namespace=traefik traefik traefik/traefik --values=values.yaml
+NAME: traefik
+LAST DEPLOYED: Sun Feb 19 13:05:36 2023
+NAMESPACE: traefik
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+Traefik Proxy v2.9.7 has been deployed successfully
+on traefik namespace !
+```
+
+Once installed, check the status of the traefik service:
+```{.bash filename="Traefik service status"}
+$ kubectl get svc --all-namespaces -o wide
+NAMESPACE        NAME              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE    SELECTOR
+default          kubernetes        ClusterIP      10.43.0.1       <none>        443/TCP                      8h     <none>
+default          nginx             LoadBalancer   10.43.170.67    10.0.0.11     80:30466/TCP                 8h     app=nginx
+kube-system      kube-dns          ClusterIP      10.43.0.10      <none>        53/UDP,53/TCP,9153/TCP       8h     k8s-app=kube-dns
+kube-system      metrics-server    ClusterIP      10.43.160.192   <none>        443/TCP                      8h     k8s-app=metrics-server
+metallb-system   webhook-service   ClusterIP      10.43.41.163    <none>        443/TCP                      8h     component=controller
+traefik          traefik           LoadBalancer   10.43.50.42     10.0.0.12     80:32607/TCP,443:32263/TCP   113s   app.kubernetes.io/instance=traefik-traefik,app.kubernetes.io/name=traefik
+```
+
+Traefik is now accessible through `10.0.0.11:80`
+
+:::{.callout-warning}
+## Dashboard enabled but not accessible yet
+We need to create an Ingress rule to be able to access it. More on this later on.
+:::
+
+Check the pods currently running on the `traefik` namespace:
+
+```{.bash filename="Checking Traefik pods"}
+$ kubectl get pods --namespace traefik -o wide
+NAME                      READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES
+traefik-f775dc87d-8q5vq   1/1     Running   0          3m42s   10.42.3.4   k3s-worker-1   <none>           <none>
+traefik-f775dc87d-9z9kr   1/1     Running   0          3m42s   10.42.4.4   k3s-worker-2   <none>           <none>
+traefik-f775dc87d-phgh6   1/1     Running   0          3m42s   10.42.3.5   k3s-worker-1   <none>           <none>
+```
+
+We can see that we have 3 replicas of traefik running on different worker nodes.
+
+## Installing Traefik Middleware for default headers
+[What is Traefik Middleware?](https://doc.traefik.io/traefik/middlewares/overview/) Middleware is a means of tweaking the requests before they are sent to our services (of before the answer from the services are sent to the clients). This is critical as Traefik acts as a router between the client and the services running in our k3s cluster, thus things like the requests' headers, authentication, etc. must be modified so they can correctly reach their destination.
+
+We'll proceed to install the middleware now. Make sure you are in the same directory as before, where `values.yaml` and `default-headers.yaml` files are:
+
+```{.bash filename="Middleware installation"}
+$ kubectl apply -f default-headers.yaml
+middleware.traefik.containo.us/default-headers created
+```
+
+Some middleware checks:
+
+```{.bash filename="Middleware checks"}
+$ kubectl get middleware
+NAME              AGE
+default-headers   46s
+
+$kubectl describe middleware default-headers
+Name:         default-headers
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+API Version:  traefik.containo.us/v1alpha1
+Kind:         Middleware
+Metadata:
+  Creation Timestamp:  2023-02-19T13:22:04Z
+  Generation:          1
+  Managed Fields:
+    API Version:  traefik.containo.us/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .:
+          f:kubectl.kubernetes.io/last-applied-configuration:
+      f:spec:
+        .:
+        f:headers:
+          .:
+          f:browserXssFilter:
+          f:contentTypeNosniff:
+          f:customFrameOptionsValue:
+          f:customRequestHeaders:
+            .:
+            f:X-Forwarded-Proto:
+          f:forceSTSHeader:
+          f:stsIncludeSubdomains:
+          f:stsPreload:
+          f:stsSeconds:
+    Manager:         kubectl-client-side-apply
+    Operation:       Update
+    Time:            2023-02-19T13:22:04Z
+  Resource Version:  122070
+  UID:               c8e92a6a-5e0d-4aba-9563-72363dd2606e
+Spec:
+  Headers:
+    Browser Xss Filter:          true
+    Content Type Nosniff:        true
+    Custom Frame Options Value:  SAMEORIGIN
+    Custom Request Headers:
+      X - Forwarded - Proto:  https
+    Force STS Header:         true
+    Sts Include Subdomains:   true
+    Sts Preload:              true
+    Sts Seconds:              15552000
+Events:                       <none>
+```
+
+## Enable Traefik Dashboard access
+In order to properly manage Traefik, we'll enable an Ingress rule towards the Dashboard that will give us access to create and monitor all routes to our services:
+
+### Create basic auth credentials
+First of all, install some required apache utils for password generation:
+
+```{.bash filename="Apache2 utils"}
+# Alpine
+$ apk add apache2-utils
+```
+
+Create a username/password credentials encoded in `base64`:
+
+```{.bash filename="Creating credentials"}
+$ htpasswd -nb <username> <password> | openssl base64
+# The resulting string is the encoded credentials
+```
+
+Go to the Dashboard folder and follow these steps:
+
+- Modify the dashboard/secret-dashboard.yaml file to include the previously generated credentials
+```{.yaml filename="secret-dashboard.yaml"}
+[...]
+data:
+    users: <your-base64-newly-created credentials
+```
+- Apply the secret to make it available in the `traefik` namespace:
+```{.bash filename="Dashboard Secret applying"}
+$ kubectl apply -f secret-dashboard.yaml
+secret/traefik-dashboard-auth created
+```
+- Check that the secrets have been created:
+```{.bash filename="Secret check"}
+$ kubectl get secrets --namespace traefik
+NAME                            TYPE                 DATA   AGE
+sh.helm.release.v1.traefik.v1   helm.sh/release.v1   1      33m
+traefik-dashboard-auth          Opaque               1      63s
+
+$ kubectl -n traefik describe secret traefik-dashboard-auth
+Name:         traefik-dashboard-auth
+Namespace:    traefik
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+users:  47 bytes
+```
+
+### Create Dashboard middleware for basic authentication
+Traefik dashboard needs another middleware to deal with the authentication process. Just deploy the `middleware.yaml` file, you don't have to modify anything from it:
+
+```{.bash filename="Deploy dashboard auth middleware and check"}
+$ kubectl apply -f middleware.yaml
+middleware.traefik.containo.us/traefik-dashboard-basicauth created
+
+$ kubectl -n traefik get middleware
+NAME                          AGE
+traefik-dashboard-basicauth   12s
+```
+
+### Create Ingress rules to access TraefikService API through a hostname
+You also have to make sure that the Traefik service IP (the one we configured in the `values.yaml` and that is part of the MetalLB IP range) is accessible through a hostname. We must create a DNS record for this in our DNS server (PiHole)
+
+:::{.callout-important}
+## TODO: Explain how to configure the DNS record towards an internal network and how to check it
+:::
+
+After that is done, modify the `ingress.yaml` file accordingly:
+
+```{.yaml filename="ingress.yaml"}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`traefik.pve-internal.protossnet.local`) # This is where we put the hostname defined in the DNS record
+```
+
+Apply the YAML file as always:
+
+```{.bash filename="Deploying Traefik Ingress rule"}
+$ kubectl apply -f ingress.yaml
+ingressroute.traefik.containo.us/traefik-dashboard created
+```
+
+Now we should be able to access the web dashboard at the following address: `https://traefik.pve-internal.protossnet.local`
+
+:::{.callout-important}
+## Check DHCP and DNS configuration for internal network
+PiHole doesn't seem to redirect requests to the internal network!
+:::
+
+:::{.callout-note}
+## COMING SOON
+Add the `cert-manager` component and configure Traefik to provide certificates to our kubernetes services
+:::

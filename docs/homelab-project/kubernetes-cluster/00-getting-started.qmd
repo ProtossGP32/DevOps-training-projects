@@ -53,7 +53,22 @@ For this guide, we'll need the following resources:
     apk add ansible
     ```
 
-- At least 5 VMs for our cluster:
+:::{.callout-tip}
+## Enable SSH in LXC container
+Accessing LXC through serial console attachment is a pain. When creating it in Proxmox, we had the chance to add our SSH key, but OpenSSH isn't installed by default in Alpine images. Attach to the LXC and do the following:
+
+```{.bash filename="Alpine: install OpenSSH and enable it on boot"}
+apk add openssh
+rc-update add sshd
+```
+Check that your public key is already shared with the container:
+
+```{.bash filename="Alpine: authorized keys"}
+cat ~/.ssh/authorized_keys
+```
+:::
+
+- At least 5 VMs for our cluster (2 CPU, 2GB of RAM and at least 5GB of disk):
     - 3 for control plane:
         - k3s-control-1
         - k3s-control-2
@@ -190,12 +205,12 @@ Namespace:                default
 Labels:                   <none>
 Annotations:              <none>
 Selector:                 app=nginx
-Type:                     LoadBalancer
+Type:                     LoadBalancer # Here we see that the service type is a load balancer between all the available nginx replicas
 IP Family Policy:         PreferDualStack
 IP Families:              IPv4
-IP:                       10.43.170.67
+IP:                       10.43.170.67 # This is the Cluster IP assigned to the service
 IPs:                      10.43.170.67
-LoadBalancer Ingress:     10.0.0.11
+LoadBalancer Ingress:     10.0.0.11 # This is the IP assigned by the MetalLB controller as an Ingress access point
 Port:                     <unset>  80/TCP
 TargetPort:               80/TCP
 NodePort:                 <unset>  30466/TCP

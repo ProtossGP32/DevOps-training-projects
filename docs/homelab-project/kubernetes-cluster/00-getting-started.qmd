@@ -112,6 +112,7 @@ apk add acf-openssl
 ```
 :::
 
+## Ansible playbook launch
 Now launch the following command from the repository root:
 
 ```{.bash filename="Ansible command"}
@@ -135,7 +136,7 @@ scp common-user-to-all-servers@k3s-control-1:~/.kube/config ~/.kube/config
 sudo kubectl get nodes
 ```
 
-:::{.callout-warning}
+:::{.callout-important}
 ## Worker nodes not showing in the cluster
 Check what's wrong with the ansible steps when reaching workers
 :::

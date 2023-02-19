@@ -87,6 +87,10 @@ Remember to exchange your SSH public key with the rest of the servers, else Ansi
 # You have to exchange your public SSH key with them
 ansible_user: "common-user-to-all-servers"
 
+# apiserver_endpoint is virtual ip-address which will be configured on each master
+# Make sure this IP is within the network range and is reachable
+apiserver_endpoint: "192.168.30.222"
+
 # k3s_token is required  masters can talk together securely
 # this token should be alpha numeric only
 k3s_token: "some-SUPER-DEDEUPER-secret-password"
@@ -112,6 +116,7 @@ apk add acf-openssl
 ```
 :::
 
+# Installation
 ## Ansible playbook launch
 Now launch the following command from the repository root:
 
@@ -137,6 +142,69 @@ sudo kubectl get nodes
 ```
 
 :::{.callout-important}
-## Worker nodes not showing in the cluster
+## Worker nodes not showing in the cluster in the first attempt
 Check what's wrong with the ansible steps when reaching workers
 :::
+
+After restarting the nodes and launching the playbook several times, now all nodes appear in the k3s cluster:
+
+```{.bash filename="kubectl check of nodes"}
+~/k3s-ansible # kubectl get nodes
+NAME            STATUS   ROLES                       AGE     VERSION
+k3s-control-1   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1
+k3s-control-2   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1
+k3s-control-3   Ready    control-plane,etcd,master   22m     v1.24.10+k3s1
+k3s-worker-1    Ready    <none>                      5m14s   v1.24.10+k3s1
+k3s-worker-2    Ready    <none>                      5m2s    v1.24.10+k3s1
+```
+
+## Deployment example
+The `git` repository has a deployment example of nginx web servers configured to 3 replicas as well as a load balancer service for it.
+
+Once deployed with the following commands:
+
+```{.bash filename="Deploying our first application"}
+kubectl apply -f example/deployment.yml
+kubectl apply -f example/service.yml
+```
+
+We should see 3 nginx pods and a service:
+
+```{.bash filename="Pods deployed on different nodes"}
+~/k3s-ansible # kubectl get pods -o wide
+NAME                     READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES
+nginx-6fb79bc456-79v99   1/1     Running   0          5m47s   10.42.4.3   k3s-worker-2   <none>           <none>
+nginx-6fb79bc456-gj6zh   1/1     Running   0          5m47s   10.42.3.3   k3s-worker-1   <none>           <none>
+nginx-6fb79bc456-qj472   1/1     Running   0          5m47s   10.42.4.2   k3s-worker-2   <none>           <none>
+```
+
+```{.bash filename="Load-balancer service for the Nginx replicas"}
+~/k3s-ansible # kubectl get service -o wide
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+kubernetes   ClusterIP      10.43.0.1      <none>        443/TCP        34m     <none>
+nginx        LoadBalancer   10.43.170.67   10.0.0.11     80:30466/TCP   6m16s   app=nginx
+
+~/k3s-ansible # kubectl describe service nginx
+Name:                     nginx
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=nginx
+Type:                     LoadBalancer
+IP Family Policy:         PreferDualStack
+IP Families:              IPv4
+IP:                       10.43.170.67
+IPs:                      10.43.170.67
+LoadBalancer Ingress:     10.0.0.11
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30466/TCP
+Endpoints:                10.42.3.3:80,10.42.4.2:80,10.42.4.3:80 # Here we can see the endpoints of the nginx replicas
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:
+  Type    Reason        Age    From                Message
+  ----    ------        ----   ----                -------
+  Normal  IPAllocated   6m34s  metallb-controller  Assigned IP ["10.0.0.11"]
+  Normal  nodeAssigned  6m34s  metallb-speaker     announcing from node "k3s-control-2" with protocol "layer2"
+```

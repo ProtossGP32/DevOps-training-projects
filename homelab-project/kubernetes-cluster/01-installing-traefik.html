@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ProtossGP32">
+<meta name="dcterms.date" content="2023-02-19">
+<meta name="description" content="Adding reverse proxy and load balancing to our Kubernetes services">
+
+<title>DevOps Training Projects - 01 - Kubernetes - Traefik + cert-manager</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../homelab-project/requirements/00-requirements.html" rel="next">
+<link href="../../homelab-project/kubernetes-cluster/00-getting-started.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">DevOps Training Projects</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-devops-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">DevOps exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-devops-exercises">    
+        <li class="dropdown-header">Explore California</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-exercises/explore-california/00-introduction.html">
+ <span class="dropdown-text">Explore California</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-homelab-project" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Homelab project</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-homelab-project">    
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/00-introduction.html">
+ <span class="dropdown-text">Homelab project introduction</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Kubernetes Cluster</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/00-getting-started.html">
+ <span class="dropdown-text">00 - Kubernetes - Getting Started</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html">
+ <span class="dropdown-text">01 - Kubernetes - Traefik + cert-manager</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Requirements</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/requirements/00-requirements.html">
+ <span class="dropdown-text">Homelab Requirements</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Self Hosted Software</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+ <span class="dropdown-text">00 - Containers - Docker &amp; Docker Compose</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/01-cloudflare.html">
+ <span class="dropdown-text">01 - External access - Cloudflare</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+ <span class="dropdown-text">02 - Routing and SSL certificates - Traefik and Portainer</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/03-dashy.html">
+ <span class="dropdown-text">03 - Homelab dashboard - Dashy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/04-openldap.html">
+ <span class="dropdown-text">04 - Authentication - OpenLDAP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/05-nextcloud.html">
+ <span class="dropdown-text">05 - Productivity tools - NextCloud</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/06-openproject.html">
+ <span class="dropdown-text">06 - Productivity tools - OpenProject</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/07-sonarqube.html">
+ <span class="dropdown-text">07 - Code analysis - SonarQube</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtual Resources Creation</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html">
+ <span class="dropdown-text">01 - Provisioning - Virtual Machines on Proxmox</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/02-containers.html">
+ <span class="dropdown-text">02 - Provisioning - LXC (Linux Containers on Proxmox)</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtualization Server</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/01-installing-proxmox.html">
+ <span class="dropdown-text">Part 1 - Installing Proxmox VE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/02-virtual-networks.html">
+ <span class="dropdown-text">Part 2 - Internal Virtual Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+ <span class="dropdown-text">Part 3 - DNS and DHCP servers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+ <span class="dropdown-text">Part 4 - Proxy HTTP(S) into the internal network</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/protossgp32"><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">01 - Kubernetes - Traefik + cert-manager</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/00-introduction.html" class="sidebar-item-text sidebar-link">Homelab project introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Kubernetes Cluster</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/kubernetes-cluster/00-getting-started.html" class="sidebar-item-text sidebar-link">00 - Kubernetes - Getting Started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html" class="sidebar-item-text sidebar-link active">01 - Kubernetes - Traefik + cert-manager</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Requirements</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/requirements/00-requirements.html" class="sidebar-item-text sidebar-link">Homelab Requirements</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Self Hosted Software</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/00-docker-and-docker-compose.html" class="sidebar-item-text sidebar-link">00 - Containers - Docker &amp; Docker Compose</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/01-cloudflare.html" class="sidebar-item-text sidebar-link">01 - External access - Cloudflare</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/02-traefik-and-portainer.html" class="sidebar-item-text sidebar-link">02 - Routing and SSL certificates - Traefik and Portainer</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/03-dashy.html" class="sidebar-item-text sidebar-link">03 - Homelab dashboard - Dashy</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="sidebar-item-text sidebar-link">04 - Authentication - OpenLDAP</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="sidebar-item-text sidebar-link">05 - Productivity tools - NextCloud</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/06-openproject.html" class="sidebar-item-text sidebar-link">06 - Productivity tools - OpenProject</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/self-hosted-software/07-sonarqube.html" class="sidebar-item-text sidebar-link">07 - Code analysis - SonarQube</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Virtual Resources Creation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">01 - Provisioning - Virtual Machines on Proxmox</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Virtualization Server</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Internal Virtual Networks</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="sidebar-item-text sidebar-link">Part 3 - DNS and DHCP servers</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link">Part 4 - Proxy HTTP(S) into the internal network</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#installing-helm" id="toc-installing-helm" class="nav-link" data-scroll-target="#installing-helm">Installing Helm</a></li>
+  <li><a href="#installing-traefik" id="toc-installing-traefik" class="nav-link" data-scroll-target="#installing-traefik">Installing Traefik</a></li>
+  <li><a href="#installing-traefik-middleware-for-default-headers" id="toc-installing-traefik-middleware-for-default-headers" class="nav-link" data-scroll-target="#installing-traefik-middleware-for-default-headers">Installing Traefik Middleware for default headers</a></li>
+  <li><a href="#enable-traefik-dashboard-access" id="toc-enable-traefik-dashboard-access" class="nav-link" data-scroll-target="#enable-traefik-dashboard-access">Enable Traefik Dashboard access</a>
+  <ul class="collapse">
+  <li><a href="#create-basic-auth-credentials" id="toc-create-basic-auth-credentials" class="nav-link" data-scroll-target="#create-basic-auth-credentials">Create basic auth credentials</a></li>
+  <li><a href="#create-dashboard-middleware-for-basic-authentication" id="toc-create-dashboard-middleware-for-basic-authentication" class="nav-link" data-scroll-target="#create-dashboard-middleware-for-basic-authentication">Create Dashboard middleware for basic authentication</a></li>
+  <li><a href="#create-ingress-rules-to-access-traefikservice-api-through-a-hostname" id="toc-create-ingress-rules-to-access-traefikservice-api-through-a-hostname" class="nav-link" data-scroll-target="#create-ingress-rules-to-access-traefikservice-api-through-a-hostname">Create Ingress rules to access TraefikService API through a hostname</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/kubernetes-cluster/01-installing-traefik.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">01 - Kubernetes - Traefik + cert-manager</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Kubernetes</div>
+    <div class="quarto-category">Traefik</div>
+    <div class="quarto-category">cert-manager</div>
+    <div class="quarto-category">k3s</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Adding reverse proxy and load balancing to our Kubernetes services
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ProtossGP32 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 19, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Now that we have our K3S cluster deployed and some apps running, the next logical step is to make them accessible. We’re going to install the following components to our cluster for this:</p>
+<ul>
+<li><a href="https://traefik.io/traefik/">Traefik:</a> Traefik acts as both a load balancer and a reverse proxy that makes deploying microservices easy</li>
+<li><a href="https://cert-manager.io/">cert-manager:</a> cert-manager is a powerful and extensive X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry</li>
+</ul>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<p>Again, we’ll be following <a href="https://docs.technotim.live/posts/kube-traefik-cert-manager-le/">this guide from TehcnoTim</a> with minor changes that will be explained during the process.</p>
+<p>We’ll use <a href="https://helm.sh/">Helm</a> to install some of the resources.</p>
+<ul>
+<li>Helm is a package manager for Kubernetes. It’s an easy way to find, share and use software built for Kubernetes</li>
+<li>Each Kubernetes package is called a <em>chart</em></li>
+</ul>
+<section id="installing-helm" class="level2">
+<h2 class="anchored" data-anchor-id="installing-helm">Installing Helm</h2>
+<p>Helm is an executable which is implemented into two distinct parts:</p>
+<ul>
+<li><em>Helm Client:</em> command-line client for end users. It is responsible for the following:
+<ul>
+<li>Local chart development</li>
+<li>Managing repositories</li>
+<li>Managing releases</li>
+<li>Interfacing with the Helm library
+<ul>
+<li>Sending charts to be installed</li>
+<li>Requesting upgrading or uninstalling of existing releases</li>
+</ul></li>
+</ul></li>
+<li><em>Helm Library:</em> it provides the logic for executing all Helm operations. It interfaces with the Kubernetes API serer and provides the following capability:
+<ul>
+<li>Combining a chart and configuration to build a release</li>
+<li>Installing charts into Kubernetes, and providing the subsequent release object</li>
+<li>Upgrading and uninstalling charts by interacting with Kubernetes</li>
+</ul></li>
+</ul>
+<p>The following commands automate the helm installation:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Install it on a server with access to the k3s cluster!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the server doesn’t have the <code>kubectl</code> binary and access to the cluster, Helm won’t be able to communicate with the Kubernetes API</p>
+</div>
+</div>
+<p>We’ll install helm on the LXC Alpine container where we previously installed <code>ansible</code> and <code>kubectl</code>:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Helm installation</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">-o</span> get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">chmod</span> 700 get_helm.sh</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># Use `sh` instead of `bash` in alpine</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">sh</span> get_helm.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Failure on helm download script
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In Alpine, we don’t have <code>bash</code> shell, so we have to execute the script using <code>sh</code>; thus, some commands don’t execute as expected. Executing as <code>sh -x get_helm.sh</code>, we see that the error is in the comparison of the result of the <code>runAsRoot</code> function:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">+</span> runAsRoot cp /tmp/helm-installer-bOIFjI/helm/linux-amd64/helm /usr/local/bin/helm</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">+</span> <span class="st">'['</span> <span class="at">-ne</span> 0 <span class="at">-a</span> true <span class="st">'='</span> true ]</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="ex">sh:</span> 0: unknown operand</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Even though the verification fails, the binary is correctly installed:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">ls</span> <span class="at">-l</span> /usr/local/bin/helm</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">-rwxr-xr-x</span>    1 root     root      46870528 Feb 19 12:31 /usr/local/bin/helm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Verify once again that we can reach the k3s cluster and that helm is correctly installed:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Helm verification</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">kubectl</span> get nodes</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">NAME</span>            STATUS   ROLES                       AGE   VERSION</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="ex">k3s-control-1</span>   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="ex">k3s-control-2</span>   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="ex">k3s-control-3</span>   Ready    control-plane,etcd,master   8h    v1.24.10+k3s1</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="ex">k3s-worker-1</span>    Ready    <span class="op">&lt;</span>none<span class="op">&gt;</span>                      8h    v1.24.10+k3s1</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="ex">k3s-worker-2</span>    Ready    <span class="op">&lt;</span>none<span class="op">&gt;</span>                      8h    v1.24.10+k3s1</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="ex">helm</span> version</span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="ex">version.BuildInfo{Version:</span><span class="st">"v3.11.1"</span><span class="ex">,</span> GitCommit:<span class="st">"293b50c65d4d56187cd4e2f390f0ada46b4c4737"</span>, GitTreeState:<span class="st">"clean"</span>, GoVersion:<span class="st">"go1.18.10"</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Clone the resources!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>From now on, we’ll be deploying components using the resources that the guide provides to us in <a href="https://github.com/techno-tim/launchpad/tree/master/kubernetes/traefik-cert-manager">this github repository</a>. Make sure to clone them into the Helm server!</p>
+<p>You can use this <a href="https://stackoverflow.com/questions/600079/how-do-i-clone-a-subdirectory-only-of-a-git-repository">StackOverflow response</a> to only checkout a subfolder of the whole repository.</p>
+</div>
+</div>
+</section>
+<section id="installing-traefik" class="level2">
+<h2 class="anchored" data-anchor-id="installing-traefik">Installing Traefik</h2>
+<p>Now we’ll use Helm to install Traefik. First of all, modify the <code>kubernetes/traefik-cert-manager/traefik/values.yaml</code> so the <code>service.spec.loadBalancerIP</code> points towards an available IP within the MetalLB range:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>values.yaml</strong></pre>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">service</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="at">    </span><span class="kw">[</span><span class="at">...</span><span class="kw">]</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="at">    </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="at">        </span><span class="fu">loadBalancerIP</span><span class="kw">:</span><span class="at"> </span><span class="fl">10.0.0.12</span><span class="co"> # We use .12 as .11 is currently used by the nginx example</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, follow these steps to add the traefik repo and install it:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Traefik installation</strong></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Add the traefik repository</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="ex">$</span> helm repo add traefik https://helm.traefik.io/traefik</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">"traefik"</span> has been added to your repositories</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># Update the traefik repository</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="ex">$</span> helm repo update</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="ex">Hang</span> tight while we grab the latest from your chart repositories...</span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="ex">...Successfully</span> got an update from the <span class="st">"traefik"</span> chart repository</span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="ex">Update</span> Complete. ⎈Happy Helming!⎈</span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co"># Create a new namespace for traefik</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="ex">$</span> kubectl create namespace traefik</span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="ex">namespace/traefik</span> created</span>
+<span id="cb6-14"><a href="#cb6-14"></a></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co"># Get all namespaces</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="ex">$</span> kubectl get namespaces</span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="ex">NAME</span>              STATUS   AGE</span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="ex">default</span>           Active   8h</span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="ex">kube-node-lease</span>   Active   8h</span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="ex">kube-public</span>       Active   8h</span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="ex">kube-system</span>       Active   8h</span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="ex">metallb-system</span>    Active   8h</span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="ex">traefik</span>           Active   31s</span>
+<span id="cb6-24"><a href="#cb6-24"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co"># Now install traefik using the values defined in the resources. We must be on the same folder than the 'values.yaml' file</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="ex">$</span> cd kubernetes/traefik-cert-manager/traefik</span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co"># Launch the installation</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="ex">$</span> helm install <span class="at">--namespace</span><span class="op">=</span>traefik traefik traefik/traefik <span class="at">--values</span><span class="op">=</span>values.yaml</span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="ex">NAME:</span> traefik</span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="ex">LAST</span> DEPLOYED: Sun Feb 19 13:05:36 2023</span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="ex">NAMESPACE:</span> traefik</span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="ex">STATUS:</span> deployed</span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="ex">REVISION:</span> 1</span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="ex">TEST</span> SUITE: None</span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="ex">NOTES:</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a><span class="ex">Traefik</span> Proxy v2.9.7 has been deployed successfully</span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="ex">on</span> traefik namespace !</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once installed, check the status of the traefik service:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Traefik service status</strong></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">$</span> kubectl get svc <span class="at">--all-namespaces</span> <span class="at">-o</span> wide</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">NAMESPACE</span>        NAME              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="er">(</span><span class="ex">S</span><span class="kw">)</span>                      <span class="ex">AGE</span>    SELECTOR</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="ex">default</span>          kubernetes        ClusterIP      10.43.0.1       <span class="op">&lt;</span>none<span class="op">&gt;</span>        443/TCP                      8h     <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">default</span>          nginx             LoadBalancer   10.43.170.67    10.0.0.11     80:30466/TCP                 8h     app=nginx</span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="ex">kube-system</span>      kube-dns          ClusterIP      10.43.0.10      <span class="op">&lt;</span>none<span class="op">&gt;</span>        53/UDP,53/TCP,9153/TCP       8h     k8s-app=kube-dns</span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="ex">kube-system</span>      metrics-server    ClusterIP      10.43.160.192   <span class="op">&lt;</span>none<span class="op">&gt;</span>        443/TCP                      8h     k8s-app=metrics-server</span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="ex">metallb-system</span>   webhook-service   ClusterIP      10.43.41.163    <span class="op">&lt;</span>none<span class="op">&gt;</span>        443/TCP                      8h     component=controller</span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="ex">traefik</span>          traefik           LoadBalancer   10.43.50.42     10.0.0.12     80:32607/TCP,443:32263/TCP   113s   app.kubernetes.io/instance=traefik-traefik,app.kubernetes.io/name=traefik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Traefik is now accessible through <code>10.0.0.11:80</code></p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Dashboard enabled but not accessible yet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We need to create an Ingress rule to be able to access it. More on this later on.</p>
+</div>
+</div>
+<p>Check the pods currently running on the <code>traefik</code> namespace:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Checking Traefik pods</strong></pre>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">$</span> kubectl get pods <span class="at">--namespace</span> traefik <span class="at">-o</span> wide</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">NAME</span>                      READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="ex">traefik-f775dc87d-8q5vq</span>   1/1     Running   0          3m42s   10.42.3.4   k3s-worker-1   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="ex">traefik-f775dc87d-9z9kr</span>   1/1     Running   0          3m42s   10.42.4.4   k3s-worker-2   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="ex">traefik-f775dc87d-phgh6</span>   1/1     Running   0          3m42s   10.42.3.5   k3s-worker-1   <span class="op">&lt;</span>none<span class="op">&gt;</span>           <span class="op">&lt;</span>none<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can see that we have 3 replicas of traefik running on different worker nodes.</p>
+</section>
+<section id="installing-traefik-middleware-for-default-headers" class="level2">
+<h2 class="anchored" data-anchor-id="installing-traefik-middleware-for-default-headers">Installing Traefik Middleware for default headers</h2>
+<p><a href="https://doc.traefik.io/traefik/middlewares/overview/">What is Traefik Middleware?</a> Middleware is a means of tweaking the requests before they are sent to our services (of before the answer from the services are sent to the clients). This is critical as Traefik acts as a router between the client and the services running in our k3s cluster, thus things like the requests’ headers, authentication, etc. must be modified so they can correctly reach their destination.</p>
+<p>We’ll proceed to install the middleware now. Make sure you are in the same directory as before, where <code>values.yaml</code> and <code>default-headers.yaml</code> files are:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Middleware installation</strong></pre>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">$</span> kubectl apply <span class="at">-f</span> default-headers.yaml</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">middleware.traefik.containo.us/default-headers</span> created</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Some middleware checks:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Middleware checks</strong></pre>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">$</span> kubectl get middleware</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="ex">NAME</span>              AGE</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="ex">default-headers</span>   46s</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="va">$kubectl</span> describe middleware default-headers</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="ex">Name:</span>         default-headers</span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="ex">Namespace:</span>    default</span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="ex">Labels:</span>       <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="ex">Annotations:</span>  <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="ex">API</span> Version:  traefik.containo.us/v1alpha1</span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="ex">Kind:</span>         Middleware</span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="ex">Metadata:</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a>  <span class="ex">Creation</span> Timestamp:  2023-02-19T13:22:04Z</span>
+<span id="cb10-14"><a href="#cb10-14"></a>  <span class="ex">Generation:</span>          1</span>
+<span id="cb10-15"><a href="#cb10-15"></a>  <span class="ex">Managed</span> Fields:</span>
+<span id="cb10-16"><a href="#cb10-16"></a>    <span class="ex">API</span> Version:  traefik.containo.us/v1alpha1</span>
+<span id="cb10-17"><a href="#cb10-17"></a>    <span class="ex">Fields</span> Type:  FieldsV1</span>
+<span id="cb10-18"><a href="#cb10-18"></a>    <span class="ex">fieldsV1:</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a>      <span class="ex">f:metadata:</span></span>
+<span id="cb10-20"><a href="#cb10-20"></a>        <span class="ex">f:annotations:</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a>          <span class="ex">.:</span></span>
+<span id="cb10-22"><a href="#cb10-22"></a>          <span class="ex">f:kubectl.kubernetes.io/last-applied-configuration:</span></span>
+<span id="cb10-23"><a href="#cb10-23"></a>      <span class="ex">f:spec:</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a>        <span class="ex">.:</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a>        <span class="ex">f:headers:</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a>          <span class="ex">.:</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a>          <span class="ex">f:browserXssFilter:</span></span>
+<span id="cb10-28"><a href="#cb10-28"></a>          <span class="ex">f:contentTypeNosniff:</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a>          <span class="ex">f:customFrameOptionsValue:</span></span>
+<span id="cb10-30"><a href="#cb10-30"></a>          <span class="ex">f:customRequestHeaders:</span></span>
+<span id="cb10-31"><a href="#cb10-31"></a>            <span class="ex">.:</span></span>
+<span id="cb10-32"><a href="#cb10-32"></a>            <span class="ex">f:X-Forwarded-Proto:</span></span>
+<span id="cb10-33"><a href="#cb10-33"></a>          <span class="ex">f:forceSTSHeader:</span></span>
+<span id="cb10-34"><a href="#cb10-34"></a>          <span class="ex">f:stsIncludeSubdomains:</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a>          <span class="ex">f:stsPreload:</span></span>
+<span id="cb10-36"><a href="#cb10-36"></a>          <span class="ex">f:stsSeconds:</span></span>
+<span id="cb10-37"><a href="#cb10-37"></a>    <span class="ex">Manager:</span>         kubectl-client-side-apply</span>
+<span id="cb10-38"><a href="#cb10-38"></a>    <span class="ex">Operation:</span>       Update</span>
+<span id="cb10-39"><a href="#cb10-39"></a>    <span class="ex">Time:</span>            2023-02-19T13:22:04Z</span>
+<span id="cb10-40"><a href="#cb10-40"></a>  <span class="ex">Resource</span> Version:  122070</span>
+<span id="cb10-41"><a href="#cb10-41"></a>  <span class="ex">UID:</span>               c8e92a6a-5e0d-4aba-9563-72363dd2606e</span>
+<span id="cb10-42"><a href="#cb10-42"></a><span class="ex">Spec:</span></span>
+<span id="cb10-43"><a href="#cb10-43"></a>  <span class="ex">Headers:</span></span>
+<span id="cb10-44"><a href="#cb10-44"></a>    <span class="ex">Browser</span> Xss Filter:          true</span>
+<span id="cb10-45"><a href="#cb10-45"></a>    <span class="ex">Content</span> Type Nosniff:        true</span>
+<span id="cb10-46"><a href="#cb10-46"></a>    <span class="ex">Custom</span> Frame Options Value:  SAMEORIGIN</span>
+<span id="cb10-47"><a href="#cb10-47"></a>    <span class="ex">Custom</span> Request Headers:</span>
+<span id="cb10-48"><a href="#cb10-48"></a>      <span class="ex">X</span> <span class="at">-</span> Forwarded <span class="at">-</span> Proto:  https</span>
+<span id="cb10-49"><a href="#cb10-49"></a>    <span class="ex">Force</span> STS Header:         true</span>
+<span id="cb10-50"><a href="#cb10-50"></a>    <span class="ex">Sts</span> Include Subdomains:   true</span>
+<span id="cb10-51"><a href="#cb10-51"></a>    <span class="ex">Sts</span> Preload:              true</span>
+<span id="cb10-52"><a href="#cb10-52"></a>    <span class="ex">Sts</span> Seconds:              15552000</span>
+<span id="cb10-53"><a href="#cb10-53"></a><span class="ex">Events:</span>                       <span class="op">&lt;</span>none<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="enable-traefik-dashboard-access" class="level2">
+<h2 class="anchored" data-anchor-id="enable-traefik-dashboard-access">Enable Traefik Dashboard access</h2>
+<p>In order to properly manage Traefik, we’ll enable an Ingress rule towards the Dashboard that will give us access to create and monitor all routes to our services:</p>
+<section id="create-basic-auth-credentials" class="level3">
+<h3 class="anchored" data-anchor-id="create-basic-auth-credentials">Create basic auth credentials</h3>
+<p>First of all, install some required apache utils for password generation:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Apache2 utils</strong></pre>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Alpine</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="ex">$</span> apk add apache2-utils</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Create a username/password credentials encoded in <code>base64</code>:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Creating credentials</strong></pre>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">$</span> htpasswd <span class="at">-nb</span> <span class="op">&lt;</span>username<span class="op">&gt;</span> <span class="op">&lt;</span>password<span class="op">&gt;</span> <span class="kw">|</span> <span class="ex">openssl</span> base64</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co"># The resulting string is the encoded credentials</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Go to the Dashboard folder and follow these steps:</p>
+<ul>
+<li>Modify the dashboard/secret-dashboard.yaml file to include the previously generated credentials</li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>secret-dashboard.yaml</strong></pre>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">[</span><span class="at">...</span><span class="kw">]</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">data</span><span class="kw">:</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="at">    </span><span class="fu">users</span><span class="kw">:</span><span class="at"> &lt;your-base64-newly-created credentials</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Apply the secret to make it available in the <code>traefik</code> namespace:</li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Dashboard Secret applying</strong></pre>
+</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="ex">$</span> kubectl apply <span class="at">-f</span> secret-dashboard.yaml</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="ex">secret/traefik-dashboard-auth</span> created</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Check that the secrets have been created:</li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Secret check</strong></pre>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">$</span> kubectl get secrets <span class="at">--namespace</span> traefik</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="ex">NAME</span>                            TYPE                 DATA   AGE</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="ex">sh.helm.release.v1.traefik.v1</span>   helm.sh/release.v1   1      33m</span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="ex">traefik-dashboard-auth</span>          Opaque               1      63s</span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="ex">$</span> kubectl <span class="at">-n</span> traefik describe secret traefik-dashboard-auth</span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="ex">Name:</span>         traefik-dashboard-auth</span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="ex">Namespace:</span>    traefik</span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="ex">Labels:</span>       <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="ex">Annotations:</span>  <span class="op">&lt;</span>none<span class="op">&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="ex">Type:</span>  Opaque</span>
+<span id="cb15-13"><a href="#cb15-13"></a></span>
+<span id="cb15-14"><a href="#cb15-14"></a><span class="ex">Data</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a><span class="ex">====</span></span>
+<span id="cb15-16"><a href="#cb15-16"></a><span class="ex">users:</span>  47 bytes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-dashboard-middleware-for-basic-authentication" class="level3">
+<h3 class="anchored" data-anchor-id="create-dashboard-middleware-for-basic-authentication">Create Dashboard middleware for basic authentication</h3>
+<p>Traefik dashboard needs another middleware to deal with the authentication process. Just deploy the <code>middleware.yaml</code> file, you don’t have to modify anything from it:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Deploy dashboard auth middleware and check</strong></pre>
+</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="ex">$</span> kubectl apply <span class="at">-f</span> middleware.yaml</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="ex">middleware.traefik.containo.us/traefik-dashboard-basicauth</span> created</span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="ex">$</span> kubectl <span class="at">-n</span> traefik get middleware</span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="ex">NAME</span>                          AGE</span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="ex">traefik-dashboard-basicauth</span>   12s</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-ingress-rules-to-access-traefikservice-api-through-a-hostname" class="level3">
+<h3 class="anchored" data-anchor-id="create-ingress-rules-to-access-traefikservice-api-through-a-hostname">Create Ingress rules to access TraefikService API through a hostname</h3>
+<p>You also have to make sure that the Traefik service IP (the one we configured in the <code>values.yaml</code> and that is part of the MetalLB IP range) is accessible through a hostname. We must create a DNS record for this in our DNS server (PiHole)</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO: Explain how to configure the DNS record towards an internal network and how to check it
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<p>After that is done, modify the <code>ingress.yaml</code> file accordingly:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>ingress.yaml</strong></pre>
+</div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="at">  </span><span class="fu">entryPoints</span><span class="kw">:</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="at">    </span><span class="kw">-</span><span class="at"> websecure</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="at">  </span><span class="fu">routes</span><span class="kw">:</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">match</span><span class="kw">:</span><span class="at"> Host(`traefik.pve-internal.protossnet.local`)</span><span class="co"> # This is where we put the hostname defined in the DNS record</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Apply the YAML file as always:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Deploying Traefik Ingress rule</strong></pre>
+</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="ex">$</span> kubectl apply <span class="at">-f</span> ingress.yaml</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="ex">ingressroute.traefik.containo.us/traefik-dashboard</span> created</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we should be able to access the web dashboard at the following address: <code>https://traefik.pve-internal.protossnet.local</code></p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Check DHCP and DNS configuration for internal network
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>PiHole doesn’t seem to redirect requests to the internal network!</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+COMING SOON
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add the <code>cert-manager</code> component and configure Traefik to provide certificates to our kubernetes services</p>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../homelab-project/kubernetes-cluster/00-getting-started.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">00 - Kubernetes - Getting Started</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../homelab-project/requirements/00-requirements.html" class="pagination-link">
+        <span class="nav-page-text">Homelab Requirements</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+</ul>
+      </div>
+  </div>
+</footer>
+
+
+
+</body></html>

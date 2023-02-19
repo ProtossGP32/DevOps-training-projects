@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-01-17">
-<meta name="description" content="Install your own virtualisation server">
+<meta name="dcterms.date" content="2023-02-19">
+<meta name="description" content="Adding SSL routing to our Kubernetes services">
 
-<title>DevOps Training Projects - Part 1 - Installing Proxmox VE</title>
+<title>DevOps Training Projects - 00 - Kubernetes - Traefik + cert-manager</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -96,8 +96,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtualization-server/02-virtual-networks.html" rel="next">
-<link href="../../homelab-project/virtual-resources-creation/02-containers.html" rel="prev">
+<link href="../../homelab-project/requirements/00-requirements.html" rel="next">
+<link href="../../homelab-project/kubernetes-cluster/00-getting-started.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -181,8 +181,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="dropdown-text">00 - Kubernetes - Getting Started</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html">
- <span class="dropdown-text">01 - Kubernetes - Traefik + cert-manager</span></a>
+    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/01-installing traefik.html">
+ <span class="dropdown-text">00 - Kubernetes - Traefik + cert-manager</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
         <li class="dropdown-header">Requirements</li>
@@ -280,7 +280,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Part 1 - Installing Proxmox VE</h1>
+      <h1 class="quarto-secondary-nav-title">00 - Kubernetes - Traefik + cert-manager</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -313,7 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html" class="sidebar-item-text sidebar-link">01 - Kubernetes - Traefik + cert-manager</a>
+  <a href="../../homelab-project/kubernetes-cluster/01-installing traefik.html" class="sidebar-item-text sidebar-link active">00 - Kubernetes - Traefik + cert-manager</a>
   </div>
 </li>
       </ul>
@@ -413,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link active">Part 1 - Installing Proxmox VE</a>
+  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -442,35 +442,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-is-proxmox-ve" id="toc-what-is-proxmox-ve" class="nav-link active" data-scroll-target="#what-is-proxmox-ve">What is Proxmox VE?</a></li>
-  <li><a href="#initial-configuration" id="toc-initial-configuration" class="nav-link" data-scroll-target="#initial-configuration">Initial configuration</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
   <ul class="collapse">
-  <li><a href="#ip-address-assigned-via-dhcp" id="toc-ip-address-assigned-via-dhcp" class="nav-link" data-scroll-target="#ip-address-assigned-via-dhcp">IP address assigned via DHCP</a></li>
-  <li><a href="#allow-https-on-port-443-via-nginx" id="toc-allow-https-on-port-443-via-nginx" class="nav-link" data-scroll-target="#allow-https-on-port-443-via-nginx">Allow HTTPS on Port 443 via Nginx</a>
-  <ul class="collapse">
-  <li><a href="#install-and-configure-nginx" id="toc-install-and-configure-nginx" class="nav-link" data-scroll-target="#install-and-configure-nginx">Install and Configure Nginx</a></li>
-  <li><a href="#restart-nginx-and-enable-it-by-default" id="toc-restart-nginx-and-enable-it-by-default" class="nav-link" data-scroll-target="#restart-nginx-and-enable-it-by-default">Restart Nginx and Enable it by Default</a></li>
-  <li><a href="#make-proxmox-ui-service-listen-to-localhost-only" id="toc-make-proxmox-ui-service-listen-to-localhost-only" class="nav-link" data-scroll-target="#make-proxmox-ui-service-listen-to-localhost-only">Make Proxmox UI Service Listen to Localhost Only</a></li>
-  </ul></li>
+  <li><a href="#installing-helm" id="toc-installing-helm" class="nav-link" data-scroll-target="#installing-helm">Installing Helm</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/virtualization-server/01-installing-proxmox.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/kubernetes-cluster/01-installing traefik.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Part 1 - Installing Proxmox VE</h1>
+<h1 class="title d-none d-lg-block">00 - Kubernetes - Traefik + cert-manager</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Proxmox VE</div>
-    <div class="quarto-category">Virtualisation</div>
+    <div class="quarto-category">Kubernetes</div>
+    <div class="quarto-category">Traefik</div>
+    <div class="quarto-category">cert-manager</div>
+    <div class="quarto-category">k3s</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Install your own virtualisation server
+    Adding SSL routing to our Kubernetes services
   </div>
 </div>
 
@@ -487,7 +483,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 17, 2023</p>
+      <p class="date">February 19, 2023</p>
     </div>
   </div>
   
@@ -497,203 +493,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="what-is-proxmox-ve" class="level1">
-<h1>What is Proxmox VE?</h1>
-<div class="callout-warning callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-TODO
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Pending to describe Proxmox</p>
-</div>
-</div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Now that we have our K3S cluster deployed and some apps running, the next logical step is to make them accessible. We’re going to install the following components to our cluster for this:</p>
+<ul>
+<li><a href="https://traefik.io/traefik/">Traefik:</a> Traefik acts as both a load balancer and a reverse proxy that makes deploying microservices easy</li>
+<li><a href="https://cert-manager.io/">cert-manager:</a> cert-manager is a powerful and extensive X.509 certificate controller for Kubernetes and OpenShift workloads. It will obtain certificates from a variety of issuers, both popular public Issuers as well as private Issuers, and ensure the certificates are valid and up-to-date, and will attempt to renew certificates at a configured time before expiry</li>
+</ul>
 </section>
-<section id="initial-configuration" class="level1">
-<h1>Initial configuration</h1>
-<section id="ip-address-assigned-via-dhcp" class="level2">
-<h2 class="anchored" data-anchor-id="ip-address-assigned-via-dhcp">IP address assigned via DHCP</h2>
-<p>This way the DHCP server will assign the correct domain name and the server will be accessible by its domain name.</p>
-<p>A server should always have a predictable IP, so configure the DHCP server to lease the same IP to the Proxmox server network MAC address.</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-TODO
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Pending to elaborate</p>
-</div>
-</div>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<p>We’ll use <a href="https://helm.sh/">Helm</a> to install some of the resources.</p>
+<ul>
+<li>Helm is a package manager for Kubernetes. It’s an easy way to find, share and use software built for Kubernetes</li>
+<li>Each Kubernetes package is called a <em>chart</em></li>
+</ul>
+<section id="installing-helm" class="level2">
+<h2 class="anchored" data-anchor-id="installing-helm">Installing Helm</h2>
+<p>Helm is an executable which is implemented into two distinct parts:</p>
+<ul>
+<li>Helm Client: command-line client for end users. It is responsible for the following:
+<ul>
+<li>Local chart development</li>
+<li>Managing repositories</li>
+<li>Managing releases</li>
+<li>Interfacing with the Helm library
+<ul>
+<li>Sending charts to be installed</li>
+<li>Requesting upgrading or uninstalling of existing releases</li>
+</ul></li>
+</ul></li>
+<li>Helm Library: it provides the logic for executing all Helm operations. It interfaces with the Kubernetes API serer and provides the following capability:
+<ul>
+<li>Combining a chart and configuration to build a release</li>
+<li>Installing charts into Kubernetes, and providing the subsequent release object</li>
+<li>Upgrading and uninstalling charts by interacting with Kubernetes</li>
+</ul></li>
+</ul>
+<p>The following commands automate the helm installation:</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Regarding DNS and DHCP servers…
+Install it on a server with access to the k3s cluster!
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Later on, we’ll configure our own virtual DHCP and DNS servers to provide internal IPs to our VM and containers.</p>
+<p>If the server doesn’t have the <code>kubectl</code> binary and access to the cluster, Helm won’t be able to communicate with the Kubernetes API</p>
 </div>
 </div>
-</section>
-<section id="allow-https-on-port-443-via-nginx" class="level2">
-<h2 class="anchored" data-anchor-id="allow-https-on-port-443-via-nginx">Allow HTTPS on Port 443 via Nginx</h2>
-<p>As Lars mentions in his guide, the web interface of Proxmox is available on port <code>8006</code> instead of the default HTTPS port <code>443</code>, and HTTP on Port <code>80</code> is not available at all.</p>
-<p>Having HTTPS acesses through ports different than <code>443</code> can be very bothersome as we need to remember what exact port is the one used on each service.</p>
-<p>In order to solve this, we’ll use a light-weight web server that also acts as a reverse proxy natively in the Proxmox server, so we can redirect <code>443</code> requests to the <code>8006</code> port.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-About Nginx…
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Later on we’ll be also deploying other Nginx servers within our internal networks to redirect traffic to each one of our services</p>
-</div>
-</div>
-<section id="install-and-configure-nginx" class="level3">
-<h3 class="anchored" data-anchor-id="install-and-configure-nginx">Install and Configure Nginx</h3>
-<p>Connect via <code>SSH</code> to the PVE server as <code>root</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">ssh</span> root@<span class="op">&lt;</span>proxmox-ip<span class="op">&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># or</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">ssh</span> root@<span class="op">&lt;</span>proxmox-hostname<span class="op">&gt;</span>.<span class="op">&lt;</span>local-domain<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Install the <code>nginx-light</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">apt-get</span> install nginx-light</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>A web server should already be up and running. Verify it by accessing <code>http://&lt;proxmox-ip&gt;/</code> or <code>http://&lt;proxmox-hostname&gt;.&lt;local-domain&gt;</code>, a blank welcome screen should appear.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../../images/homelab-project/virtualization/proxmox-nginx-welcome-web-page.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Nginx welcome web page</figcaption><p></p>
-</figure>
-</div>
-<p>Once done, remove the default Nginx configuration from the Proxmox server…</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">rm</span> /etc/nginx/sites-<span class="pp">*</span>/default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>…and create a new file <code>/etc/nginx/sites-available/proxmox-web-interface</code> with the following content:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>/etc/nginx/sites-available/proxmox-web-interface</strong></pre>
+<pre><strong>Helm installation</strong></pre>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource py number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>server {</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="co"># Enforce HTTPS by redirecting requests</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>  listen <span class="dv">80</span><span class="op">;</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>  listen [::]:<span class="dv">80</span><span class="op">;</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>  server_name pve.protossnet.local<span class="op">;</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a></span>
-<span id="cb4-7"><a href="#cb4-7"></a>  location <span class="op">/</span> {</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="cf">return</span> <span class="dv">301</span> https:<span class="op">//</span>pve.protossnet.local$request_uri<span class="op">;</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>  }</span>
-<span id="cb4-10"><a href="#cb4-10"></a>}</span>
-<span id="cb4-11"><a href="#cb4-11"></a></span>
-<span id="cb4-12"><a href="#cb4-12"></a>server {</span>
-<span id="cb4-13"><a href="#cb4-13"></a>  listen <span class="dv">443</span> ssl http2<span class="op">;</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a>  listen [::]:<span class="dv">443</span> ssl http2<span class="op">;</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>  server_name pve.protossnet.local<span class="op">;</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a></span>
-<span id="cb4-17"><a href="#cb4-17"></a>  ssl_certificate_key <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.key<span class="op">;</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a>  ssl_certificate     <span class="op">/</span>etc<span class="op">/</span>pve<span class="op">/</span>local<span class="op">/</span>pve<span class="op">-</span>ssl.pem<span class="op">;</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a></span>
-<span id="cb4-20"><a href="#cb4-20"></a>  <span class="co"># Proxy configuration</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a>  location <span class="op">/</span> {</span>
-<span id="cb4-22"><a href="#cb4-22"></a>    proxy_http_version <span class="fl">1.1</span><span class="op">;</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a>    proxy_set_header Upgrade $http_upgrade<span class="op">;</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a>    proxy_set_header Connection <span class="st">"upgrade"</span><span class="op">;</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a>    proxy_pass https:<span class="op">//</span><span class="fl">127.0.0.1</span>:<span class="dv">8006</span><span class="op">;</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a>    proxy_buffering off<span class="op">;</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a>    client_max_body_size <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a>    proxy_connect_timeout  <span class="dv">3600</span><span class="er">s</span><span class="op">;</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a>    proxy_read_timeout  <span class="dv">3600</span><span class="er">s</span><span class="op">;</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a>    proxy_send_timeout  <span class="dv">3600</span><span class="er">s</span><span class="op">;</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a>    send_timeout  <span class="dv">3600</span><span class="er">s</span><span class="op">;</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a>    proxy_set_header Host $host<span class="op">;</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a>    proxy_ssl_name $host<span class="op">;</span></span>
-<span id="cb4-34"><a href="#cb4-34"></a>    proxy_set_header X<span class="op">-</span>Forwarded<span class="op">-</span>For $remote_addr<span class="op">;</span></span>
-<span id="cb4-35"><a href="#cb4-35"></a>  }</span>
-<span id="cb4-36"><a href="#cb4-36"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource shell number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3</span>
+<span id="cb1-2"><a href="#cb1-2"></a>chmod 700 get_helm.sh</span>
+<span id="cb1-3"><a href="#cb1-3"></a>./get_helm.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Lars has additional and more complex Nginx configs for the web interface, it’s worth checking them out to learn about how Nginx works and how powerful it can be!</p>
-</div>
-</div>
-<p>After updating the configuration, we must create a softlink from the <code>sites-enabled</code> directory to make it available:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">cd</span> /etc/nginx/sites-enabled</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">ln</span> <span class="at">-s</span> /etc/nginx/sites-available/proxmox-web-interface</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Finally, we check if Nginx can spot any errors:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">nginx</span> <span class="at">-t</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="restart-nginx-and-enable-it-by-default" class="level3">
-<h3 class="anchored" data-anchor-id="restart-nginx-and-enable-it-by-default">Restart Nginx and Enable it by Default</h3>
-<p>To start Nginx and make sure it starts automatically after a system reboot, run:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Restart the Nginx service</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">systemctl</span> restart nginx.service</span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co"># Permanently enable the Nginx service</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">systemctl</span> enable nginx.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Finally, make sure that Nginx will start only after Proxmox starts, since the certificates may otherwise not be available yet. To do that, create a file <code>/etc/systemd/system/nginx.service.d/override.conf</code> with the content:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">[Unit]</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="va">Requires</span><span class="op">=</span>pve-cluster.service</span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="va">After</span><span class="op">=</span>pve-cluster.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Alternatively, you can also use <code>systemctl edit nginx.service</code> to edit this file.</p>
-<p>With the service restarted, check that we can access the Proxmox VE web interface through the expected HTTPS port by going to <code>https://&lt;proxmox-hostname&gt;.&lt;local-domain&gt;</code> or <code>https://&lt;proxmox-ip&gt;</code>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../../images/homelab-project/virtualization/proxmox-nginx-correct-redirection.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Proxmox - Nginx correctly redirecting HTTPS request</figcaption><p></p>
-</figure>
-</div>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-What about the insecure HTTPS warning?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Right now Nginx is using the SSL certificates provided by Proxmox on installation time. We should provide valid SSL certifications to avoid this, such as the ones that Let’s Encript can generate.</p>
-</div>
-</div>
-</section>
-<section id="make-proxmox-ui-service-listen-to-localhost-only" class="level3">
-<h3 class="anchored" data-anchor-id="make-proxmox-ui-service-listen-to-localhost-only">Make Proxmox UI Service Listen to Localhost Only</h3>
-<div class="callout-warning callout callout-style-simple">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Lars suggests this change to ensure that <em>everyone is using the Nginx set-up</em>, but I don’t really understand what exactly means. I’ve applied the change and at least I can still access it from within my local network.</p>
-</div>
-</div>
-</div>
-<p>Create <code>/etc/default/pveproxy</code> and set:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="va">LISTEN_IP</span><span class="op">=</span><span class="st">"127.0.0.1"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then restart the <code>pveproxy</code> service:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">systemctl</span> restart pveproxy.service</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
 </section>
 </section>
 
@@ -948,13 +808,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">02 - Provisioning - LXC (Linux Containers on Proxmox)</span>
+      <a href="../../homelab-project/kubernetes-cluster/00-getting-started.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">00 - Kubernetes - Getting Started</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="pagination-link">
-        <span class="nav-page-text">Part 2 - Internal Virtual Networks</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../homelab-project/requirements/00-requirements.html" class="pagination-link">
+        <span class="nav-page-text">Homelab Requirements</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

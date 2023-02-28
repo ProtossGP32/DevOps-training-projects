@@ -1,0 +1,168 @@
+---
+title: "08 - Remote access - Guacamole"
+description: "Access your servers via web browser"
+author: "ProtossGP32"
+date: "2023/02/28"
+categories: ["Docker", "Self-hosted software", "Guacamole", "SSH", "Remote desktop"]
+---
+![](https://www.apache.org/logos/res/guacamole/guacamole.png){width=80% fig-align=center}
+
+# Introduction
+[_From the official page:_](https://guacamole.apache.org/)
+
+> Apache Guacamole is a clientless remote desktop gateway. It supports standard protocols like VNC, RDP, and SSH.
+>
+> We call it clientless because no plugins or client software are required.
+>
+> Thanks to HTML5, once Guacamole is installed on a server, all you need to access your desktops is a web browser.
+
+# Getting started
+We'll be using an already tested docker compose template from user [boschkundendiest](https://github.com/boschkundendienst/guacamole-docker-compose), that automates all the process of launching required extra docker containers such as guacd, postgesql, and several init steps (SSL certificates creation, optional nginx, etc...):
+
+## Install Docker and Docker Compose
+We'll be using a dedicated Alpine LXC to host Guacamole. Start by installing Docker as explained [in this post](00-docker-and-docker-compose.qmd). The difference here is that the package manager is `apk` instead of `apt`, so the commands are:
+
+```{.bash filename="Installing Docker and Docker Compose in Alpine"}
+apk update
+apk add docker docker-cli docker-compose docker-cli-compose
+# Make docker start on reboot
+rc-update add docker default
+```
+
+## Install additional dependencies
+Apart from Docker and Docker Compose, we need the following dependencies:
+- Git to clone boschkundendiest repository
+- OpenSSL to generate self-signed certificates
+- Vim to edit some files
+
+```{.bash filename="Installing OpenSSL in Alpine"}
+apk add git openssl vim
+```
+
+## Clone repository
+
+```{.bash filename="Clone Guacamole Docker Compose repo"}
+git clone https://github.com/boschkundendienst/guacamole-docker-compose.git
+```
+
+## Modify the `docker-compose.yml` file
+By default, this Docker Compose file does the following:
+
+- Creates a network `guacnetwork_compose` with the `bridge` driver
+- Creates a service `guacd_compose` from `guacamole/guacd` connected to `guacnetwork_compose`
+- Creates a service `postgres_guacamole_compose` from `postgres` connected to `guacnetwork_compose`
+- Creates a service `nginx_guacamole_compose` from `nginx` connected to `guacnetwork_compose`
+
+We need to modify two things:
+
+- First of all, replace variables `POSTGRES_USER` and `POSTGRES_PASSWORD` with environment variables that be stored in the secured `.env` file at the same level as the `docker-compose.yml` file:
+
+```{.yml filename="Docker compose env variables"}
+services:
+    # [...]
+    postgres:
+        # [...]
+        environment:
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_USER: ${POSTGRES_PASSWORD}
+    # [...]
+    guacamole:
+        # [...]
+        environment:
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_USER: ${POSTGRES_PASSWORD}
+```
+
+```{.bash filename=".env file"}
+POSTGRES_PASSWORD="Your-super-secure-password"
+POSTGRES_USER="Your-postgres-username"
+```
+- Second, as we'll be using Cloudflare Zero-Trust tunnels for secure connections, we won't be needing the `nginx` service, so we need to correctly map the Guacamole service port to a valid host port and disable all `nginx` configuration:
+
+```{.yml filename="Docker compose nginx-related changes"}
+services:
+    guacamole:
+        # [...]
+        ports:
+        ## enable next line if not using nginx
+        - 8080:8080/tcp # Guacamole is on "localhost:8080/guacamole", not "localhost:8080/".
+        ## enable next line when using nginx
+        # - 8080/tcp
+# [...]
+# Comment anything nginx-related, we don't need it
+########### optional ##############
+#  # nginx
+#  nginx:
+#   container_name: nginx_guacamole_compose
+#   restart: always
+#   image: nginx
+#   volumes:
+#   - ./nginx/templates:/etc/nginx/templates:ro
+#   - ./nginx/ssl/self.cert:/etc/nginx/ssl/self.cert:ro
+#   - ./nginx/ssl/self-ssl.key:/etc/nginx/ssl/self-ssl.key:ro
+#   ports:
+#   - 8443:443
+#   links:
+#   - guacamole
+#   networks:
+#     guacnetwork_compose:
+####################################################################################
+```
+
+## Launch the preparation script from the repository
+At the root of the repository, make sure that `./prepare.sh` has execution permissions and launch it as `root` or `sudo` user if you're using another distribution with an non-privileged user:
+
+```{.bash filename="Preparing the environment for Guacamole"}
+chmod u+x prepare.sh
+./prepare.sh
+```
+
+This will create the required paths for the docker volumes, initialize the PostgreSQL database, and SSL certificates for `nginx` (even though we won't be using them).
+
+Once done, we can deploy the `docker-compose.yml` file:
+
+```{.bash filename="Deploying Guacamole"}
+docker compose up -d
+```
+
+If everything is OK, guacamole web portal shall be available on `<guacamole-server>:8080/guacamole`:
+
+![Guacamole login](../../images/management/guacamole-login.png){width=80%}
+
+:::{.callout-important}
+## Change the default credentials!
+Default username and password are `guacadmin` both. **Make sure to login and change the password first thing!**
+
+Alternative, it's even more secure to create another user with all permissions and delete the `guacadmin` one
+:::
+
+# Configuring Guacamole
+## Create groups of connections
+:::{.callout-warning}
+## TODO
+:::
+
+## Create SSH connections
+Go to the admin panel, select Connections and create a new one. A simple SSH connection only needs these parameters:
+
+- _Name_: the connection name. It shall describe the remote server
+- _Location_: select a group for this connection
+- _Protocol_: select SSH
+
+On _Parameters_, configure the following fields:
+
+- <u>Network:</u>
+    - _Host name_: either the IP or the FQDN of the server
+    - _Port_: 22 by default, change it if it is different
+- <u>Authentication:</u>
+    - _User name_: the user name to connect as
+    - _Password_: the password, if password authentication is enabled in the remote server
+    - _Private key_: the `openssl` private key of the shared public key with the server. It must be 
+
+Save the connection and go back to the main menu. The connection should be available from there.
+
+## Create Remote Desktop connections
+
+:::{.callout-warning}
+## TODO
+:::

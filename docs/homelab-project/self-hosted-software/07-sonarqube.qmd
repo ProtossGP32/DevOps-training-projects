@@ -10,3 +10,69 @@ categories: ["Docker", "Self-hosted software", "SonarQube", "Code analysis"]
 ## TODO
 Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled
 :::
+
+# DevOps platform integration
+Follow [the official guide](https://docs.sonarqube.org/9.8/devops-platform-integration/github-integration/) for deeper insights.
+
+We'll integrate SonarQube with one of our repositories to analyse it.
+
+## Prerequisites
+### Creating a GitHub app
+Follow [the official GitHub App creation guide](https://docs.github.com/en/apps/creating-github-apps/creating-github-apps/creating-a-github-app) to create a new app. The most important steps to be aware of are:
+
+- The App name: short and concise, indicating its purpose. In our case we'll define it as `SonarQube App`
+- The description: A brief description regarding the app nature
+- Homepage URL: mandatory, but for SonarQube we can use any URL. We'll put the URL of our SonarQube instance
+- User authorization callback URL: it's our instance's base URL, so in this case it would be the same as our Homepage URL
+- Webhook URL: SonarQube guide recommends disabling this feature. We'll explore this option in the future
+- Permissions: configure the permissions as told in the SonarQube guide
+
+Click on _Create App_ and you're finished
+
+### Installing the GitHub app in your organization
+Follow [the official GitHub App installation guide](https://docs.github.com/en/apps/maintaining-github-apps/installing-github-apps) to install the newly created App into our organization (i.e. the server where SonarQube is running).
+
+- Basically, browse to your GitHub Apps setting page and select your app
+- In the left sidebar, click **Install App** and select your account
+- Select whether you want the app to access all of your repositories or only some of them
+
+Now your up is alive and running for your account
+
+### Updating the SonarQube global settings with the GitHub App information
+Go back to your SonarQube account and follow the steps from the SonarQube guide:
+
+Navigate to **Administration > Configuration > General Settings > DevOps Platform Integrations > GitHub** and specify the following settings:
+
+- Configuration name: mandatory but only used in Enterprise and Data Center Edition. Give it a concise name, for example `GitHub personal projects`
+- GitHub API URL: it's always the same. As we are using GitHub.com, its URL is `https://api.github.com/`
+- GitHub App ID: found on your GitHub App's page on GitHub at Settings > Developer Settings > GitHub Apps
+- Client ID: same as with GitHub App ID, this info is found at the same place
+- Client Secret: this is generated on the GitHub App page, by clicking the `Generate a new client secret` button. Keep it safe as it won't appear again! You can also encrypt it instead of saving it as plain text by [following this guide](https://docs.sonarqube.org/9.8/instance-administration/security/#settings-encryption).
+- Private Key: it is the GitHub App's private key, in a `.pem` form factor. Generate a private key by clicking `Generate a private key` in the App's setting page, you have to save it in your machine. Then, copy and paste its content in this field. It can also be encrypted like the Client Secret.
+- Webhook Secret: as we've disabled Webhooks, leave this field empty
+
+Once done, accept the settings. The integration should appear right after that, and if everything is correct, a green check should appear following the _Configuration valid_ text:
+
+![GitHub integration in SonarQube](../../images/productivity-tools/sonarqube-github-app-integration.png)
+
+:::{.callout-warning}
+## TODO: implement secret key encryption in SonarQube via docker-compose
+Investigate how to include the secretKey file as a secret and overwrite its location in `sonar.properties` config.
+:::
+
+## Analyzing projects with GitHub Actions
+Now that we have the GitHub App attached to our SonarQube instance, we can configure a GitHub Action to analyse our code on a trigger basis.
+
+### Create GitHub secrets
+You can create repository secrets from your GitHub repository (more info [here](https://docs.github.com/en/actions/security-guides/encrypted-secrets)).
+Basically, we need to create two secrets that will contains SonarQube tokens ([follow this guide](https://docs.sonarqube.org/9.8/user-guide/user-account/generating-and-using-tokens/) to generate the required tokens):
+
+- **Sonar Token:** Generate a SonarQube token and, in GitHub, create a new repository secret in GitHub with `SONAR_TOKEN` as the name and the generated token as the **Value**
+- **Sonar Host URL:** In GitHub, create a new repository secret with `SONAR_HOST_URL` as the **Name** and your SonarQube server URL as the **Value**
+
+### Configuring your `.github/workflows/build.yml` file
+
+:::{.callout-warning}
+## TODO: Careful when configuring monorepositories!
+The SonarQube tutorial expects to execute `mvn` from the repository root path! We need to change this on workflow YML
+:::

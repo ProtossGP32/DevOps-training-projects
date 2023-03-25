@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -384,7 +384,26 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#devops-platform-integration" id="toc-devops-platform-integration" class="nav-link active" data-scroll-target="#devops-platform-integration">DevOps platform integration</a>
+  <ul class="collapse">
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a>
+  <ul class="collapse">
+  <li><a href="#creating-a-github-app" id="toc-creating-a-github-app" class="nav-link" data-scroll-target="#creating-a-github-app">Creating a GitHub app</a></li>
+  <li><a href="#installing-the-github-app-in-your-organization" id="toc-installing-the-github-app-in-your-organization" class="nav-link" data-scroll-target="#installing-the-github-app-in-your-organization">Installing the GitHub app in your organization</a></li>
+  <li><a href="#updating-the-sonarqube-global-settings-with-the-github-app-information" id="toc-updating-the-sonarqube-global-settings-with-the-github-app-information" class="nav-link" data-scroll-target="#updating-the-sonarqube-global-settings-with-the-github-app-information">Updating the SonarQube global settings with the GitHub App information</a></li>
+  </ul></li>
+  <li><a href="#analyzing-projects-with-github-actions" id="toc-analyzing-projects-with-github-actions" class="nav-link" data-scroll-target="#analyzing-projects-with-github-actions">Analyzing projects with GitHub Actions</a>
+  <ul class="collapse">
+  <li><a href="#create-github-secrets" id="toc-create-github-secrets" class="nav-link" data-scroll-target="#create-github-secrets">Create GitHub secrets</a></li>
+  <li><a href="#configuring-your-.githubworkflowsbuild.yml-file" id="toc-configuring-your-.githubworkflowsbuild.yml-file" class="nav-link" data-scroll-target="#configuring-your-.githubworkflowsbuild.yml-file">Configuring your <code>.github/workflows/build.yml</code> file</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/07-sonarqube.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -442,8 +461,101 @@ TODO
 <p>Add properly explained procedure to deploy SonarQube, both on internal network and accessible from outside with HTTPS partially enabled</p>
 </div>
 </div>
+<section id="devops-platform-integration" class="level1">
+<h1>DevOps platform integration</h1>
+<p>Follow <a href="https://docs.sonarqube.org/9.8/devops-platform-integration/github-integration/">the official guide</a> for deeper insights.</p>
+<p>We’ll integrate SonarQube with one of our repositories to analyse it.</p>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<section id="creating-a-github-app" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-github-app">Creating a GitHub app</h3>
+<p>Follow <a href="https://docs.github.com/en/apps/creating-github-apps/creating-github-apps/creating-a-github-app">the official GitHub App creation guide</a> to create a new app. The most important steps to be aware of are:</p>
+<ul>
+<li>The App name: short and concise, indicating its purpose. In our case we’ll define it as <code>SonarQube App</code></li>
+<li>The description: A brief description regarding the app nature</li>
+<li>Homepage URL: mandatory, but for SonarQube we can use any URL. We’ll put the URL of our SonarQube instance</li>
+<li>User authorization callback URL: it’s our instance’s base URL, so in this case it would be the same as our Homepage URL</li>
+<li>Webhook URL: SonarQube guide recommends disabling this feature. We’ll explore this option in the future</li>
+<li>Permissions: configure the permissions as told in the SonarQube guide</li>
+</ul>
+<p>Click on <em>Create App</em> and you’re finished</p>
+</section>
+<section id="installing-the-github-app-in-your-organization" class="level3">
+<h3 class="anchored" data-anchor-id="installing-the-github-app-in-your-organization">Installing the GitHub app in your organization</h3>
+<p>Follow <a href="https://docs.github.com/en/apps/maintaining-github-apps/installing-github-apps">the official GitHub App installation guide</a> to install the newly created App into our organization (i.e.&nbsp;the server where SonarQube is running).</p>
+<ul>
+<li>Basically, browse to your GitHub Apps setting page and select your app</li>
+<li>In the left sidebar, click <strong>Install App</strong> and select your account</li>
+<li>Select whether you want the app to access all of your repositories or only some of them</li>
+</ul>
+<p>Now your up is alive and running for your account</p>
+</section>
+<section id="updating-the-sonarqube-global-settings-with-the-github-app-information" class="level3">
+<h3 class="anchored" data-anchor-id="updating-the-sonarqube-global-settings-with-the-github-app-information">Updating the SonarQube global settings with the GitHub App information</h3>
+<p>Go back to your SonarQube account and follow the steps from the SonarQube guide:</p>
+<p>Navigate to <strong>Administration &gt; Configuration &gt; General Settings &gt; DevOps Platform Integrations &gt; GitHub</strong> and specify the following settings:</p>
+<ul>
+<li>Configuration name: mandatory but only used in Enterprise and Data Center Edition. Give it a concise name, for example <code>GitHub personal projects</code></li>
+<li>GitHub API URL: it’s always the same. As we are using GitHub.com, its URL is <code>https://api.github.com/</code></li>
+<li>GitHub App ID: found on your GitHub App’s page on GitHub at Settings &gt; Developer Settings &gt; GitHub Apps</li>
+<li>Client ID: same as with GitHub App ID, this info is found at the same place</li>
+<li>Client Secret: this is generated on the GitHub App page, by clicking the <code>Generate a new client secret</code> button. Keep it safe as it won’t appear again! You can also encrypt it instead of saving it as plain text by <a href="https://docs.sonarqube.org/9.8/instance-administration/security/#settings-encryption">following this guide</a>.</li>
+<li>Private Key: it is the GitHub App’s private key, in a <code>.pem</code> form factor. Generate a private key by clicking <code>Generate a private key</code> in the App’s setting page, you have to save it in your machine. Then, copy and paste its content in this field. It can also be encrypted like the Client Secret.</li>
+<li>Webhook Secret: as we’ve disabled Webhooks, leave this field empty</li>
+</ul>
+<p>Once done, accept the settings. The integration should appear right after that, and if everything is correct, a green check should appear following the <em>Configuration valid</em> text:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/productivity-tools/sonarqube-github-app-integration.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">GitHub integration in SonarQube</figcaption><p></p>
+</figure>
+</div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO: implement secret key encryption in SonarQube via docker-compose
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Investigate how to include the secretKey file as a secret and overwrite its location in <code>sonar.properties</code> config.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="analyzing-projects-with-github-actions" class="level2">
+<h2 class="anchored" data-anchor-id="analyzing-projects-with-github-actions">Analyzing projects with GitHub Actions</h2>
+<p>Now that we have the GitHub App attached to our SonarQube instance, we can configure a GitHub Action to analyse our code on a trigger basis.</p>
+<section id="create-github-secrets" class="level3">
+<h3 class="anchored" data-anchor-id="create-github-secrets">Create GitHub secrets</h3>
+<p>You can create repository secrets from your GitHub repository (more info <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">here</a>). Basically, we need to create two secrets that will contains SonarQube tokens (<a href="https://docs.sonarqube.org/9.8/user-guide/user-account/generating-and-using-tokens/">follow this guide</a> to generate the required tokens):</p>
+<ul>
+<li><strong>Sonar Token:</strong> Generate a SonarQube token and, in GitHub, create a new repository secret in GitHub with <code>SONAR_TOKEN</code> as the name and the generated token as the <strong>Value</strong></li>
+<li><strong>Sonar Host URL:</strong> In GitHub, create a new repository secret with <code>SONAR_HOST_URL</code> as the <strong>Name</strong> and your SonarQube server URL as the <strong>Value</strong></li>
+</ul>
+</section>
+<section id="configuring-your-.githubworkflowsbuild.yml-file" class="level3">
+<h3 class="anchored" data-anchor-id="configuring-your-.githubworkflowsbuild.yml-file">Configuring your <code>.github/workflows/build.yml</code> file</h3>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO: Careful when configuring monorepositories!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The SonarQube tutorial expects to execute <code>mvn</code> from the repository root path! We need to change this on workflow YML</p>
+</div>
+</div>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

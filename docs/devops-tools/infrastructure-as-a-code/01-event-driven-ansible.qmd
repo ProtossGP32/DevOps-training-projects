@@ -1,0 +1,7 @@
+---
+title: "01 - Management As A Code - Event-Driven Ansible"
+description: "Manage, scale and observe your infrastructure based on events"
+author: ProtossGP32
+date: "2023/03/17"
+categories: ["Ansible", "Event-Driven", "Management As A Code"]
+---

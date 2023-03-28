@@ -1,0 +1,117 @@
+---
+title: "00 - Observability - Introduction"
+description: "What is observability? Why monitoring alone is not enough?"
+author: ProtossGP32
+date: "2023/03/28"
+categories: ["Observability", "Monitoring"]
+---
+
+# Introduction
+
+- Complete course:
+    - [oll1 - Practical Observability](https://academy.o11y.io/courses/practical-observability)
+
+    ![When your teacher is a Jedi, you know you chose the course wisely](../../images/devops/observability-oll1-practical-observability.png)
+
+- Objectives:
+    - Define observability, and how it's different from monitoring
+    - Understand why observability is essential for you and your organization
+    - Introduction to the tools and methods needed for collecting data and creating and observability strategy
+
+- Why it matters:
+
+:::{.callout-tip appearance="default"}
+## See the forest AND the trees
+Observability is informed by key business drivers and can provide holistic insights rather tahn getting focusing only on component-level insights.
+:::
+
+# Episodes
+## Episode 1 - Observability 101
+
+Observability (o11y) is a critical part of developing, operating and troubleshooting modern and distributed IT systems, whether it be applications, infrastructure or both.
+
+According to Rudolph E. Kalman in its essay _On The General Theory Of Control Systems_:
+
+> Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs
+
+The system is only observable if you can determine its actual state from its observed outputs. The basic idea is that whatever you monitor it should let you know what happens inside.
+
+## Episode 2 - Why observability?
+
+Why do we need it and what does it get us? First of all, it lets you know the status of your services under real-world workload pressure. 
+
+We need to understand actual threads in our services:
+
+- Is my service up?
+- Is it working as intended?
+
+The first use-case for many observability tools is around notifying an incidence in production and give you as much context as possible to help you troubleshoot.
+
+:::{.callout-note}
+## Tactical Monitoring
+
+- Outage Notification
+- Runbook Automation (RBA)
+- Troubleshooting and Debugging
+:::
+
+The retrieved feedback might also be used for real-time operational changes, such as auto-scaling, rolling back to previous state or toggling feature flags based on error rates.
+
+From there, you want to ask more questions about how well the service works on a production environment.
+
+These are strategic questions your organization is interested in answering:
+
+- How well are you achieving your goals?
+- Did the latest feature increase sales or not?
+- Did that same feature actually cost you more in bandwith charges?
+
+:::{.callout-note}
+## Strategic Monitoring
+
+- Business dashboards
+- Trends and capacity planning
+- SLOs and error budgets
+- Security and compliance
+- Cost
+:::
+
+Observability provides real-world data from real users in production to answer these questions. From servers, to applications to third-party services, production environment is comprised or many moving parts.
+
+What you have to figure out is what do we want to monitor and how.
+
+:::{.callout-note}
+## Things you can observe
+
+- Business outcomes
+- Users
+- Services
+- API endpoints
+- Applications
+- Cloud infrastructure
+- SaaS providers
+- Kubernetes (pods/containers)
+- Systems and networks
+- Databases and caches and queues
+- Security scans and tests
+- Costs
+:::
+
+In order to effectively do that, you need to **understand your goals** and **what questions about your service you want to ask**
+
+:::{.callout-tip}
+## Remember the general first use-case for Observability
+
+**Notifying of incidents in production**
+
+When implementing a new observability solution, it's best to start with the lowest hanging fruit first. Getting the most important notifications from crucial servers, metrics, and infrastructure is a good first place to start.
+:::
+
+:::{.callout-tip}
+## Remember the common questions organizations hope to answer with strategic monitoring practices
+
+- Is our current infrastructure robust enough to meet changing demands for our service(s)?
+- How well is my organization meeting its business goals?
+- How well are we keeping the SLO that we promise our end users?
+
+Observability is a wide-reaching strategy and can aswer more questions than "Is my service up?". When applied correctly, observability should be able to provide crucial insights to most deparments within your organization.
+:::

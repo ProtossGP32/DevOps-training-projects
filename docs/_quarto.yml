@@ -21,6 +21,7 @@ website:
       - text: Home
         file: index.qmd
       - sidebar:devops-exercises
+      - sidebar:devops-tools
       - sidebar:homelab-project
       - text: About
         file: about.qmd
@@ -38,6 +39,11 @@ website:
       title: "DevOps exercises"
       style: "docked"
       contents: devops-exercises/**
+
+    - id: devops-tools
+      title: "DevOps tools"
+      style: "docked"
+      contents: devops-tools/**
 
     - id: homelab-project
       title: "Homelab project"

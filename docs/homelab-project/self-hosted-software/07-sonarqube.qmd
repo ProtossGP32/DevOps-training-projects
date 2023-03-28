@@ -72,7 +72,49 @@ Basically, we need to create two secrets that will contains SonarQube tokens ([f
 
 ### Configuring your `.github/workflows/build.yml` file
 
+The best way to prepare the Workflow `.yml` is to follow the steps that SonarQube gives you when creating a new project. Also, for GitHub Action to work there must be a project already created in SonarQube:
+
+- Login to your SonarQube instance and click on _Create project_. Then select _GitHub_:
+
+    ![SonarQube - Create Project button](../../images/productivity-tools/sonarqube-create-project.png)
+
+- Select the organization and repository to analyse:
+
+    ![SonarQube - Select Repository](../../images/productivity-tools/sonarqube-select-repository.png)
+
+- Select the GitHub actions integration:
+
+    ![SonarQube - Select CI Integration](../../images/productivity-tools/sonarqube-select-integration.png)
+
+- Next, follow the steps to store some required secrets for GitHub to remotely connect to your SonarQube instance:
+
+    ![SonarQube - Create GitHub secrets](../../images/productivity-tools/sonarqube-github-secrets.png)
+
+- After that, select the build type. In this case I'll select Maven, and after that a YAML sample is provided:
+
+    ![SonarQube - Select Build type](../../images/productivity-tools/sonarqube-select-build-type.png)
+
+    The YAML file configures the following steps:
+
+    - Checkout of the Repository
+    - JDK setup
+    - SonarQube packages cache initialization
+    - Maven packages cache initialization
+    - Build and analyze the project
+
 :::{.callout-warning}
-## TODO: Careful when configuring monorepositories!
-The SonarQube tutorial expects to execute `mvn` from the repository root path! We need to change this on workflow YML
+## Review and fix the YAML file according to your project!
+
+- Check that the JDK version matches your project's JDK version
+- The SonarQube tutorial expects to execute `mvn` from the repository root path! When working with **monorepositories** we need to change this on workflow YML. One way to do it is to define the proper path of the `pom.xml` file with the `-f` option:
+
+```yml
+jobs:
+    build:
+    [...]
+    steps:
+        - name: Build and analyze
+          run: mvn verify [...] -f <path-to-pom.xml>
+```
+
 :::

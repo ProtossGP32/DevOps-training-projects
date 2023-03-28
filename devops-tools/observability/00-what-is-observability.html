@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-01-17">
-<meta name="description" content="Provision new containers in Proxmox">
+<meta name="dcterms.date" content="2023-03-28">
+<meta name="description" content="What is observability? Why monitoring alone is not enough?">
 
-<title>DevOps Training Projects - 02 - Provisioning - LXC (Linux Containers on Proxmox)</title>
+<title>DevOps Training Projects - 00 - Observability - Introduction</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtualization-server/01-installing-proxmox.html" rel="next">
-<link href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" rel="prev">
+<link href="../../devops-tools/observability/01-observability-tools.html" rel="next">
+<link href="../../devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -247,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+      <h1 class="quarto-secondary-nav-title">00 - Observability - Introduction</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -260,14 +260,9 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/00-introduction.html" class="sidebar-item-text sidebar-link">Homelab project introduction</a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Kubernetes Cluster</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Infrastructure As a Code</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -275,19 +270,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/kubernetes-cluster/00-getting-started.html" class="sidebar-item-text sidebar-link">00 - Kubernetes - Getting Started</a>
+  <a href="../../devops-tools/infrastructure-as-a-code/00-ansible.html" class="sidebar-item-text sidebar-link">00 - Infrastructure As A Code - Ansible</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html" class="sidebar-item-text sidebar-link">01 - Kubernetes - Traefik + cert-manager</a>
+  <a href="../../devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html" class="sidebar-item-text sidebar-link">01 - Management As A Code - Event-Driven Ansible</a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Requirements</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Observability</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -295,112 +290,12 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/requirements/00-requirements.html" class="sidebar-item-text sidebar-link">Homelab Requirements</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Self Hosted Software</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/00-docker-and-docker-compose.html" class="sidebar-item-text sidebar-link">00 - Containers - Docker &amp; Docker Compose</a>
+  <a href="../../devops-tools/observability/00-what-is-observability.html" class="sidebar-item-text sidebar-link active">00 - Observability - Introduction</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/01-cloudflare.html" class="sidebar-item-text sidebar-link">01 - External access - Cloudflare</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/02-traefik-and-portainer.html" class="sidebar-item-text sidebar-link">02 - Routing and SSL certificates - Traefik and Portainer</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/03-dashy.html" class="sidebar-item-text sidebar-link">03 - Homelab dashboard - Dashy</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="sidebar-item-text sidebar-link">04 - Authentication - OpenLDAP</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="sidebar-item-text sidebar-link">05 - Productivity tools - NextCloud</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/06-openproject.html" class="sidebar-item-text sidebar-link">06 - Productivity tools - OpenProject</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/07-sonarqube.html" class="sidebar-item-text sidebar-link">07 - Code analysis - SonarQube</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/08-guacamole.html" class="sidebar-item-text sidebar-link">08 - Remote access - Guacamole</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Virtual Resources Creation</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">01 - Provisioning - Virtual Machines on Proxmox</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link active">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Virtualization Server</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Internal Virtual Networks</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="sidebar-item-text sidebar-link">Part 3 - DNS and DHCP servers</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link">Part 4 - Proxy HTTP(S) into the internal network</a>
+  <a href="../../devops-tools/observability/01-observability-tools.html" class="sidebar-item-text sidebar-link">01 - Observability Instrumentation</a>
   </div>
 </li>
       </ul>
@@ -410,24 +305,34 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#episodes" id="toc-episodes" class="nav-link" data-scroll-target="#episodes">Episodes</a>
+  <ul class="collapse">
+  <li><a href="#episode-1---observability-101" id="toc-episode-1---observability-101" class="nav-link" data-scroll-target="#episode-1---observability-101">Episode 1 - Observability 101</a></li>
+  <li><a href="#episode-2---why-observability" id="toc-episode-2---why-observability" class="nav-link" data-scroll-target="#episode-2---why-observability">Episode 2 - Why observability?</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-tools/observability/00-what-is-observability.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">02 - Provisioning - LXC (Linux Containers on Proxmox)</h1>
+<h1 class="title d-none d-lg-block">00 - Observability - Introduction</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Proxmox VE</div>
-    <div class="quarto-category">LXC</div>
-    <div class="quarto-category">Containers</div>
+    <div class="quarto-category">Observability</div>
+    <div class="quarto-category">Monitoring</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Provision new containers in Proxmox
+    What is observability? Why monitoring alone is not enough?
   </div>
 </div>
 
@@ -444,7 +349,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 17, 2023</p>
+      <p class="date">March 28, 2023</p>
     </div>
   </div>
   
@@ -454,8 +359,170 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<ul>
+<li><p>Complete course:</p>
+<ul>
+<li><a href="https://academy.o11y.io/courses/practical-observability">oll1 - Practical Observability</a></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/devops/observability-oll1-practical-observability.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">When your teacher is a Jedi, you know you chose the course wisely</figcaption><p></p>
+</figure>
+</div></li>
+<li><p>Objectives:</p>
+<ul>
+<li>Define observability, and how it’s different from monitoring</li>
+<li>Understand why observability is essential for you and your organization</li>
+<li>Introduction to the tools and methods needed for collecting data and creating and observability strategy</li>
+</ul></li>
+<li><p>Why it matters:</p></li>
+</ul>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+See the forest AND the trees
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Observability is informed by key business drivers and can provide holistic insights rather tahn getting focusing only on component-level insights.</p>
+</div>
+</div>
+</section>
+<section id="episodes" class="level1">
+<h1>Episodes</h1>
+<section id="episode-1---observability-101" class="level2">
+<h2 class="anchored" data-anchor-id="episode-1---observability-101">Episode 1 - Observability 101</h2>
+<p>Observability (o11y) is a critical part of developing, operating and troubleshooting modern and distributed IT systems, whether it be applications, infrastructure or both.</p>
+<p>According to Rudolph E. Kalman in its essay <em>On The General Theory Of Control Systems</em>:</p>
+<blockquote class="blockquote">
+<p>Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs</p>
+</blockquote>
+<p>The system is only observable if you can determine its actual state from its observed outputs. The basic idea is that whatever you monitor it should let you know what happens inside.</p>
+</section>
+<section id="episode-2---why-observability" class="level2">
+<h2 class="anchored" data-anchor-id="episode-2---why-observability">Episode 2 - Why observability?</h2>
+<p>Why do we need it and what does it get us? First of all, it lets you know the status of your services under real-world workload pressure.</p>
+<p>We need to understand actual threads in our services:</p>
+<ul>
+<li>Is my service up?</li>
+<li>Is it working as intended?</li>
+</ul>
+<p>The first use-case for many observability tools is around notifying an incidence in production and give you as much context as possible to help you troubleshoot.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tactical Monitoring
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Outage Notification</li>
+<li>Runbook Automation (RBA)</li>
+<li>Troubleshooting and Debugging</li>
+</ul>
+</div>
+</div>
+<p>The retrieved feedback might also be used for real-time operational changes, such as auto-scaling, rolling back to previous state or toggling feature flags based on error rates.</p>
+<p>From there, you want to ask more questions about how well the service works on a production environment.</p>
+<p>These are strategic questions your organization is interested in answering:</p>
+<ul>
+<li>How well are you achieving your goals?</li>
+<li>Did the latest feature increase sales or not?</li>
+<li>Did that same feature actually cost you more in bandwith charges?</li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Strategic Monitoring
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Business dashboards</li>
+<li>Trends and capacity planning</li>
+<li>SLOs and error budgets</li>
+<li>Security and compliance</li>
+<li>Cost</li>
+</ul>
+</div>
+</div>
+<p>Observability provides real-world data from real users in production to answer these questions. From servers, to applications to third-party services, production environment is comprised or many moving parts.</p>
+<p>What you have to figure out is what do we want to monitor and how.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Things you can observe
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Business outcomes</li>
+<li>Users</li>
+<li>Services</li>
+<li>API endpoints</li>
+<li>Applications</li>
+<li>Cloud infrastructure</li>
+<li>SaaS providers</li>
+<li>Kubernetes (pods/containers)</li>
+<li>Systems and networks</li>
+<li>Databases and caches and queues</li>
+<li>Security scans and tests</li>
+<li>Costs</li>
+</ul>
+</div>
+</div>
+<p>In order to effectively do that, you need to <strong>understand your goals</strong> and <strong>what questions about your service you want to ask</strong></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Remember the general first use-case for Observability
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Notifying of incidents in production</strong></p>
+<p>When implementing a new observability solution, it’s best to start with the lowest hanging fruit first. Getting the most important notifications from crucial servers, metrics, and infrastructure is a good first place to start.</p>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Remember the common questions organizations hope to answer with strategic monitoring practices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Is our current infrastructure robust enough to meet changing demands for our service(s)?</li>
+<li>How well is my organization meeting its business goals?</li>
+<li>How well are we keeping the SLO that we promise our end users?</li>
+</ul>
+<p>Observability is a wide-reaching strategy and can aswer more questions than “Is my service up?”. When applied correctly, observability should be able to provide crucial insights to most deparments within your organization.</p>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -708,13 +775,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">01 - Provisioning - Virtual Machines on Proxmox</span>
+      <a href="../../devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">01 - Management As A Code - Event-Driven Ansible</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="pagination-link">
-        <span class="nav-page-text">Part 1 - Installing Proxmox VE</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../devops-tools/observability/01-observability-tools.html" class="pagination-link">
+        <span class="nav-page-text">01 - Observability Instrumentation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

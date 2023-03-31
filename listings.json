@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/homelab-project/self-hosted-software/09-penpot.html",
       "/homelab-project/self-hosted-software/08-guacamole.html",
       "/homelab-project/kubernetes-cluster/01-installing-traefik.html",
       "/homelab-project/kubernetes-cluster/00-getting-started.html",

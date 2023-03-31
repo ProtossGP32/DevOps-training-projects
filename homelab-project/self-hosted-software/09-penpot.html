@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-01-17">
-<meta name="description" content="Provision new VMs in Proxmox">
+<meta name="dcterms.date" content="2023-03-31">
+<meta name="description" content="Self-hosted mockup service">
 
-<title>DevOps Training Projects - 01 - Provisioning - Virtual Machines on Proxmox</title>
+<title>DevOps Training Projects - 08 - Mockups - Penpot</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,6 +23,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -33,8 +96,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/virtual-resources-creation/02-containers.html" rel="next">
-<link href="../../homelab-project/self-hosted-software/08-guacamole.html" rel="prev">
+<link href="../../homelab-project/self-hosted-software/08-guacamole.html" rel="next">
+<link href="../../homelab-project/self-hosted-software/07-sonarqube.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -251,7 +314,7 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">01 - Provisioning - Virtual Machines on Proxmox</h1>
+      <h1 class="quarto-secondary-nav-title">08 - Mockups - Penpot</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -354,7 +417,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/09-penpot.html" class="sidebar-item-text sidebar-link">08 - Mockups - Penpot</a>
+  <a href="../../homelab-project/self-hosted-software/09-penpot.html" class="sidebar-item-text sidebar-link active">08 - Mockups - Penpot</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -374,7 +437,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link active">01 - Provisioning - Virtual Machines on Proxmox</a>
+  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">01 - Provisioning - Virtual Machines on Proxmox</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -419,23 +482,46 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#modify-the-docker-compose.yml-file" id="toc-modify-the-docker-compose.yml-file" class="nav-link" data-scroll-target="#modify-the-docker-compose.yml-file">Modify the <code>docker-compose.yml</code> file</a></li>
+  <li><a href="#additional-environment-variables-and-config-files" id="toc-additional-environment-variables-and-config-files" class="nav-link" data-scroll-target="#additional-environment-variables-and-config-files">Additional environment variables and config files</a></li>
+  </ul></li>
+  <li><a href="#docker-compose-deployment" id="toc-docker-compose-deployment" class="nav-link" data-scroll-target="#docker-compose-deployment">Docker compose deployment</a>
+  <ul class="collapse">
+  <li><a href="#start-penpot" id="toc-start-penpot" class="nav-link" data-scroll-target="#start-penpot">Start Penpot:</a></li>
+  <li><a href="#stop-penpot" id="toc-stop-penpot" class="nav-link" data-scroll-target="#stop-penpot">Stop Penpot:</a></li>
+  <li><a href="#configure-penpot-with-docker" id="toc-configure-penpot-with-docker" class="nav-link" data-scroll-target="#configure-penpot-with-docker">Configure Penpot with Docker</a>
+  <ul class="collapse">
+  <li><a href="#ldap-authentication" id="toc-ldap-authentication" class="nav-link" data-scroll-target="#ldap-authentication">LDAP authentication</a></li>
+  <li><a href="#create-user-using-cli" id="toc-create-user-using-cli" class="nav-link" data-scroll-target="#create-user-using-cli">Create user using CLI</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/09-penpot.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">01 - Provisioning - Virtual Machines on Proxmox</h1>
+<h1 class="title d-none d-lg-block">08 - Mockups - Penpot</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Proxmox VE</div>
-    <div class="quarto-category">Virtual Machines</div>
+    <div class="quarto-category">Docker</div>
+    <div class="quarto-category">Self-hosted software</div>
+    <div class="quarto-category">Penpot</div>
+    <div class="quarto-category">Mockups</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Provision new VMs in Proxmox
+    Self-hosted mockup service
   </div>
 </div>
 
@@ -452,7 +538,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 17, 2023</p>
+      <p class="date">March 31, 2023</p>
     </div>
   </div>
   
@@ -462,8 +548,81 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<p>We’ll follow the <a href="https://help.penpot.app/technical-guide/getting-started/#configure-penpot-with-docker">official Penpot guide</a> to deploy via Docker. We’ll be using the <a href="https://github.com/penpot/penpot/tree/develop/docker/images">official docker compose file</a>.</p>
+<section id="modify-the-docker-compose.yml-file" class="level2">
+<h2 class="anchored" data-anchor-id="modify-the-docker-compose.yml-file">Modify the <code>docker-compose.yml</code> file</h2>
+<p>Retrieve the <code>docker-compose.yml</code> file:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Retrieve docker-compose.yml file</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">wget</span> https://raw.githubusercontent.com/penpot/penpot/main/docker/images/docker-compose.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Use environment variables to overwrite some of the default values.</p>
+</section>
+<section id="additional-environment-variables-and-config-files" class="level2">
+<h2 class="anchored" data-anchor-id="additional-environment-variables-and-config-files">Additional environment variables and config files</h2>
+</section>
+</section>
+<section id="docker-compose-deployment" class="level1">
+<h1>Docker compose deployment</h1>
+<section id="start-penpot" class="level2">
+<h2 class="anchored" data-anchor-id="start-penpot">Start Penpot:</h2>
+<p>Launch the application using <code>docker compose</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">docker</span> compose <span class="at">-p</span> penpot <span class="at">-f</span> docker-compose.yaml up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The app should start listening by default on http://localhost:9001.</p>
+</section>
+<section id="stop-penpot" class="level2">
+<h2 class="anchored" data-anchor-id="stop-penpot">Stop Penpot:</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">docker</span> compose <span class="at">-p</span> penpot <span class="at">-f</span> docker-compose.yaml down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="configure-penpot-with-docker" class="level2">
+<h2 class="anchored" data-anchor-id="configure-penpot-with-docker">Configure Penpot with Docker</h2>
+<section id="ldap-authentication" class="level3">
+<h3 class="anchored" data-anchor-id="ldap-authentication">LDAP authentication</h3>
+<p>Add the following environment variables to the docker compose file and modify them according to your LDAP server:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Penpot LDAP config</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">## Backend &amp; Frontend</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="va">PENPOT_FLAGS</span><span class="op">=</span><span class="st">"</span><span class="va">$PENPOT_FLAGS</span><span class="st"> enable-login-with-ldap"</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">## Backend only</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="va">PENPOT_LDAP_HOST</span><span class="op">=</span>ldap</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="va">PENPOT_LDAP_PORT</span><span class="op">=</span>10389</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="va">PENPOT_LDAP_SSL</span><span class="op">=</span>false</span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="va">PENPOT_LDAP_STARTTLS</span><span class="op">=</span>false</span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="va">PENPOT_LDAP_BASE_DN</span><span class="op">=</span>ou=people,dc=planetexpress,dc=com</span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="va">PENPOT_LDAP_BIND_DN</span><span class="op">=</span>cn=admin,dc=planetexpress,dc=com</span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="va">PENPOT_LDAP_BIND_PASSWORD</span><span class="op">=</span>GoodNewsEveryone</span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="va">PENPOT_LDAP_USER_QUERY</span><span class="op">=</span><span class="va">(</span><span class="er">&amp;(|(</span>uid=:username<span class="va">)</span><span class="kw">(</span><span class="va">mail</span><span class="op">=</span>:username<span class="kw">)</span><span class="er">)</span><span class="kw">(</span><span class="va">memberOf</span><span class="op">=</span>cn=penpot,ou=groups,dc=my-domain,dc=com<span class="kw">)</span><span class="er">)</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="va">PENPOT_LDAP_ATTRS_USERNAME</span><span class="op">=</span>uid</span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="va">PENPOT_LDAP_ATTRS_EMAIL</span><span class="op">=</span>mail</span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="va">PENPOT_LDAP_ATTRS_FULLNAME</span><span class="op">=</span>cn</span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="va">PENPOT_LDAP_ATTRS_PHOTO</span><span class="op">=</span>jpegPhoto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-user-using-cli" class="level3">
+<h3 class="anchored" data-anchor-id="create-user-using-cli">Create user using CLI</h3>
+<p>By default, email verification process is completely disabled for new registrations. You can create additional profiles using the command line interface:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Creating new Penpot profiles</strong></pre>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">docker</span> exec <span class="at">-ti</span> penpot-penpot-backend-1 python3 ./manage.py create-profile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Check the docker container name, it might differ from the example</p>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -716,13 +875,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/self-hosted-software/08-guacamole.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">08 - Remote access - Guacamole</span>
+      <a href="../../homelab-project/self-hosted-software/07-sonarqube.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">07 - Code analysis - SonarQube</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="pagination-link">
-        <span class="nav-page-text">02 - Provisioning - LXC (Linux Containers on Proxmox)</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../homelab-project/self-hosted-software/08-guacamole.html" class="pagination-link">
+        <span class="nav-page-text">08 - Remote access - Guacamole</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

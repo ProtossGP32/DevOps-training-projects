@@ -2,106 +2,110 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/devops-tools/observability/00-what-is-observability.html</loc>
-    <lastmod>2023-03-28T18:37:16.027Z</lastmod>
+    <lastmod>2023-03-31T11:12:03.016Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/devops-tools/observability/01-observability-tools.html</loc>
-    <lastmod>2023-03-28T18:37:18.287Z</lastmod>
+    <lastmod>2023-03-31T11:12:04.276Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/devops-tools/infrastructure-as-a-code/00-ansible.html</loc>
-    <lastmod>2023-03-28T18:37:18.671Z</lastmod>
+    <lastmod>2023-03-31T11:12:04.660Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html</loc>
-    <lastmod>2023-03-28T18:37:19.047Z</lastmod>
+    <lastmod>2023-03-31T11:12:05.052Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/about.html</loc>
-    <lastmod>2023-03-28T18:37:19.407Z</lastmod>
+    <lastmod>2023-03-31T11:12:05.408Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/devops-exercises/explore-california/00-introduction.html</loc>
-    <lastmod>2023-03-28T18:37:19.811Z</lastmod>
+    <lastmod>2023-03-31T11:12:05.816Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/index.html</loc>
-    <lastmod>2023-03-28T18:37:20.619Z</lastmod>
+    <lastmod>2023-03-31T11:12:06.636Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtualization-server/02-virtual-networks.html</loc>
-    <lastmod>2023-03-28T18:37:21.151Z</lastmod>
+    <lastmod>2023-03-31T11:12:07.164Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html</loc>
-    <lastmod>2023-03-28T18:37:21.859Z</lastmod>
+    <lastmod>2023-03-31T11:12:07.864Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtualization-server/01-installing-proxmox.html</loc>
-    <lastmod>2023-03-28T18:37:22.579Z</lastmod>
+    <lastmod>2023-03-31T11:12:08.580Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtualization-server/03-dns-dhcp-servers.html</loc>
-    <lastmod>2023-03-28T18:37:23.175Z</lastmod>
+    <lastmod>2023-03-31T11:12:09.180Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtual-resources-creation/02-containers.html</loc>
-    <lastmod>2023-03-28T18:37:23.591Z</lastmod>
+    <lastmod>2023-03-31T11:12:09.600Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/virtual-resources-creation/01-virtual-machines.html</loc>
-    <lastmod>2023-03-28T18:37:23.995Z</lastmod>
+    <lastmod>2023-03-31T11:12:10.004Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/kubernetes-cluster/01-installing-traefik.html</loc>
-    <lastmod>2023-03-28T18:37:24.827Z</lastmod>
+    <lastmod>2023-03-31T11:12:10.844Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/kubernetes-cluster/00-getting-started.html</loc>
-    <lastmod>2023-03-28T18:37:25.379Z</lastmod>
+    <lastmod>2023-03-31T11:12:11.408Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/requirements/00-requirements.html</loc>
-    <lastmod>2023-03-28T18:37:25.823Z</lastmod>
+    <lastmod>2023-03-31T11:12:11.852Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/06-openproject.html</loc>
-    <lastmod>2023-03-28T18:37:26.227Z</lastmod>
+    <lastmod>2023-03-31T11:12:12.260Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/00-docker-and-docker-compose.html</loc>
-    <lastmod>2023-03-28T18:37:26.727Z</lastmod>
+    <lastmod>2023-03-31T11:12:12.748Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/04-openldap.html</loc>
-    <lastmod>2023-03-28T18:37:27.503Z</lastmod>
+    <lastmod>2023-03-31T11:12:13.484Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/08-guacamole.html</loc>
-    <lastmod>2023-03-28T18:37:28.935Z</lastmod>
+    <lastmod>2023-03-31T11:12:14.236Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/07-sonarqube.html</loc>
-    <lastmod>2023-03-28T18:37:29.667Z</lastmod>
+    <lastmod>2023-03-31T11:12:15.000Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/05-nextcloud.html</loc>
-    <lastmod>2023-03-28T18:37:30.071Z</lastmod>
+    <lastmod>2023-03-31T11:12:15.400Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/03-dashy.html</loc>
-    <lastmod>2023-03-28T18:37:33.639Z</lastmod>
+    <lastmod>2023-03-31T11:12:19.132Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/01-cloudflare.html</loc>
-    <lastmod>2023-03-28T18:37:34.327Z</lastmod>
+    <lastmod>2023-03-31T11:12:19.812Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/02-traefik-and-portainer.html</loc>
-    <lastmod>2023-03-28T18:37:34.779Z</lastmod>
+    <lastmod>2023-03-31T11:12:20.312Z</lastmod>
+  </url>
+  <url>
+    <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/self-hosted-software/09-penpot.html</loc>
+    <lastmod>2023-03-31T11:12:20.756Z</lastmod>
   </url>
   <url>
     <loc>https://protossgp32.github.io/DevOps-training-projects/homelab-project/00-introduction.html</loc>
-    <lastmod>2023-03-28T18:37:35.212Z</lastmod>
+    <lastmod>2023-03-31T11:12:21.168Z</lastmod>
   </url>
 </urlset>

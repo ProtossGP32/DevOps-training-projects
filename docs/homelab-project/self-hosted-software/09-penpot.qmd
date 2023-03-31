@@ -1,0 +1,69 @@
+---
+title: "08 - Mockups - Penpot"
+description: "Self-hosted mockup service"
+author: "ProtossGP32"
+date: "2023/03/31"
+categories: ["Docker", "Self-hosted software", "Penpot", "Mockups"]
+---
+# Introduction
+
+# Getting started
+We'll follow the [official Penpot guide](https://help.penpot.app/technical-guide/getting-started/#configure-penpot-with-docker) to deploy via Docker. We'll be using the [official docker compose file](https://github.com/penpot/penpot/tree/develop/docker/images).
+
+## Modify the `docker-compose.yml` file
+Retrieve the `docker-compose.yml` file:
+
+```{.bash filename="Retrieve docker-compose.yml file"}
+wget https://raw.githubusercontent.com/penpot/penpot/main/docker/images/docker-compose.yaml
+```
+
+Use environment variables to overwrite some of the default values.
+
+## Additional environment variables and config files
+
+# Docker compose deployment
+## Start Penpot:
+Launch the application using `docker compose`:
+
+```{.bash}
+docker compose -p penpot -f docker-compose.yaml up -d
+```
+
+The app should start listening by default on http://localhost:9001.
+
+## Stop Penpot:
+
+```{.bash}
+docker compose -p penpot -f docker-compose.yaml down
+```
+
+## Configure Penpot with Docker
+### LDAP authentication
+Add the following environment variables to the docker compose file and modify them according to your LDAP server:
+
+```{.bash filename="Penpot LDAP config"}
+## Backend & Frontend
+PENPOT_FLAGS="$PENPOT_FLAGS enable-login-with-ldap"
+
+## Backend only
+PENPOT_LDAP_HOST=ldap
+PENPOT_LDAP_PORT=10389
+PENPOT_LDAP_SSL=false
+PENPOT_LDAP_STARTTLS=false
+PENPOT_LDAP_BASE_DN=ou=people,dc=planetexpress,dc=com
+PENPOT_LDAP_BIND_DN=cn=admin,dc=planetexpress,dc=com
+PENPOT_LDAP_BIND_PASSWORD=GoodNewsEveryone
+PENPOT_LDAP_USER_QUERY=(&(|(uid=:username)(mail=:username))(memberOf=cn=penpot,ou=groups,dc=my-domain,dc=com))
+PENPOT_LDAP_ATTRS_USERNAME=uid
+PENPOT_LDAP_ATTRS_EMAIL=mail
+PENPOT_LDAP_ATTRS_FULLNAME=cn
+PENPOT_LDAP_ATTRS_PHOTO=jpegPhoto
+```
+
+### Create user using CLI
+By default, email verification process is completely disabled for new registrations. You can create additional profiles using the command line interface:
+
+```{.bash filename="Creating new Penpot profiles"}
+docker exec -ti penpot-penpot-backend-1 python3 ./manage.py create-profile
+```
+Check the docker container name, it might differ from the example

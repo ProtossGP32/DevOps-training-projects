@@ -108,7 +108,7 @@ The best way to prepare the Workflow `.yml` is to follow the steps that SonarQub
 - Check that the JDK version matches your project's JDK version
 - The SonarQube tutorial expects to execute `mvn` from the repository root path! When working with **monorepositories** we need to change this on workflow YML. One way to do it is to define the proper path of the `pom.xml` file with the `-f` option:
 
-```yml
+```{.yml filename="GitHub workflow"}
 jobs:
     build:
     [...]
@@ -118,3 +118,80 @@ jobs:
 ```
 
 :::
+
+## Adding Code Coverage
+SonarQube is compatible with JaCoCo (Java Code Coverage) dependency. Let's try to add it to our project.
+
+- [SonarQube Java test coverage guide](https://docs.sonarqube.org/9.8/analyzing-source-code/test-coverage/java-test-coverage/)
+
+First of all, add the `jacoco-maven-plugin` to the `pom.xml` dependencies section:
+
+```{.xml filename="Dependencies in pom.xml"}
+		<!-- JaCoCo dependencies -->
+		<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.8.9</version>
+		</dependency>
+```
+
+Then, create a new Maven project inside the `pom.xml` named `coverage` with the JaCoCo plugin and goals:
+
+```{.xml filename="Profiles in pom.xml"}
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.9</version>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<formats>
+										<format>XML</format>
+									</formats>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+```
+
+Reload Maven and locally test that JaCoCo creates reports when launching a `verify` goal:
+
+```{.bash filename="Verify JaCoCo locally"}
+mvn -B verify -Pcoverage
+```
+
+Reports should be generated in the path `target/site/jacoco/jacoco.xml`. Now we have to change the GitHub workflow file to use this profile:
+
+
+```{.yml filename="GitHub workflow"}
+jobs:
+    build:
+    [...]
+    steps:
+        - name: Build and analyze
+          run: mvn verify [...] -Pcoverage -f <path-to-pom.xml>
+```
+
+Commit and push both the workflow file and the `pom.xml`. Now, for any new push, SonarQube should have available the Code Coverage results:
+
+![SonarQube - Code Coverage with JaCoCo](../../images/productivity-tools/sonarqube-code-coverage.png)

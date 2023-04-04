@@ -499,6 +499,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#create-github-secrets" id="toc-create-github-secrets" class="nav-link" data-scroll-target="#create-github-secrets">Create GitHub secrets</a></li>
   <li><a href="#configuring-your-.githubworkflowsbuild.yml-file" id="toc-configuring-your-.githubworkflowsbuild.yml-file" class="nav-link" data-scroll-target="#configuring-your-.githubworkflowsbuild.yml-file">Configuring your <code>.github/workflows/build.yml</code> file</a></li>
   </ul></li>
+  <li><a href="#adding-code-coverage" id="toc-adding-code-coverage" class="nav-link" data-scroll-target="#adding-code-coverage">Adding Code Coverage</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/07-sonarqube.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -696,6 +697,10 @@ Review and fix the YAML file according to your project!
 <li>Check that the JDK version matches your project’s JDK version</li>
 <li>The SonarQube tutorial expects to execute <code>mvn</code> from the repository root path! When working with <strong>monorepositories</strong> we need to change this on workflow YML. One way to do it is to define the proper path of the <code>pom.xml</code> file with the <code>-f</code> option:</li>
 </ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>GitHub workflow</strong></pre>
+</div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="at">    </span><span class="kw">[</span><span class="at">...</span><span class="kw">]</span></span>
@@ -704,9 +709,95 @@ Review and fix the YAML file according to your project!
 <span id="cb1-6"><a href="#cb1-6"></a><span class="at">          </span><span class="fu">run</span><span class="kw">:</span><span class="at"> mvn verify [...] -f &lt;path-to-pom.xml&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-
-
+</div>
 </section>
+</section>
+<section id="adding-code-coverage" class="level2">
+<h2 class="anchored" data-anchor-id="adding-code-coverage">Adding Code Coverage</h2>
+<p>SonarQube is compatible with JaCoCo (Java Code Coverage) dependency. Let’s try to add it to our project.</p>
+<ul>
+<li><a href="https://docs.sonarqube.org/9.8/analyzing-source-code/test-coverage/java-test-coverage/">SonarQube Java test coverage guide</a></li>
+</ul>
+<p>First of all, add the <code>jacoco-maven-plugin</code> to the <code>pom.xml</code> dependencies section:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Dependencies in pom.xml</strong></pre>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource xml number-lines code-with-copy"><code class="sourceCode xml"><span id="cb2-1"><a href="#cb2-1"></a>        <span class="co">&lt;!-- JaCoCo dependencies --&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>        <span class="co">&lt;!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin --&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>        &lt;<span class="kw">dependency</span>&gt;</span>
+<span id="cb2-4"><a href="#cb2-4"></a>            &lt;<span class="kw">groupId</span>&gt;org.jacoco&lt;/<span class="kw">groupId</span>&gt;</span>
+<span id="cb2-5"><a href="#cb2-5"></a>            &lt;<span class="kw">artifactId</span>&gt;jacoco-maven-plugin&lt;/<span class="kw">artifactId</span>&gt;</span>
+<span id="cb2-6"><a href="#cb2-6"></a>            &lt;<span class="kw">version</span>&gt;0.8.9&lt;/<span class="kw">version</span>&gt;</span>
+<span id="cb2-7"><a href="#cb2-7"></a>        &lt;/<span class="kw">dependency</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, create a new Maven project inside the <code>pom.xml</code> named <code>coverage</code> with the JaCoCo plugin and goals:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Profiles in pom.xml</strong></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource xml number-lines code-with-copy"><code class="sourceCode xml"><span id="cb3-1"><a href="#cb3-1"></a>    &lt;<span class="kw">profiles</span>&gt;</span>
+<span id="cb3-2"><a href="#cb3-2"></a>        &lt;<span class="kw">profile</span>&gt;</span>
+<span id="cb3-3"><a href="#cb3-3"></a>            &lt;<span class="kw">id</span>&gt;coverage&lt;/<span class="kw">id</span>&gt;</span>
+<span id="cb3-4"><a href="#cb3-4"></a>            &lt;<span class="kw">build</span>&gt;</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                &lt;<span class="kw">plugins</span>&gt;</span>
+<span id="cb3-6"><a href="#cb3-6"></a>                    &lt;<span class="kw">plugin</span>&gt;</span>
+<span id="cb3-7"><a href="#cb3-7"></a>                        &lt;<span class="kw">groupId</span>&gt;org.jacoco&lt;/<span class="kw">groupId</span>&gt;</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                        &lt;<span class="kw">artifactId</span>&gt;jacoco-maven-plugin&lt;/<span class="kw">artifactId</span>&gt;</span>
+<span id="cb3-9"><a href="#cb3-9"></a>                        &lt;<span class="kw">version</span>&gt;0.8.9&lt;/<span class="kw">version</span>&gt;</span>
+<span id="cb3-10"><a href="#cb3-10"></a>                        &lt;<span class="kw">executions</span>&gt;</span>
+<span id="cb3-11"><a href="#cb3-11"></a>                            &lt;<span class="kw">execution</span>&gt;</span>
+<span id="cb3-12"><a href="#cb3-12"></a>                                &lt;<span class="kw">id</span>&gt;prepare-agent&lt;/<span class="kw">id</span>&gt;</span>
+<span id="cb3-13"><a href="#cb3-13"></a>                                &lt;<span class="kw">goals</span>&gt;</span>
+<span id="cb3-14"><a href="#cb3-14"></a>                                    &lt;<span class="kw">goal</span>&gt;prepare-agent&lt;/<span class="kw">goal</span>&gt;</span>
+<span id="cb3-15"><a href="#cb3-15"></a>                                &lt;/<span class="kw">goals</span>&gt;</span>
+<span id="cb3-16"><a href="#cb3-16"></a>                            &lt;/<span class="kw">execution</span>&gt;</span>
+<span id="cb3-17"><a href="#cb3-17"></a>                            &lt;<span class="kw">execution</span>&gt;</span>
+<span id="cb3-18"><a href="#cb3-18"></a>                                &lt;<span class="kw">id</span>&gt;report&lt;/<span class="kw">id</span>&gt;</span>
+<span id="cb3-19"><a href="#cb3-19"></a>                                &lt;<span class="kw">goals</span>&gt;</span>
+<span id="cb3-20"><a href="#cb3-20"></a>                                    &lt;<span class="kw">goal</span>&gt;report&lt;/<span class="kw">goal</span>&gt;</span>
+<span id="cb3-21"><a href="#cb3-21"></a>                                &lt;/<span class="kw">goals</span>&gt;</span>
+<span id="cb3-22"><a href="#cb3-22"></a>                                &lt;<span class="kw">configuration</span>&gt;</span>
+<span id="cb3-23"><a href="#cb3-23"></a>                                    &lt;<span class="kw">formats</span>&gt;</span>
+<span id="cb3-24"><a href="#cb3-24"></a>                                        &lt;<span class="kw">format</span>&gt;XML&lt;/<span class="kw">format</span>&gt;</span>
+<span id="cb3-25"><a href="#cb3-25"></a>                                    &lt;/<span class="kw">formats</span>&gt;</span>
+<span id="cb3-26"><a href="#cb3-26"></a>                                &lt;/<span class="kw">configuration</span>&gt;</span>
+<span id="cb3-27"><a href="#cb3-27"></a>                            &lt;/<span class="kw">execution</span>&gt;</span>
+<span id="cb3-28"><a href="#cb3-28"></a>                        &lt;/<span class="kw">executions</span>&gt;</span>
+<span id="cb3-29"><a href="#cb3-29"></a>                    &lt;/<span class="kw">plugin</span>&gt;</span>
+<span id="cb3-30"><a href="#cb3-30"></a>                &lt;/<span class="kw">plugins</span>&gt;</span>
+<span id="cb3-31"><a href="#cb3-31"></a>            &lt;/<span class="kw">build</span>&gt;</span>
+<span id="cb3-32"><a href="#cb3-32"></a>        &lt;/<span class="kw">profile</span>&gt;</span>
+<span id="cb3-33"><a href="#cb3-33"></a>    &lt;/<span class="kw">profiles</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Reload Maven and locally test that JaCoCo creates reports when launching a <code>verify</code> goal:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Verify JaCoCo locally</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">mvn</span> <span class="at">-B</span> verify <span class="at">-Pcoverage</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Reports should be generated in the path <code>target/site/jacoco/jacoco.xml</code>. Now we have to change the GitHub workflow file to use this profile:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>GitHub workflow</strong></pre>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="at">    </span><span class="kw">[</span><span class="at">...</span><span class="kw">]</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build and analyze</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="at">          </span><span class="fu">run</span><span class="kw">:</span><span class="at"> mvn verify [...] -Pcoverage -f &lt;path-to-pom.xml&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Commit and push both the workflow file and the <code>pom.xml</code>. Now, for any new push, SonarQube should have available the Code Coverage results:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/productivity-tools/sonarqube-code-coverage.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">SonarQube - Code Coverage with JaCoCo</figcaption><p></p>
+</figure>
+</div>
+
+
 </section>
 </section>
 

@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ProtossGP32">
+<meta name="dcterms.date" content="2023-01-17">
+<meta name="description" content="Static website debugging and deployment">
+
+<title>DevOps Training Projects - Create a REST API with Python and Django</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../devops-exercises/explore-california/00-introduction.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">DevOps Training Projects</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-devops-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">DevOps exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-devops-exercises">    
+        <li class="dropdown-header">Explore California</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-exercises/explore-california/00-introduction.html">
+ <span class="dropdown-text">Explore California</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Python</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-exercises/python/00-python-crud-rest-api.html">
+ <span class="dropdown-text">Create a REST API with Python and Django</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-devops-tools" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">DevOps tools</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-devops-tools">    
+        <li class="dropdown-header">Infrastructure As a Code</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-tools/infrastructure-as-a-code/00-ansible.html">
+ <span class="dropdown-text">00 - Infrastructure As A Code - Ansible</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html">
+ <span class="dropdown-text">01 - Management As A Code - Event-Driven Ansible</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Observability</li>
+        <li>
+    <a class="dropdown-item" href="../../devops-tools/observability/00-what-is-observability.html">
+ <span class="dropdown-text">00 - Observability - Introduction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../devops-tools/observability/01-observability-tools.html">
+ <span class="dropdown-text">01 - Observability Instrumentation</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-homelab-project" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Homelab project</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-homelab-project">    
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/00-introduction.html">
+ <span class="dropdown-text">Homelab project introduction</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Kubernetes Cluster</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/00-getting-started.html">
+ <span class="dropdown-text">00 - Kubernetes - Getting Started</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html">
+ <span class="dropdown-text">01 - Kubernetes - Traefik + cert-manager</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Requirements</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/requirements/00-requirements.html">
+ <span class="dropdown-text">Homelab Requirements</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Self Hosted Software</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/00-docker-and-docker-compose.html">
+ <span class="dropdown-text">00 - Containers - Docker &amp; Docker Compose</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/01-cloudflare.html">
+ <span class="dropdown-text">01 - External access - Cloudflare</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/02-traefik-and-portainer.html">
+ <span class="dropdown-text">02 - Routing and SSL certificates - Traefik and Portainer</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/03-dashy.html">
+ <span class="dropdown-text">03 - Homelab dashboard - Dashy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/04-openldap.html">
+ <span class="dropdown-text">04 - Authentication - OpenLDAP</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/05-nextcloud.html">
+ <span class="dropdown-text">05 - Productivity tools - NextCloud</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/06-openproject.html">
+ <span class="dropdown-text">06 - Productivity tools - OpenProject</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/07-sonarqube.html">
+ <span class="dropdown-text">07 - Code analysis - SonarQube</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/09-penpot.html">
+ <span class="dropdown-text">08 - Mockups - Penpot</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/self-hosted-software/08-guacamole.html">
+ <span class="dropdown-text">08 - Remote access - Guacamole</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtual Resources Creation</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html">
+ <span class="dropdown-text">01 - Provisioning - Virtual Machines on Proxmox</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtual-resources-creation/02-containers.html">
+ <span class="dropdown-text">02 - Provisioning - LXC (Linux Containers on Proxmox)</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Virtualization Server</li>
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/01-installing-proxmox.html">
+ <span class="dropdown-text">Part 1 - Installing Proxmox VE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/02-virtual-networks.html">
+ <span class="dropdown-text">Part 2 - Internal Virtual Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html">
+ <span class="dropdown-text">Part 3 - DNS and DHCP servers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html">
+ <span class="dropdown-text">Part 4 - Proxy HTTP(S) into the internal network</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/protossgp32"><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Create a REST API with Python and Django</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Explore California</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../devops-exercises/explore-california/00-introduction.html" class="sidebar-item-text sidebar-link">Explore California</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../devops-exercises/python/00-python-crud-rest-api.html" class="sidebar-item-text sidebar-link active">Create a REST API with Python and Django</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a>
+  <ul class="collapse">
+  <li><a href="#install-django" id="toc-install-django" class="nav-link" data-scroll-target="#install-django">Install Django</a></li>
+  </ul></li>
+  <li><a href="#initialize-the-django-project" id="toc-initialize-the-django-project" class="nav-link" data-scroll-target="#initialize-the-django-project">Initialize the Django project</a>
+  <ul class="collapse">
+  <li><a href="#configure-the-project" id="toc-configure-the-project" class="nav-link" data-scroll-target="#configure-the-project">Configure the project</a>
+  <ul class="collapse">
+  <li><a href="#settings.py" id="toc-settings.py" class="nav-link" data-scroll-target="#settings.py"><code>settings.py</code></a></li>
+  </ul></li>
+  <li><a href="#configure-the-django-app" id="toc-configure-the-django-app" class="nav-link" data-scroll-target="#configure-the-django-app">Configure the Django App</a>
+  <ul class="collapse">
+  <li><a href="#models.py" id="toc-models.py" class="nav-link" data-scroll-target="#models.py"><code>models.py</code></a></li>
+  <li><a href="#serializers.py" id="toc-serializers.py" class="nav-link" data-scroll-target="#serializers.py"><code>serializers.py</code></a></li>
+  <li><a href="#views.py" id="toc-views.py" class="nav-link" data-scroll-target="#views.py"><code>views.py</code></a></li>
+  <li><a href="#routes" id="toc-routes" class="nav-link" data-scroll-target="#routes">Routes</a></li>
+  </ul></li>
+  <li><a href="#update-the-django-project" id="toc-update-the-django-project" class="nav-link" data-scroll-target="#update-the-django-project">Update the Django project</a>
+  <ul class="collapse">
+  <li><a href="#djangoprojecturls.py" id="toc-djangoprojecturls.py" class="nav-link" data-scroll-target="#djangoprojecturls.py"><code>&lt;djangoproject&gt;/urls.py</code></a></li>
+  </ul></li>
+  <li><a href="#create-a-bash-script-to-launch-the-application" id="toc-create-a-bash-script-to-launch-the-application" class="nav-link" data-scroll-target="#create-a-bash-script-to-launch-the-application">Create a <code>bash</code> script to launch the application</a></li>
+  <li><a href="#keep-track-of-the-project-requirements" id="toc-keep-track-of-the-project-requirements" class="nav-link" data-scroll-target="#keep-track-of-the-project-requirements">Keep track of the project requirements</a></li>
+  </ul></li>
+  <li><a href="#dockerize-the-project" id="toc-dockerize-the-project" class="nav-link" data-scroll-target="#dockerize-the-project">Dockerize the project</a>
+  <ul class="collapse">
+  <li><a href="#dockerfile" id="toc-dockerfile" class="nav-link" data-scroll-target="#dockerfile">Dockerfile</a></li>
+  <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose">Docker Compose</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-exercises/python/00-python-crud-rest-api.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Create a REST API with Python and Django</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Docker</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Rest API</div>
+    <div class="quarto-category">Django</div>
+    <div class="quarto-category">Postgres</div>
+    <div class="quarto-category">Docker Compose</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Static website debugging and deployment
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ProtossGP32 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 17, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>We’ll follow <a href="https://dev.to/francescoxx/python-crud-rest-api-using-django-postgres-docker-and-docker-compose-4nhe">this tutorial</a> to understand what do we need to deploy a CRUD Rest API written in Python and Django, as well as using Postgres as the relational database and Docker for deployment.</p>
+<p>According to the <a href="https://www.djangoproject.com/">Django official website:</a></p>
+<blockquote class="blockquote">
+<p>Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, it takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel. It’s free and open source.</p>
+</blockquote>
+<p>Requirements that should be already installed in our server for this project:</p>
+<ul>
+<li>Python 3</li>
+<li>Docker Engine and Docker Compose</li>
+<li>Django package</li>
+<li>django-admin CLI (command in the next section)</li>
+<li>(Optional) Some API testing tool, such as Postman</li>
+<li>(Optional) Some Database testing tool, such as Tableplus</li>
+</ul>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting started</h1>
+<p>In order to ensure robustness and congruency in our code, it’s always recommended to create a virtual environment exclusive for the new project. You can do it by either:</p>
+<ul>
+<li>Using <code>venv</code> from command line</li>
+<li>Creating the project from your IDE and letting it create the virtual environment for you</li>
+<li>Using a Python Docker container with all the required packages installed there</li>
+<li>Etc…</li>
+</ul>
+<section id="install-django" class="level2">
+<h2 class="anchored" data-anchor-id="install-django">Install Django</h2>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Install Django</strong></pre>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install Django</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Also install the <code>django-admin-cli</code> package to initialize the Django project</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Install django-admin-cli</strong></pre>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install django-admin-cli</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As Django is mainly focused on web development, it doesn’t include a Rest framework by default, so it must be installed as a python dependency:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Install djangorestframework</strong></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install djangorestframework</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="initialize-the-django-project" class="level1">
+<h1>Initialize the Django project</h1>
+<p>Launch the following commands from the CLI:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Django project initialization</strong></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Create a django project (only accepts lowercase)</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">django-admin</span> startproject <span class="op">&lt;</span>djangoprojectname<span class="op">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Enter the newly created project folder and create a Django app</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="bu">cd</span> <span class="op">&lt;</span>djangoprojectname<span class="op">&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="ex">python</span> manage.py startapp <span class="op">&lt;</span>djangoapp<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="configure-the-project" class="level2">
+<h2 class="anchored" data-anchor-id="configure-the-project">Configure the project</h2>
+<section id="settings.py" class="level3">
+<h3 class="anchored" data-anchor-id="settings.py"><code>settings.py</code></h3>
+<p>Now go to <code>&lt;djangoprojectname&gt;/settings.py</code> and modify it as follows:</p>
+<ul>
+<li>Add <code>import os</code> at the top of the file</li>
+<li>Add <code>'&lt;djangoapp&gt;'</code> and <code>'rest_framework'</code> to the <code>INSTALLED_APPS</code> list</li>
+<li>Set the environment variables to configure the database (Postgres):</li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>settings.py - Postgres configuration</strong></pre>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>DATABASES <span class="op">=</span> {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    <span class="st">'default'</span>: {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>        <span class="st">'ENGINE'</span>: os.environ.get(<span class="st">'DB_DRIVER'</span>,<span class="st">'django.db.backends.postgresql'</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>        <span class="st">'USER'</span>: os.environ.get(<span class="st">'PG_USER'</span>,<span class="st">'postgres'</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>        <span class="st">'PASSWORD'</span>:os.environ.get(<span class="st">'PG_PASSWORD'</span>,<span class="st">'postgres'</span>),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>        <span class="st">'NAME'</span>: os.environ.get(<span class="st">'PG_DB'</span>,<span class="st">'postgres'</span>),</span>
+<span id="cb5-7"><a href="#cb5-7"></a>        <span class="st">'PORT'</span>: os.environ.get(<span class="st">'PG_PORT'</span>,<span class="st">'5432'</span>),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>        <span class="st">'HOST'</span>: os.environ.get(<span class="st">'PG_HOST'</span>,<span class="st">'localhost'</span>), <span class="co"># uses the container if set, otherwise it runs locally</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>    }</span>
+<span id="cb5-10"><a href="#cb5-10"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Convert credentials to secrets somehow!!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+</section>
+<section id="configure-the-django-app" class="level2">
+<h2 class="anchored" data-anchor-id="configure-the-django-app">Configure the Django App</h2>
+<section id="models.py" class="level3">
+<h3 class="anchored" data-anchor-id="models.py"><code>models.py</code></h3>
+<p>The models are the representation of our objects in the Database realm, i.e.&nbsp;the ORM.</p>
+<p>Go to <code>&lt;djangoapp&gt;/models.py</code> and replace its content with the following:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>models.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> django.db <span class="im">import</span> models</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># Create your models here.</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">class</span> User(models.Model):</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    name <span class="op">=</span> models.CharField(max_length<span class="op">=</span><span class="dv">250</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    email <span class="op">=</span> models.CharField(max_length<span class="op">=</span><span class="dv">250</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this example:</p>
+<ul>
+<li><code>User</code> is the name of the model</li>
+<li><code>name</code> and <code>email</code> are fields of the <code>User</code> model</li>
+</ul>
+</section>
+<section id="serializers.py" class="level3">
+<h3 class="anchored" data-anchor-id="serializers.py"><code>serializers.py</code></h3>
+<p>A serializer is a class that converts data from the database to JSON and vice versa.</p>
+<p>According to <a href="https://www.django-rest-framework.org/api-guide/serializers/">Django REST framework documentation:</a></p>
+<blockquote class="blockquote">
+<p>Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes that can then be easily rendered into <code>JSON</code>, <code>XML</code> or other content types. Serializers also provide deserialization, allowing parsed data to be converted back into complex types, after first validating the incoming data.</p>
+</blockquote>
+<p>Create a new file <code>&lt;djangoapp&gt;/serializers.py</code> and add the following code:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>serializer.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">from</span> rest_framework <span class="im">import</span> serializers</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="im">from</span> .models <span class="im">import</span> User</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="kw">class</span> UserSerializer(serializers.ModelSerializer):</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="kw">class</span> Meta:</span>
+<span id="cb7-7"><a href="#cb7-7"></a>        model <span class="op">=</span> User</span>
+<span id="cb7-8"><a href="#cb7-8"></a>        fields <span class="op">=</span> <span class="st">'__all__'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>UserSerializer</code> is the name of the serializer</li>
+<li><code>serializers.ModelSerializer</code> is the base class of the serializer</li>
+<li><code>Meta</code> is a class that contains the metadata of the serializer</li>
+<li><code>model</code> is the model that contains the metadata of the serializer</li>
+<li><code>fields</code> is the list of fields the serializer will use. In this case, we use <code>__all__</code> to use all the fields of the model</li>
+</ul>
+</section>
+<section id="views.py" class="level3">
+<h3 class="anchored" data-anchor-id="views.py"><code>views.py</code></h3>
+<p>Views are the endpoints of our Rest application, where we define the URLs of the HTTP requests (<code>GET</code>, <code>POST</code>, <code>PUT</code>, etc…).</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Comparison with Spring Boot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In Java Spring Boot, <code>views</code> would be each of the <code>@Controller</code> methods that reply to an HTTP request.</p>
+</div>
+</div>
+<p>Modify the <code>&lt;djangoapp&gt;/views.py</code> and add the following code:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>views.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> django.shortcuts <span class="im">import</span> render</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="im">from</span> rest_framework.response <span class="im">import</span> Response</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="im">from</span> rest_framework.decorators <span class="im">import</span> api_view</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="im">from</span> .models <span class="im">import</span> User</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="im">from</span> .serializers <span class="im">import</span> UserSerializer</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co"># Create your views here.</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="at">@api_view</span>([<span class="st">'GET'</span>])</span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="kw">def</span> getData(request):</span>
+<span id="cb8-11"><a href="#cb8-11"></a>    users <span class="op">=</span> User.objects.<span class="bu">all</span>()</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    serializer <span class="op">=</span> UserSerializer(users, many<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    <span class="cf">return</span> Response(serializer.data)</span>
+<span id="cb8-14"><a href="#cb8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15"></a></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="at">@api_view</span>([<span class="st">'GET'</span>])</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="kw">def</span> getUser(request, pk):</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    users <span class="op">=</span> User.objects.get(<span class="bu">id</span><span class="op">=</span>pk)</span>
+<span id="cb8-19"><a href="#cb8-19"></a>    serializer <span class="op">=</span> UserSerializer(users, many<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-20"><a href="#cb8-20"></a>    <span class="cf">return</span> Response(serializer.data)</span>
+<span id="cb8-21"><a href="#cb8-21"></a></span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="at">@api_view</span>([<span class="st">'POST'</span>])</span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="kw">def</span> addUser(request):</span>
+<span id="cb8-25"><a href="#cb8-25"></a>    serializer <span class="op">=</span> UserSerializer(data<span class="op">=</span>request.data)</span>
+<span id="cb8-26"><a href="#cb8-26"></a></span>
+<span id="cb8-27"><a href="#cb8-27"></a>    <span class="cf">if</span> serializer.is_valid():</span>
+<span id="cb8-28"><a href="#cb8-28"></a>        serializer.save()</span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a>    <span class="cf">return</span> Response(serializer.data)</span>
+<span id="cb8-31"><a href="#cb8-31"></a></span>
+<span id="cb8-32"><a href="#cb8-32"></a></span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="at">@api_view</span>([<span class="st">'PUT'</span>])</span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="kw">def</span> updateUser(request, pk):</span>
+<span id="cb8-35"><a href="#cb8-35"></a>    user <span class="op">=</span> User.objects.get(<span class="bu">id</span><span class="op">=</span>pk)</span>
+<span id="cb8-36"><a href="#cb8-36"></a>    serializer <span class="op">=</span> UserSerializer(instance<span class="op">=</span>user, data<span class="op">=</span>request.data)</span>
+<span id="cb8-37"><a href="#cb8-37"></a></span>
+<span id="cb8-38"><a href="#cb8-38"></a>    <span class="cf">if</span> serializer.is_valid():</span>
+<span id="cb8-39"><a href="#cb8-39"></a>        serializer.save()</span>
+<span id="cb8-40"><a href="#cb8-40"></a></span>
+<span id="cb8-41"><a href="#cb8-41"></a>    <span class="cf">return</span> Response(serializer.data)</span>
+<span id="cb8-42"><a href="#cb8-42"></a></span>
+<span id="cb8-43"><a href="#cb8-43"></a></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="at">@api_view</span>([<span class="st">'DELETE'</span>])</span>
+<span id="cb8-45"><a href="#cb8-45"></a><span class="kw">def</span> deleteUser(request, pk):</span>
+<span id="cb8-46"><a href="#cb8-46"></a>    user <span class="op">=</span> User.objects.get(<span class="bu">id</span><span class="op">=</span>pk)</span>
+<span id="cb8-47"><a href="#cb8-47"></a>    user.delete()</span>
+<span id="cb8-48"><a href="#cb8-48"></a>    <span class="cf">return</span> Response(<span class="st">'User successfully deleted!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>@api_view</code> is a decorator that will convert the function into a view (same as <code>@annotations</code> in Java)</li>
+<li><code>getData</code>: return all the users in the database (<code>GET</code>)</li>
+<li><code>getUser</code>: return a single user from the database (<code>GET</code>)</li>
+<li><code>addUser</code>: add a user to the database (<code>POST</code>)</li>
+<li><code>updateUser</code>: update a user in the database (<code>PUT</code>)</li>
+<li><code>deleteUser</code>: delete a user from the database (<code>DELETE</code>)</li>
+</ul>
+<p>We use the <code>User</code> model to retrieve the data from the Database and manipulate them as objects, and the <code>UserSerializer</code> to convert that data to JSON (<code>serializer.data</code> attribute).</p>
+</section>
+<section id="routes" class="level3">
+<h3 class="anchored" data-anchor-id="routes">Routes</h3>
+<p>Routes are the URL used to access the API. Each route is linked to a <code>view</code>, so when accessing a URL the app knows what function to call.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Comparison with Spring Boot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In Java Spring Boot the routing is the <code>value</code> defined for each <code>@RequestMapping</code> method (<code>@GetMapping(value="/api/path/to/operation")</code>, <code>@PostMapping(value="/api/another/path")</code>, etc…)</p>
+</div>
+</div>
+<p>Modify the file <code>&lt;djangoapp&gt;/urls.py</code> to add the required routes:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>urls.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">from</span> django.urls <span class="im">import</span> path</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="im">from</span> . <span class="im">import</span> views</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a>urlpatterns <span class="op">=</span> [</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    path(<span class="st">''</span>, views.getData),</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    path(<span class="st">'create'</span>, views.addUser),</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    path(<span class="st">'read/&lt;str:pk&gt;'</span>, views.getUser),</span>
+<span id="cb9-9"><a href="#cb9-9"></a>    path(<span class="st">'update/&lt;str:pk&gt;'</span>, views.updateUser),</span>
+<span id="cb9-10"><a href="#cb9-10"></a>    path(<span class="st">'delete/&lt;str:pk&gt;'</span>, views.deleteUser),</span>
+<span id="cb9-11"><a href="#cb9-11"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>urlpatterns</code> is the array that includes all the available URLs or patterns</li>
+<li><code>path</code> is the function that creates the routes (mappings between URLs and views)</li>
+<li>The created routes are:
+<ul>
+<li><code>&lt;empty&gt;</code>: this will access the <code>getData</code> view and return all the users in the DB</li>
+<li><code>create</code>: this will access the <code>addUser</code> view and create a new user from the request body data</li>
+<li><code>read/&lt;str:pk&gt;</code>: this will return a single <code>User</code> that matches the provided <code>pk</code> ID</li>
+<li><code>update/&lt;str:pk&gt;</code>: this will update the <code>User</code> with ID equal to <code>pk</code> with the info from the request body data</li>
+<li><code>delete/&lt;str:pk&gt;</code>: this will delete the <code>User</code> with ID equal to <code>pk</code> if it exists in the DB</li>
+</ul></li>
+<li>The <code>&lt;str:pk&gt;</code> syntax defines the parameters sent along with the URL, being the first part the data type and the second one the name of the expected variable by the view function (ex: in any of the <code>read/update/delete</code> routes, the view function expects an input parameter named <code>pk</code>)</li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Comparison with Spring Boot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>&lt;datatype:variable_name&gt;</code> syntax is the same as the <code>@PathVariable</code> annotation in Spring Boot.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="update-the-django-project" class="level2">
+<h2 class="anchored" data-anchor-id="update-the-django-project">Update the Django project</h2>
+<section id="djangoprojecturls.py" class="level3">
+<h3 class="anchored" data-anchor-id="djangoprojecturls.py"><code>&lt;djangoproject&gt;/urls.py</code></h3>
+<p>Now we need to add the app routes to the project.</p>
+<p>Open the <code>&lt;djangoproject&gt;/urls.py</code> and replace the content with the following (or just add the missing parts):</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>&lt;djangoproject&gt;/urls.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co">"""</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">URL configuration for djangorestapi project.</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co">The `urlpatterns` list routes URLs to views. For more information please see:</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">    https://docs.djangoproject.com/en/4.2/topics/http/urls/</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">Examples:</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">Function views</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co">    1. Add an import:  from my_app import views</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co">    2. Add a URL to urlpatterns:  path('', views.home, name='home')</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">Class-based views</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="co">    1. Add an import:  from other_app.views import Home</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="co">    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co">Including another URLconf</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="co">    1. Import the include() function: from django.urls import include, path</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="co">    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co">"""</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="im">from</span> django.contrib <span class="im">import</span> admin</span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="im">from</span> django.urls <span class="im">import</span> path, include</span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a></span>
+<span id="cb10-21"><a href="#cb10-21"></a>urlpatterns <span class="op">=</span> [</span>
+<span id="cb10-22"><a href="#cb10-22"></a>    path(<span class="st">'admin/'</span>, admin.site.urls),</span>
+<span id="cb10-23"><a href="#cb10-23"></a>    <span class="co"># Here replace 'djangorestapp' with the name of your django application</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a>    path(<span class="st">'users/'</span>, include(<span class="st">'djangorestapp.urls'</span>))</span>
+<span id="cb10-25"><a href="#cb10-25"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>path('admin/', admin.site.urls)</code> adds the routes of the admin panel to the django project</li>
+<li><code>path('users/', include('&lt;djangoapp&gt;.urls'))</code> adds the routes of the <code>&lt;djangoapp&gt;</code> to the <code>djangoproject</code></li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Comparison with Spring Boot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here, each <code>path</code> is equivalent to the <code>@RequestMapping(value="path")</code> for a <code>@Controller</code> class (do not mistake it with the <code>@RequestMapping</code> of each Controller method!).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="create-a-bash-script-to-launch-the-application" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-bash-script-to-launch-the-application">Create a <code>bash</code> script to launch the application</h2>
+<p>There are several steps involved in the Django server initialization, so it’s easier to keep them in a script. What we need to do is:</p>
+<ul>
+<li>Create migration for the <code>djangoapp</code></li>
+<li>Run the <code>djangoapp</code> migrations</li>
+<li>Launch the server</li>
+</ul>
+<p>Create a <code>django.sh</code> file in the root of the project and add the following code (remember to change the name of the django app with yours!!):</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>django.sh</strong></pre>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="bu">echo</span> <span class="st">"Creating Migrations..."</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="ex">python</span> manage.py makemigrations djangorestapp</span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="bu">echo</span> <span class="st">"========================================"</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="bu">echo</span> <span class="st">"Starting Migrations..."</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="ex">python</span> manage.py migrate</span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="bu">echo</span> <span class="st">"========================================"</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="bu">echo</span> <span class="st">"Starting Server..."</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="ex">python</span> manage.py runserver 0.0.0.0:8000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We still can’t test the project because it requires a Postgres database available in <code>localhost:5432</code> as specified in the <code>settings.py</code> project file. We’ll use docker to provide that.</p>
+</section>
+<section id="keep-track-of-the-project-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="keep-track-of-the-project-requirements">Keep track of the project requirements</h2>
+<p>Create a <code>requirements.txt</code> file at the root of the project and include these dependencies as well as some more that we’ll need later:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>requirements.txt</strong></pre>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>Django<span class="op">~=</span><span class="fl">4.2</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>djangorestframework<span class="op">~=</span><span class="fl">3.14.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>IDEs usually have an option to auto-generate it. IntelliJ PyCharm has it in <code>Tools --&gt; Sync Python Requirements</code></p>
+</section>
+</section>
+<section id="dockerize-the-project" class="level1">
+<h1>Dockerize the project</h1>
+<p>Now we’ll containerize our Django project and prepare a Docker Compose file to easily deploy the app as well as the database</p>
+<section id="dockerfile" class="level2">
+<h2 class="anchored" data-anchor-id="dockerfile">Dockerfile</h2>
+<p>The Dockerfile builds a Docker image that contains our application running on a lightweight linux operating system with the required Python version already included.</p>
+<p>Create a <code>Dockerfile</code> file in the root directory of the project and add the following lines:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Dockerfile</strong></pre>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource dockerfile number-lines code-with-copy"><code class="sourceCode dockerfile"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">FROM</span> python:3.9.0-buster</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="co"># Set unbuffered output for python</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="kw">ENV</span> PYTHONUNBUFFERED 1</span>
+<span id="cb13-5"><a href="#cb13-5"></a></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co"># Create app directory</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="kw">WORKDIR</span> /app</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co"># Install app dependencies</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="kw">COPY</span> requirements.txt .</span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="kw">RUN</span> <span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co"># Bundle app source</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="kw">COPY</span> . .</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co"># Expose port</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="kw">EXPOSE</span> 8000</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co"># Entrypoint to run the django.sh file</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="kw">ENTRYPOINT</span> [<span class="st">"/app/django.sh"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>FROM python:3.9.0-buster</code>: select a Debian Buster image with Python 3.9.0 installed as the base image. Make sure you select a base image with the same Python version as your project</li>
+<li><code>ENV PYTHONUNBUFFERED 1</code>: this makes python output unbuffered, meaning the output will be sent directly to the terminal without being stored in a buffer</li>
+</ul>
+<p>The rest of the commands are self-explanatory with its proper comment.</p>
+</section>
+<section id="docker-compose" class="level2">
+<h2 class="anchored" data-anchor-id="docker-compose">Docker Compose</h2>
+<p>Now it’s time to create the <code>docker-compose.yml</code> file to deploy our application. Things to take into account:</p>
+<ul>
+<li>We’ll define it so our App Docker image is built from the source path instead of fetched from a registry. This should be changed when deploying, as we should be relying on a secure and trusted registry where our images are continuously updated (CI/CD, you know…)</li>
+<li>Postgres environment variables should be replaced and secured outside the <code>docker-compose.yml</code> file, but for learning purposes we’ll leave them like this</li>
+</ul>
+<p>Copy the following configuration into a <code>docker-compose.yml</code> within the project root directory:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>docker-compose.yml</strong></pre>
+</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource yml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">"3.9"</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="at">  </span><span class="fu">djangorestapp</span><span class="kw">:</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> djangorestapp</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8000:8000"</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_USER=postgres</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_PASSWORD=postgres</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_DB=postgres</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_PORT=5432</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_HOST=db</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="at">      </span><span class="kw">-</span><span class="at"> db</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="at">  </span><span class="fu">db</span><span class="kw">:</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> db</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:12</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=postgres</span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=postgres</span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=postgres</span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
+<span id="cb14-27"><a href="#cb14-27"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb14-28"><a href="#cb14-28"></a><span class="at">      </span><span class="kw">-</span><span class="at"> pgdata:/var/lib/postgresql/data</span></span>
+<span id="cb14-29"><a href="#cb14-29"></a></span>
+<span id="cb14-30"><a href="#cb14-30"></a><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb14-31"><a href="#cb14-31"></a><span class="at">  </span><span class="fu">pgdata</span><span class="kw">:</span><span class="at"> </span><span class="kw">{}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Where:</p>
+<ul>
+<li><code>djangorestapp</code> is the deployment of our Django App, and as it can’t run without a Postgres database, a <code>depends_on</code> value for <code>db</code> is defined. This prevents our app to initialize before the database</li>
+<li><code>db</code> is the Postgres database. It exposes the port <code>5432</code> so we can connect to it, and persists its data in a Docker volume named <code>pgdata</code>
+<ul>
+<li>If we don’t want the Postgres data to be stored in the default Docker path, we can replace the volume name with an absolute or relative path of the host where it will run</li>
+</ul></li>
+</ul>
+<p>At this point we should be able to deploy our application and start testing it.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO: Finish the tutorial!!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../devops-exercises/explore-california/00-introduction.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Explore California</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+</ul>
+      </div>
+  </div>
+</footer>
+
+
+
+</body></html>

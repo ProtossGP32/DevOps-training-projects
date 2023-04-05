@@ -1,0 +1,256 @@
+---
+title: Create a REST API with Python and Django
+description: "Static website debugging and deployment"
+author: ProtossGP32
+date: "2023/01/17"
+categories: ["Docker", "Python", "Rest API", "Django", "Postgres", "Docker Compose"]
+---
+# Introduction
+
+We'll follow [this tutorial](https://dev.to/francescoxx/python-crud-rest-api-using-django-postgres-docker-and-docker-compose-4nhe) to understand what do we need to deploy a CRUD Rest API written in Python and Django, as well as using Postgres as the relational database and Docker for deployment.
+
+According to the [Django official website:](https://www.djangoproject.com/)
+
+> Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, it takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel. It’s free and open source.
+
+Requirements that should be already installed in our server for this project:
+
+- Python 3
+- Docker Engine and Docker Compose
+- Django package
+- django-admin CLI (command in the next section)
+- (Optional) Some API testing tool, such as Postman
+- (Optional) Some Database testing tool, such as Tableplus
+
+# Getting started
+In order to ensure robustness and congruency in our code, it's always recommended to create a virtual environment exclusive for the new project. You can do it by either:
+
+- Using `venv` from command line
+- Creating the project from your IDE and letting it create the virtual environment for you
+- Using a Python Docker container with all the required packages installed there
+- Etc...
+
+## Install Django
+
+```{.bash filename="Install Django"}
+python -m pip install Django
+```
+
+Also install the `django-admin-cli` package to initialize the Django project
+
+```{.bash filename="Install django-admin-cli"}
+python -m pip install django-admin-cli
+```
+
+As Django is mainly focused on web development, it doesn't include a Rest framework by default, so it must be installed as a python dependency:
+
+```{.bash filename="Install djangorestframework"}
+python -m pip install djangorestframework
+```
+
+# Initialize the Django project
+Launch the following commands from the CLI:
+
+```{.bash filename="Django project initialization"}
+# Create a django project (only accepts lowercase)
+django-admin startproject <djangoprojectname>
+
+# Enter the newly created project folder and create a Django app
+cd <djangoprojectname>
+python manage.py startapp <djangoapp>
+```
+
+## Configure the project
+### `settings.py`
+Now go to `<djangoprojectname>/settings.py` and modify it as follows:
+
+- Add `import os` at the top of the file
+- Add `'<djangoapp>'` and `'rest_framework'` to the `INSTALLED_APPS` list
+- Set the environment variables to configure the database (Postgres):
+
+```{.python filename="settings.py - Postgres configuration"}
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get('DB_DRIVER','django.db.backends.postgresql'),
+        'USER': os.environ.get('PG_USER','postgres'),
+        'PASSWORD':os.environ.get('PG_PASSWORD','postgres'),
+        'NAME': os.environ.get('PG_DB','postgres'),
+        'PORT': os.environ.get('PG_PORT','5432'),
+        'HOST': os.environ.get('PG_HOST','localhost'), # uses the container if set, otherwise it runs locally
+    }
+}
+```
+:::{.callout-warning}
+## Convert credentials to secrets somehow!!
+:::
+
+## Configure the Django App
+### `models.py`
+
+The models are the representation of our objects in the Database realm, i.e. the ORM.
+
+Go to `<djangoapp>/models.py` and replace its content with the following:
+
+```{.python filename="models.py" include="../../../python/djangorestapi/djangorestapi/djangorestapp/models.py"}
+```
+
+In this example:
+
+- `User` is the name of the model
+- `name` and `email` are fields of the `User` model
+
+### `serializers.py`
+A serializer is a class that converts data from the database to JSON and vice versa.
+
+According to [Django REST framework documentation:](https://www.django-rest-framework.org/api-guide/serializers/)
+
+> Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes that can then be easily rendered into `JSON`, `XML` or other content types. Serializers also provide deserialization, allowing parsed data to be converted back into complex types, after first validating the incoming data.
+
+Create a new file `<djangoapp>/serializers.py` and add the following code:
+
+```{.python filename="serializer.py" include="../../../python/djangorestapi/djangorestapi/djangorestapp/serializers.py"}
+```
+
+Where:
+
+- `UserSerializer` is the name of the serializer
+- `serializers.ModelSerializer` is the base class of the serializer
+- `Meta` is a class that contains the metadata of the serializer
+- `model` is the model that contains the metadata of the serializer
+- `fields` is the list of fields the serializer will use. In this case, we use `__all__` to use all the fields of the model
+
+### `views.py`
+
+Views are the endpoints of our Rest application, where we define the URLs of the HTTP requests (`GET`, `POST`, `PUT`, etc...).
+
+:::{.callout-note}
+## Comparison with Spring Boot
+In Java Spring Boot, `views` would be each of the `@Controller` methods that reply to an HTTP request.
+:::
+
+Modify the `<djangoapp>/views.py` and add the following code:
+
+```{.python filename="views.py" include="../../../python/djangorestapi/djangorestapi/djangorestapp/views.py"}
+```
+
+Where:
+
+- `@api_view` is a decorator that will convert the function into a view (same as `@annotations` in Java)
+- `getData`: return all the users in the database (`GET`)
+- `getUser`: return a single user from the database (`GET`)
+- `addUser`: add a user to the database (`POST`)
+- `updateUser`: update a user in the database (`PUT`)
+- `deleteUser`: delete a user from the database (`DELETE`)
+
+We use the `User` model to retrieve the data from the Database and manipulate them as objects, and the `UserSerializer` to convert that data to JSON (`serializer.data` attribute).
+
+### Routes
+Routes are the URL used to access the API. Each route is linked to a `view`, so when accessing a URL the app knows what function to call.
+
+:::{.callout-note}
+## Comparison with Spring Boot
+In Java Spring Boot the routing is the `value` defined for each `@RequestMapping` method (`@GetMapping(value="/api/path/to/operation")`, `@PostMapping(value="/api/another/path")`, etc...)
+:::
+
+Modify the file `<djangoapp>/urls.py` to add the required routes:
+
+```{.python filename="urls.py" include="../../../python/djangorestapi/djangorestapi/djangorestapp/urls.py"}
+```
+Where:
+
+- `urlpatterns` is the array that includes all the available URLs or patterns
+- `path` is the function that creates the routes (mappings between URLs and views)
+- The created routes are:
+    - `<empty>`: this will access the `getData` view and return all the users in the DB
+    - `create`: this will access the `addUser` view and create a new user from the request body data
+    - `read/<str:pk>`: this will return a single `User` that matches the provided `pk` ID
+    - `update/<str:pk>`: this will update the `User` with ID equal to `pk` with the info from the request body data
+    - `delete/<str:pk>`: this will delete the `User` with ID equal to `pk` if it exists in the DB
+- The `<str:pk>` syntax defines the parameters sent along with the URL, being the first part the data type and the second one the name of the expected variable by the view function (ex: in any of the `read/update/delete` routes, the view function expects an input parameter named `pk`)
+
+:::{.callout-note}
+## Comparison with Spring Boot
+The `<datatype:variable_name>` syntax is the same as the `@PathVariable` annotation in Spring Boot.
+:::
+
+## Update the Django project
+### `<djangoproject>/urls.py`
+Now we need to add the app routes to the project.
+
+Open the `<djangoproject>/urls.py` and replace the content with the following (or just add the missing parts):
+
+```{.python filename="<djangoproject>/urls.py" include="../../../python/djangorestapi/djangorestapi/djangorestapi/urls.py"}
+```
+
+Where:
+
+- `path('admin/', admin.site.urls)` adds the routes of the admin panel to the django project
+- `path('users/', include('<djangoapp>.urls'))` adds the routes of the `<djangoapp>` to the `djangoproject`
+
+:::{.callout-note}
+## Comparison with Spring Boot
+Here, each `path` is equivalent to the `@RequestMapping(value="path")` for a `@Controller` class (do not mistake it with the `@RequestMapping` of each Controller method!).
+:::
+
+## Create a `bash` script to launch the application
+There are several steps involved in the Django server initialization, so it's easier to keep them in a script. What we need to do is:
+
+- Create migration for the `djangoapp`
+- Run the `djangoapp` migrations
+- Launch the server
+
+Create a `django.sh` file in the root of the project and add the following code (remember to change the name of the django app with yours!!):
+
+```{.bash filename="django.sh" include="../../../python/djangorestapi/djangorestapi/django.sh"}
+```
+
+We still can't test the project because it requires a Postgres database available in `localhost:5432` as specified in the `settings.py` project file. We'll use docker to provide that.
+
+## Keep track of the project requirements
+Create a `requirements.txt` file at the root of the project and include these dependencies as well as some more that we'll need later:
+
+```{.python filename="requirements.txt" include="../../../python/djangorestapi/djangorestapi/requirements.txt"}
+```
+
+IDEs usually have an option to auto-generate it. IntelliJ PyCharm has it in `Tools --> Sync Python Requirements`
+
+# Dockerize the project
+Now we'll containerize our Django project and prepare a Docker Compose file to easily deploy the app as well as the database
+
+## Dockerfile
+The Dockerfile builds a Docker image that contains our application running on a lightweight linux operating system with the required Python version already included.
+
+Create a `Dockerfile` file in the root directory of the project and add the following lines:
+
+```{.dockerfile filename="Dockerfile" include="../../../python/djangorestapi/djangorestapi/Dockerfile"}
+```
+
+Where:
+
+- `FROM python:3.9.0-buster`: select a Debian Buster image with Python 3.9.0 installed as the base image. Make sure you select a base image with the same Python version as your project
+- `ENV PYTHONUNBUFFERED 1`: this makes python output unbuffered, meaning the output will be sent directly to the terminal without being stored in a buffer
+
+The rest of the commands are self-explanatory with its proper comment.
+
+## Docker Compose
+Now it's time to create the `docker-compose.yml` file to deploy our application. Things to take into account:
+
+- We'll define it so our App Docker image is built from the source path instead of fetched from a registry. This should be changed when deploying, as we should be relying on a secure and trusted registry where our images are continuously updated (CI/CD, you know...)
+- Postgres environment variables should be replaced and secured outside the `docker-compose.yml` file, but for learning purposes we'll leave them like this
+
+Copy the following configuration into a `docker-compose.yml` within the project root directory:
+
+```{.yml filename="docker-compose.yml" include="../../../python/djangorestapi/djangorestapi/docker-compose.yml"}
+```
+
+Where:
+
+- `djangorestapp` is the deployment of our Django App, and as it can't run without a Postgres database, a `depends_on` value for `db` is defined. This prevents our app to initialize before the database
+- `db` is the Postgres database. It exposes the port `5432` so we can connect to it, and persists its data in a Docker volume named `pgdata`
+    - If we don't want the Postgres data to be stored in the default Docker path, we can replace the volume name with an absolute or relative path of the host where it will run
+
+At this point we should be able to deploy our application and start testing it.
+
+:::{.callout-warning}
+## TODO: Finish the tutorial!!
+:::

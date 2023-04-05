@@ -5,3 +5,9 @@
 **/.vscode
 
 /.luarc.json
+
+# Python
+**/*.pyc
+
+# Idea
+**/.idea

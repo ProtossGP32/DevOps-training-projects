@@ -12,6 +12,7 @@ services:
       - PG_DB=postgres
       - PG_PORT=5432
       - PG_HOST=db
+      - HOST_IP=${HOST_IP}
     depends_on:
       - db
 

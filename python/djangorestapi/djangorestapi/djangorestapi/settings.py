@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-21ad$3dbyvjqkfa3vam1e@06kf-!q#+_+)!dabcbo_$i44uy(e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED HOSTS: Add an environmental variable to include the host IP
+ALLOWED_HOSTS = ['HOST_IP','django.cifoweb.dev','localhost']
 
 
 # Application definition

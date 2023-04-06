@@ -34,9 +34,12 @@ Apart from Docker and Docker Compose, we need the following dependencies:
 - Git to clone boschkundendiest repository
 - OpenSSL to generate self-signed certificates
 - Vim to edit some files
+- Also Openssh to ease access to the LXC container
 
 ```{.bash filename="Installing OpenSSL in Alpine"}
-apk add git openssl vim
+apk add git openssl vim openssh
+# Make openssh available from the LXC boot
+rc-update add sshd default
 ```
 
 ## Clone repository

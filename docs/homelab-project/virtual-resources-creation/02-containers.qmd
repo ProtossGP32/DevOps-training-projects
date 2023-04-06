@@ -5,3 +5,29 @@ author: ProtossGP32
 date: "2023/01/17"
 categories: ["Proxmox VE", "LXC", "Containers"]
 ---
+# Introduction
+
+# Getting started
+## Download LXC template
+## Create a new LXC instance
+Remember to copy your public SSH key to remotely access the container.
+
+## Define the LXC as a template
+## Clone the LXC template
+## Access the LXC via Serial console
+## Install additional dependencies
+Install some useful dependencies:
+
+- Git to clone boschkundendiest repository
+- OpenSSL to generate self-signed certificates
+- Vim to edit some files
+- Also Openssh to ease access to the LXC container
+
+```{.bash filename="Installing OpenSSL in Alpine"}
+apk add git openssl vim openssh
+# Make openssh available from the LXC boot
+rc-update add sshd default
+```
+
+## Access LXC via SSH
+We should be able to access via SSH to the container as `root` user (we configured our public SSH key on LXC creation time).

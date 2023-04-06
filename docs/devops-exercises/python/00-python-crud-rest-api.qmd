@@ -254,3 +254,14 @@ At this point we should be able to deploy our application and start testing it.
 :::{.callout-warning}
 ## TODO: Finish the tutorial!!
 :::
+
+# Prepare a deployment server
+## Create an Alpine LXC with Docker
+Follow the instructions [in this article](../../../docs/homelab-project/virtual-resources-creation/02-containers.qmd) and in [this other article](../../homelab-project/self-hosted-software/08-guacamole.qmd#install-docker-and-docker-compose) to create an LXC and install Docker
+
+## Launch the project
+From the project root directory (where the `docker-compose.yml` file is), launch:
+
+```{.bash filename="Launch Django project"}
+docker compose up -d
+```

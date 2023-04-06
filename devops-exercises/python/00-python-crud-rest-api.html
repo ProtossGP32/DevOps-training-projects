@@ -401,6 +401,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#dockerfile" id="toc-dockerfile" class="nav-link" data-scroll-target="#dockerfile">Dockerfile</a></li>
   <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose">Docker Compose</a></li>
   </ul></li>
+  <li><a href="#prepare-a-deployment-server" id="toc-prepare-a-deployment-server" class="nav-link" data-scroll-target="#prepare-a-deployment-server">Prepare a deployment server</a>
+  <ul class="collapse">
+  <li><a href="#create-an-alpine-lxc-with-docker" id="toc-create-an-alpine-lxc-with-docker" class="nav-link" data-scroll-target="#create-an-alpine-lxc-with-docker">Create an Alpine LXC with Docker</a></li>
+  <li><a href="#launch-the-project" id="toc-launch-the-project" class="nav-link" data-scroll-target="#launch-the-project">Launch the project</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-exercises/python/00-python-crud-rest-api.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -841,7 +846,8 @@ Comparison with Spring Boot
 <pre><strong>requirements.txt</strong></pre>
 </div>
 <div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>Django<span class="op">~=</span><span class="fl">4.2</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>djangorestframework<span class="op">~=</span><span class="fl">3.14.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-2"><a href="#cb12-2"></a>djangorestframework<span class="op">~=</span><span class="fl">3.14.0</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>psycopg2<span class="op">-</span>binary<span class="op">~=</span><span class="fl">2.9.6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>IDEs usually have an option to auto-generate it. IntelliJ PyCharm has it in <code>Tools --&gt; Sync Python Requirements</code></p>
 </section>
@@ -911,23 +917,24 @@ Comparison with Spring Boot
 <span id="cb14-12"><a href="#cb14-12"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_DB=postgres</span></span>
 <span id="cb14-13"><a href="#cb14-13"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_PORT=5432</span></span>
 <span id="cb14-14"><a href="#cb14-14"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PG_HOST=db</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="at">      </span><span class="kw">-</span><span class="at"> db</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a></span>
-<span id="cb14-18"><a href="#cb14-18"></a><span class="at">  </span><span class="fu">db</span><span class="kw">:</span></span>
-<span id="cb14-19"><a href="#cb14-19"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> db</span></span>
-<span id="cb14-20"><a href="#cb14-20"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:12</span></span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb14-22"><a href="#cb14-22"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=postgres</span></span>
-<span id="cb14-23"><a href="#cb14-23"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=postgres</span></span>
-<span id="cb14-24"><a href="#cb14-24"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=postgres</span></span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb14-26"><a href="#cb14-26"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
-<span id="cb14-27"><a href="#cb14-27"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb14-28"><a href="#cb14-28"></a><span class="at">      </span><span class="kw">-</span><span class="at"> pgdata:/var/lib/postgresql/data</span></span>
-<span id="cb14-29"><a href="#cb14-29"></a></span>
-<span id="cb14-30"><a href="#cb14-30"></a><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb14-31"><a href="#cb14-31"></a><span class="at">  </span><span class="fu">pgdata</span><span class="kw">:</span><span class="at"> </span><span class="kw">{}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="at">      </span><span class="kw">-</span><span class="at"> HOST_IP=${HOST_IP}</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a><span class="at">      </span><span class="kw">-</span><span class="at"> db</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="at">  </span><span class="fu">db</span><span class="kw">:</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> db</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:12</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=postgres</span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=postgres</span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=postgres</span></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb14-27"><a href="#cb14-27"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
+<span id="cb14-28"><a href="#cb14-28"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb14-29"><a href="#cb14-29"></a><span class="at">      </span><span class="kw">-</span><span class="at"> pgdata:/var/lib/postgresql/data</span></span>
+<span id="cb14-30"><a href="#cb14-30"></a></span>
+<span id="cb14-31"><a href="#cb14-31"></a><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb14-32"><a href="#cb14-32"></a><span class="at">  </span><span class="fu">pgdata</span><span class="kw">:</span><span class="at"> </span><span class="kw">{}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Where:</p>
 <ul>
@@ -950,6 +957,23 @@ TODO: Finish the tutorial!!
 <div class="callout-body-container callout-body">
 
 </div>
+</div>
+</section>
+</section>
+<section id="prepare-a-deployment-server" class="level1">
+<h1>Prepare a deployment server</h1>
+<section id="create-an-alpine-lxc-with-docker" class="level2">
+<h2 class="anchored" data-anchor-id="create-an-alpine-lxc-with-docker">Create an Alpine LXC with Docker</h2>
+<p>Follow the instructions <a href="../../../docs/homelab-project/virtual-resources-creation/02-containers.html">in this article</a> and in <a href="../../homelab-project/self-hosted-software/08-guacamole.html#install-docker-and-docker-compose">this other article</a> to create an LXC and install Docker</p>
+</section>
+<section id="launch-the-project" class="level2">
+<h2 class="anchored" data-anchor-id="launch-the-project">Launch the project</h2>
+<p>From the project root directory (where the <code>docker-compose.yml</code> file is), launch:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Launch Django project</strong></pre>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

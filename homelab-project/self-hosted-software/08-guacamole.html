@@ -586,12 +586,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="install-additional-dependencies" class="level2">
 <h2 class="anchored" data-anchor-id="install-additional-dependencies">Install additional dependencies</h2>
-<p>Apart from Docker and Docker Compose, we need the following dependencies: - Git to clone boschkundendiest repository - OpenSSL to generate self-signed certificates - Vim to edit some files</p>
+<p>Apart from Docker and Docker Compose, we need the following dependencies: - Git to clone boschkundendiest repository - OpenSSL to generate self-signed certificates - Vim to edit some files - Also Openssh to ease access to the LXC container</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>Installing OpenSSL in Alpine</strong></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">apk</span> add git openssl vim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">apk</span> add git openssl vim openssh</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># Make openssh available from the LXC boot</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="ex">rc-update</span> add sshd default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="clone-repository" class="level2">

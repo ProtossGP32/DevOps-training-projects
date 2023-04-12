@@ -249,6 +249,13 @@ Where:
 - `db` is the Postgres database. It exposes the port `5432` so we can connect to it, and persists its data in a Docker volume named `pgdata`
     - If we don't want the Postgres data to be stored in the default Docker path, we can replace the volume name with an absolute or relative path of the host where it will run
 
+## `.env` file
+Some values in the `docker-compose.yml` file can depend on the deployment environment, such as the `ALLOWED_HOSTS` in the `settings.py` (you need to specify the allowed IPs where HTTP requests can be queried). We'll define a `HOST_IP` variable in the `.env` file, include it in the `docker-compose.yml` and then pass it to the `settings.py` file
+
+:::{.callout-warning}
+## TODO: Add the required snippets here
+:::
+
 At this point we should be able to deploy our application and start testing it.
 
 :::{.callout-warning}
@@ -265,3 +272,7 @@ From the project root directory (where the `docker-compose.yml` file is), launch
 ```{.bash filename="Launch Django project"}
 docker compose up -d
 ```
+
+# Test the application
+Now the Django server should be reachable through `<LXC-IP>:8000`.
+

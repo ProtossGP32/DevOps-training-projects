@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ProtossGP32">
-<meta name="dcterms.date" content="2023-02-05">
-<meta name="description" content="Pre-requisites to deploy services as containers">
+<meta name="dcterms.date" content="2023-04-12">
+<meta name="description" content="Knowing some available observability tools">
 
-<title>DevOps Training Projects - 00 - Containers - Docker &amp; Docker Compose</title>
+<title>DevOps Training Projects - 02 - Lean Observability &amp; Observability Architecture</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,69 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -96,8 +33,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../homelab-project/self-hosted-software/01-cloudflare.html" rel="next">
-<link href="../../homelab-project/requirements/00-requirements.html" rel="prev">
+<link href="../../devops-tools/observability/01-observability-tools.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -324,7 +260,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </nav>
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">00 - Containers - Docker &amp; Docker Compose</h1>
+      <h1 class="quarto-secondary-nav-title">02 - Lean Observability &amp; Observability Architecture</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -337,14 +273,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/00-introduction.html" class="sidebar-item-text sidebar-link">Homelab project introduction</a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Kubernetes Cluster</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Infrastructure As a Code</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -352,19 +283,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/kubernetes-cluster/00-getting-started.html" class="sidebar-item-text sidebar-link">00 - Kubernetes - Getting Started</a>
+  <a href="../../devops-tools/infrastructure-as-a-code/00-ansible.html" class="sidebar-item-text sidebar-link">00 - Infrastructure As A Code - Ansible</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/kubernetes-cluster/01-installing-traefik.html" class="sidebar-item-text sidebar-link">01 - Kubernetes - Traefik + cert-manager</a>
+  <a href="../../devops-tools/infrastructure-as-a-code/01-event-driven-ansible.html" class="sidebar-item-text sidebar-link">01 - Management As A Code - Event-Driven Ansible</a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Requirements</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Observability</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -372,117 +303,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/requirements/00-requirements.html" class="sidebar-item-text sidebar-link">Homelab Requirements</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Self Hosted Software</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/00-docker-and-docker-compose.html" class="sidebar-item-text sidebar-link active">00 - Containers - Docker &amp; Docker Compose</a>
+  <a href="../../devops-tools/observability/00-what-is-observability.html" class="sidebar-item-text sidebar-link">00 - Observability - Introduction</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/01-cloudflare.html" class="sidebar-item-text sidebar-link">01 - External access - Cloudflare</a>
+  <a href="../../devops-tools/observability/01-observability-tools.html" class="sidebar-item-text sidebar-link">01 - Observability Instrumentation</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/02-traefik-and-portainer.html" class="sidebar-item-text sidebar-link">02 - Routing and SSL certificates - Traefik and Portainer</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/03-dashy.html" class="sidebar-item-text sidebar-link">03 - Homelab dashboard - Dashy</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/04-openldap.html" class="sidebar-item-text sidebar-link">04 - Authentication - OpenLDAP</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/05-nextcloud.html" class="sidebar-item-text sidebar-link">05 - Productivity tools - NextCloud</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/06-openproject.html" class="sidebar-item-text sidebar-link">06 - Productivity tools - OpenProject</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/07-sonarqube.html" class="sidebar-item-text sidebar-link">07 - Code analysis - SonarQube</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/09-penpot.html" class="sidebar-item-text sidebar-link">08 - Mockups - Penpot</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/self-hosted-software/08-guacamole.html" class="sidebar-item-text sidebar-link">08 - Remote access - Guacamole</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Virtual Resources Creation</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/01-virtual-machines.html" class="sidebar-item-text sidebar-link">01 - Provisioning - Virtual Machines on Proxmox</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtual-resources-creation/02-containers.html" class="sidebar-item-text sidebar-link">02 - Provisioning - LXC (Linux Containers on Proxmox)</a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Virtualization Server</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/01-installing-proxmox.html" class="sidebar-item-text sidebar-link">Part 1 - Installing Proxmox VE</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/02-virtual-networks.html" class="sidebar-item-text sidebar-link">Part 2 - Internal Virtual Networks</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/03-dns-dhcp-servers.html" class="sidebar-item-text sidebar-link">Part 3 - DNS and DHCP servers</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../homelab-project/virtualization-server/04-proxy-http-https-into-internal-network.html" class="sidebar-item-text sidebar-link">Part 4 - Proxy HTTP(S) into the internal network</a>
+  <a href="../../devops-tools/observability/02-lean-observability.html" class="sidebar-item-text sidebar-link active">02 - Lean Observability &amp; Observability Architecture</a>
   </div>
 </li>
       </ul>
@@ -497,34 +328,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a></li>
-  <li><a href="#installation-steps" id="toc-installation-steps" class="nav-link" data-scroll-target="#installation-steps">Installation steps</a>
+  <li><a href="#episodes" id="toc-episodes" class="nav-link" data-scroll-target="#episodes">Episodes</a>
   <ul class="collapse">
-  <li><a href="#docker-and-docker-compose" id="toc-docker-and-docker-compose" class="nav-link" data-scroll-target="#docker-and-docker-compose">Docker and Docker compose</a></li>
-  </ul></li>
-  <li><a href="#networking-in-docker" id="toc-networking-in-docker" class="nav-link" data-scroll-target="#networking-in-docker">Networking in Docker</a>
+  <li><a href="#episode-5---lean-observability" id="toc-episode-5---lean-observability" class="nav-link" data-scroll-target="#episode-5---lean-observability">Episode 5 - Lean Observability</a></li>
+  <li><a href="#episode-6---observability-architecture" id="toc-episode-6---observability-architecture" class="nav-link" data-scroll-target="#episode-6---observability-architecture">Episode 6 - Observability Architecture</a>
   <ul class="collapse">
-  <li><a href="#overlay-network" id="toc-overlay-network" class="nav-link" data-scroll-target="#overlay-network">Overlay network</a></li>
+  <li><a href="#telemetry" id="toc-telemetry" class="nav-link" data-scroll-target="#telemetry">Telemetry</a></li>
+  <li><a href="#datastore" id="toc-datastore" class="nav-link" data-scroll-target="#datastore">Datastore</a></li>
+  <li><a href="#consume-analyze-and-visualize-the-data-as-well-as-alerting" id="toc-consume-analyze-and-visualize-the-data-as-well-as-alerting" class="nav-link" data-scroll-target="#consume-analyze-and-visualize-the-data-as-well-as-alerting">Consume, analyze and visualize the data, as well as alerting</a></li>
+  <li><a href="#resource-analysis-methods" id="toc-resource-analysis-methods" class="nav-link" data-scroll-target="#resource-analysis-methods">Resource analysis methods</a></li>
   </ul></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#episode-7---learn-the-ways-of-observability" id="toc-episode-7---learn-the-ways-of-observability" class="nav-link" data-scroll-target="#episode-7---learn-the-ways-of-observability">Episode 7 - Learn the Ways of Observability</a>
+  <ul class="collapse">
+  <li><a href="#some-tips" id="toc-some-tips" class="nav-link" data-scroll-target="#some-tips">Some tips</a></li>
+  <li><a href="#visualizing-metrics" id="toc-visualizing-metrics" class="nav-link" data-scroll-target="#visualizing-metrics">Visualizing metrics</a></li>
+  <li><a href="#alerting" id="toc-alerting" class="nav-link" data-scroll-target="#alerting">Alerting</a></li>
+  <li><a href="#practice-interpreting-your-own-observability-data" id="toc-practice-interpreting-your-own-observability-data" class="nav-link" data-scroll-target="#practice-interpreting-your-own-observability-data">Practice interpreting your own observability data</a></li>
+  <li><a href="#apply-your-observability-tooling-in-development-and-testing-environments-as-well" id="toc-apply-your-observability-tooling-in-development-and-testing-environments-as-well" class="nav-link" data-scroll-target="#apply-your-observability-tooling-in-development-and-testing-environments-as-well">Apply your observability tooling in development and testing environments as well</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusion-1" id="toc-conclusion-1" class="nav-link" data-scroll-target="#conclusion-1">Conclusion</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/00-docker-and-docker-compose.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-tools/observability/02-lean-observability.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">00 - Containers - Docker &amp; Docker Compose</h1>
+<h1 class="title d-none d-lg-block">02 - Lean Observability &amp; Observability Architecture</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Docker</div>
-    <div class="quarto-category">Self-hosted software</div>
-    <div class="quarto-category">Containers</div>
+    <div class="quarto-category">Observability</div>
+    <div class="quarto-category">Monitoring</div>
+    <div class="quarto-category">Metrics</div>
+    <div class="quarto-category">Lean</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Pre-requisites to deploy services as containers
+    Knowing some available observability tools
   </div>
 </div>
 
@@ -541,7 +387,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 5, 2023</p>
+      <p class="date">April 12, 2023</p>
     </div>
   </div>
   
@@ -551,71 +397,335 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" class="img-fluid figure-img" width="200"></p>
-<p></p><figcaption class="figure-caption">Docker</figcaption><p></p>
-</figure>
-</div>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>A <strong>Container</strong> is the virtualization of an operation system with the purpose of executing one service in an isolated environment. A container is very lightweight compared to a virtual machine as it doesn’t recreate a whole computer, but reuses the host kernel and accesses its resources natively.</p>
-<p>Containers are the best way to deploy and test new self-hosted software as they encapsulate the main process into its own eco-system and don’t interfere with the rest of services running in that host.</p>
+<ul>
+<li><p>Complete course:</p>
+<ul>
+<li><a href="https://academy.o11y.io/courses/practical-observability">oll1 - Practical Observability</a></li>
+</ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://docs.docker.com/engine/images/architecture.svg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Docker architecture</figcaption><p></p>
+<p><img src="../../images/devops/observability-oll1-practical-observability.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">When your teacher is a Jedi, you know you chose the course wisely</figcaption><p></p>
 </figure>
-</div>
-<p>The following video does an excellent job at trying to explain the differences between bare-metal, virtualization and containerization, give it a watch:</p>
-<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/pxwUXJmAER4" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<p>So for the sake of simplicity and fast testing, we’re going to use Docker as the container engine and docker compose for the workload deployment.</p>
-</section>
-<section id="getting-started" class="level1">
-<h1>Getting started</h1>
-<p>Go to the official Docker documentation to check how to install Docker and Docker Compose on your operating system:</p>
+</div></li>
+<li><p>Objectives:</p>
 <ul>
-<li><a href="https://docs.docker.com/engine/install/">Docker Engine installation</a></li>
-</ul>
-<p>Follow the excellent instructions of <a href="https://docs.technotim.live/">TechnoTim</a> to get an idea of what we need to do:</p>
-<ul>
-<li>Docker and Docker compose installation: <a href="https://docs.technotim.live/posts/docker-compose-install/">Link</a></li>
+<li>Understand what Lean Observability is</li>
+<li>Understand the basics of an Observability architecture</li>
+</ul></li>
 </ul>
 </section>
-<section id="installation-steps" class="level1">
-<h1>Installation steps</h1>
-<section id="docker-and-docker-compose" class="level2">
-<h2 class="anchored" data-anchor-id="docker-and-docker-compose">Docker and Docker compose</h2>
-<p><img src="https://www.docker.com/wp-content/uploads/2022/03/horizontal-logo-monochromatic-white.png" class="img-fluid" width="300"></p>
-<p>I’m going to follow <a href="https://docs.technotim.live/posts/docker-compose-install/#install-docker-engine-containerd-and-docker-compose-on-ubuntu">Technotim</a>’s guide as my server OS is Ubuntu.</p>
-<p>There’s really nothing much to say here, just follow the instructions, make sure that you have Internet access to install the packages and check that your user can execute <code>docker</code> commands, like <code>docker version</code>, and <code>docker compose</code>.</p>
-<p>Also, remember to add your user to the <code>docker</code> group so you don’t need privileged permissions to operate with it:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> docker <span class="va">$USER</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Once done, log out and log in again to your server to apply the changes on the user groups.</p>
-</section>
-</section>
-<section id="networking-in-docker" class="level1">
-<h1>Networking in Docker</h1>
-<section id="overlay-network" class="level2">
-<h2 class="anchored" data-anchor-id="overlay-network">Overlay network</h2>
-<p>An <code>overlay</code> network is a type of virtual network in Docker that allows multiple Docker hosts to communicate between them. This is pretty handy if, for example, you need some services deployed with Docker in a host to access an authentication service that is hosted on a different Docker host.</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<section id="episodes" class="level1">
+<h1>Episodes</h1>
+<section id="episode-5---lean-observability" class="level2">
+<h2 class="anchored" data-anchor-id="episode-5---lean-observability">Episode 5 - Lean Observability</h2>
+<p><em>Where do we start and what do we need?</em></p>
+<ul>
+<li>Observability is a continual learning process</li>
+<li>Many different tools to observe different parts of your system, depending on your environment and your needs</li>
+<li>The catch is that you don’t know all of your environment or your needs. Modern computing systems are very complex, and so are the observation tools</li>
+<li>Start small and iterate</li>
+</ul>
+<p>Lean Observability principles:</p>
+<ul>
+<li>Eliminate waste: don’t overinvest in any particular kind of instrumentation upfront. Implement minimum viable monitoring quickly in the spots you need them the most, such as synthetic monitoring to check the system is up and logging for furthed debugging</li>
+<li>Amplify learning: improve on those as you learn or add other instrumentation in your data blindspots</li>
+<li>Decide as late as possible: take advantage of as much gathered information as possible prior to reaching a conclusion</li>
+<li>Deliver as fast as possible: thanks to the previous advice, delivery of fixes is done in less time and less error-prone</li>
+<li>Empower the team: as you build up your observability framework, continue to practice system’s (?) thinking on both your technical environment and the people surrounding them.</li>
+<li>Build integrity in: Continue to ask yourself how everyone can benefit from the observability tooling and remain focused on the whole system.</li>
+<li>Optimize the whole: it’s easy to dive too deep in one area and spend money and time on tooling that doesn’t help you understand the overall health of your system, or implementing tooling that doesn’t help all of your stakeholders.
+<ul>
+<li>Departments like Development, Operations and Business stakeholders need to see this data too</li>
+<li>There’s a high risk of creating dashboards with hundreds of graphs that don’t help understand your own system</li>
+</ul></li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Attention!
+Ancient Observability proverb
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In order to use this, do we need to install <code>docker swarm</code>?</p>
+<p><em>Ignorance leads to the indiscriminate gathering of metrics,</em> <em>metrics leads to reliance on NagiOS,</em> <em>and NagiOS leads to suffering.</em></p>
 </div>
 </div>
-<p>You can find the official Docker docs regarding overlay networking <a href="https://docs.docker.com/network/overlay/">here</a>.</p>
-
-
+<p>Each type of instrumentation can be applied in different places in your system:</p>
+<ul>
+<li>Synthetic endpoint monitoring can be applied to the <strong>furthest and most external API endpoint from the Internet</strong>, or <strong>all the way down to the liveness probes on individual Kubernetes pods</strong></li>
+<li>The best place to start is to first understand what are the most critical parts of your environment and then monitor them</li>
+<li>Next, keep iterating and improving while you and your organization learn more about how your system behaves</li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Lean software development principles should be used when designing and implementing your observability toolchain
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Lean software development principles aren’t just useful for developing software. If applied correctly these same principles can help virtually any team:</p>
+<ol type="1">
+<li>Eliminate waste</li>
+<li>Amplify learning</li>
+<li>Decide as late as possible</li>
+<li>Deliver as fast as possible</li>
+<li>Empower the team</li>
+<li>Build integrity</li>
+<li>Optimize</li>
+</ol>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Observability data is <em>only</em> useful to engineering teams?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>No!</strong> Observability data – when sourced from a wide variety of outputs – can empower virtually any team within an organization to make better decisions.</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What is the first step when designing your observability solution?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Understand the most critical parts of your environment and then monitor them.</p>
+</div>
+</div>
 </section>
+<section id="episode-6---observability-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="episode-6---observability-architecture">Episode 6 - Observability Architecture</h2>
+<p><em>How do you mold your observability stack together and consume it in a useful way, without it overwhelming you? Carefully</em></p>
+<p>As you gather tools into your instrumentation stack, you’d better have a plan for them.</p>
+<section id="telemetry" class="level3">
+<h3 class="anchored" data-anchor-id="telemetry">Telemetry</h3>
+<p>Telemetry is the responsible to get the gathered data to a collection point.</p>
+<ul>
+<li>For example, Prometheus gathers Kuberentes cluster observability data and OpenTelemetry captures and transmits it to a datastore for analysis later</li>
+</ul>
+</section>
+<section id="datastore" class="level3">
+<h3 class="anchored" data-anchor-id="datastore">Datastore</h3>
+<p>In the previous example, before even thinking about sending data with OpenTelemetry, we need to know where this data is going.</p>
+<ul>
+<li>Tools like InfluxDB would be a typical choice</li>
+</ul>
+<p>Choosing a database isn’t a difficult task, but you have to consider costs of storing this data and how easy it gets you to your observability goals. It’s easy to end up with a bunch of datastores that can complicate your life.</p>
+</section>
+<section id="consume-analyze-and-visualize-the-data-as-well-as-alerting" class="level3">
+<h3 class="anchored" data-anchor-id="consume-analyze-and-visualize-the-data-as-well-as-alerting">Consume, analyze and visualize the data, as well as alerting</h3>
+<p>Grafana is an industry-standard when it comes to data visualization and alerting. But from here things get complicated.</p>
+<p>Usually open-source tools are good at only one thing (i.e.&nbsp;Prometheus is great for telemetry), and rarely provide integrated UI for other sources. You can end up in an scenario where you have to choose the best components but this integrates duplicity to your system if they share some things.</p>
+<p>In the end, <strong>you have to build a complex system that can instrument, collect, index, store, archive and manage large volumes of data BEFORE you can properly observe your system.</strong></p>
+<ul>
+<li>Buying tools can eliminate some of the second-system burden for you.</li>
+<li>The other option is just to build it yourself
+<ul>
+<li>Carefully plan out its architecture, starting with your needs
+<ul>
+<li>Create a <strong>resource model</strong> of your system that you can reason about</li>
+</ul></li>
+<li>As you build out the visualization and alerting portion of your tooling, you’ll want to lever your resource model so you can understand your observability data in the context of your actual environment</li>
+</ul></li>
+</ul>
+</section>
+<section id="resource-analysis-methods" class="level3">
+<h3 class="anchored" data-anchor-id="resource-analysis-methods">Resource analysis methods</h3>
+<p>You want to understand the metrics you collect. What methods can we use to take decisions? #### USE Method For every resource, check utilization, saturation and errors</p>
+<ul>
+<li>Utilization: the average time that the resource was busy servicing work</li>
+<li>Saturation: the degree to which the resource has extra work which it can’t service, often queued</li>
+<li>Errors: the count of error events</li>
+</ul>
+<p>For example, a disk array may tipically have a throughput metric (usage), a wait/queue metric (saturation) and I/O error metric (errors)</p>
+<section id="red-method" class="level4">
+<h4 class="anchored" data-anchor-id="red-method">RED Method</h4>
+<p>The three key metrics you should measure for every microservice in your architecture.</p>
+<ul>
+<li>(Request) Rate: the number of requests per secon your services are serving</li>
+<li>(Request) Errors: the number of failed requests per second</li>
+<li>(Request) Duration: distribution of the amount of time each request takes</li>
+</ul>
+<p>These are metrics more focused on applications.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>It’s tempting to collect a bunch of metrics and tools, but this can end up being expensive and confusing in the long term. It’s better to aim for a simple and comprehensive view of your system state. After all, if you don’t understand it, is it really observable?</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Which tool was mentioned as a possible datastore for observability data?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>InfluxDB is only one example of a datastore, any time-series database will do. There are many options available both <em>closed</em> and <em>open</em> just as with data collectors and forwarders.</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What are the <strong>TWO</strong> methods mentioned that can help you determine the most important metrics for you and your team?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The USE method and the RED method. But remember: - This isn’t an <em>either-or</em> choice you have to make - Google discusses the “Four Golden Signals” they use for observability in their Site Reliability Engineering book which effectively combines the USE and RED methods into one</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What is the key metric Netflix uses to describe its service health?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The number of video streams started per second.</p>
+</div>
+</div>
+<section id="episode-7---learn-the-ways-of-observability" class="level2">
+<h2 class="anchored" data-anchor-id="episode-7---learn-the-ways-of-observability">Episode 7 - Learn the Ways of Observability</h2>
+<p><em>There’s plenty of ways to alert, visualize, and trend your observability data - some of them painful and deceptive, others cool and froody. Let’s meditate upon the difference.</em></p>
+<section id="some-tips" class="level3">
+<h3 class="anchored" data-anchor-id="some-tips">Some tips</h3>
+<ul>
+<li>Design observability into your system as you’re building it
+<ul>
+<li>Having to decide how to monitor your system when its complexity has increased is a recipe to failure</li>
+</ul></li>
+<li>Build your observability stack declaratively as code
+<ul>
+<li>Create Status endpoints into your APIs to reveal what your service knows about your states</li>
+</ul></li>
+<li>Application logs tell you whatever you want them to tell, so make sure you instrument them to give an accurate picture of your application state
+<ul>
+<li>During development, try to debug your application just by using its logs. In a couple of iterations, you should be able to significantly improve its observability just by observing its log data</li>
+<li>If you’re unable to understand what’s going on in your app from its logs, you can be sure no one else can either</li>
+</ul></li>
+<li>Simple things like HTTP error codes and severity levels vary greatly between organizations and even teams
+<ul>
+<li>It’s worth spending some time to develop logging standards and criticallity levels to be used across your organization</li>
+<li>This way your organization has a common language to use when reasoning about your application performance</li>
+</ul></li>
+</ul>
+</section>
+<section id="visualizing-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-metrics">Visualizing metrics</h3>
+<p>Most tools give averages of metrics as the base measurement, but they don’t tend to be useful as they hide the unexpected behaviour you’re looking for</p>
+<ul>
+<li>The best practice is to use percentiles or histograms to see the outlier behaviour</li>
+</ul>
+</section>
+<section id="alerting" class="level3">
+<h3 class="anchored" data-anchor-id="alerting">Alerting</h3>
+<p>It’s pretty easy to get alert fatigue. Too many on-call alerts can degrade your quality of life (even alert text can drain each other out in modest volumes).</p>
+<ul>
+<li>The initial tendency is to over-alert because you don’t want to miss anything that lead to or even hit at an outage</li>
+<li>The most likely outcome is, precisely, what you try to avoid the most: missing alerts</li>
+</ul>
+<p><strong>Make sure you only service alerts on the most critical things and prioritize eliminating false positives.</strong></p>
+<p>Some people use the concept of Service Level Objectives (SLO) to create more actionable alerts. According to the SRE Workbook:</p>
+<blockquote class="blockquote">
+<p><em>- An error budget is 1 minus the SLO of the service. A 99.9% SLO service has a 0.1% error budget.</em></p>
+<p><em>- If our service receives 1,000,000 requests in four weeks, a 99.9% availability SLO gives us a budget of 1,000 errors over that period.</em></p>
+</blockquote>
+<p>In a complex system, if you ask if anything’s wrong, the answer is always <em>yes</em>. So instead:</p>
+<ul>
+<li>Select critical metrics that matter</li>
+<li>Set clear levels of acceptable failure</li>
+<li>Alert when they exceed or are trending to exceed that budget</li>
+<li>Send context along with the alerts, specifically <em>What’s the real problem in hand?</em>, <em>What does it mean for application service?</em> and <em>Are there any common resolution steps?</em></li>
+</ul>
+<p><strong>Try to make SRE’s lives as easy as possible</strong></p>
+</section>
+<section id="practice-interpreting-your-own-observability-data" class="level3">
+<h3 class="anchored" data-anchor-id="practice-interpreting-your-own-observability-data">Practice interpreting your own observability data</h3>
+<p>Don’t wait until a production incident to dig into the data, become familiar with it beforehand</p>
+</section>
+<section id="apply-your-observability-tooling-in-development-and-testing-environments-as-well" class="level3">
+<h3 class="anchored" data-anchor-id="apply-your-observability-tooling-in-development-and-testing-environments-as-well">Apply your observability tooling in development and testing environments as well</h3>
+<p>This way it’s easy if changes in your app or service change its observability profile too.</p>
+</section>
+</section>
+</section>
+<section id="conclusion-1" class="level1">
+<h1>Conclusion</h1>
+<p>Observability isn’t just knowing your production problems before your customers do. You need to demonstrate the business value of the stuff you’re building, it’s also a way to document your application or environment - and the way it’s impacted by users.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+During development, try to debug your app just by using ______. In a couple of iterations, you should be able to drastically improve its observability, just by observing this <em>type</em> of data.
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The missing word is <strong>Logs</strong>. Application logging is often an afterthough, though it shouldn’t be. This method of debugging can help you iterate quickly on your logging strategy so that you and your team know exactly <em>what</em> you need to know to fix your application. Also, your SRE(s) and DevOps will thank you.</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Observability isn’t just about becoming aware of production problems before your customers do, it’s also…
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>A way to document your application or environment – and the way it’s impacted by users</li>
+<li>A tool to help demonstrate the busieness value of the application, or service you and your organization are developing</li>
+</ul>
+<p>Observability is essentially a high-level abstraction of your application(s) and its environment that can be a useful way to illustrate many concepts in many different applications.</p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What are TWO common practices for creating more actionable alerts?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Setting SLO’s</li>
+<li>Creating error budgets</li>
+</ul>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -869,14 +979,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../homelab-project/requirements/00-requirements.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Homelab Requirements</span>
+      <a href="../../devops-tools/observability/01-observability-tools.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">01 - Observability Instrumentation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../homelab-project/self-hosted-software/01-cloudflare.html" class="pagination-link">
-        <span class="nav-page-text">01 - External access - Cloudflare</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -274,5 +274,5 @@ docker compose up -d
 ```
 
 # Test the application
-Now the Django server should be reachable through `<LXC-IP>:8000`.
+Now the Django server should be reachable through `<LXC-IP>:8000`. Configure some REST API requests using Postman and check that everything is correct.
 

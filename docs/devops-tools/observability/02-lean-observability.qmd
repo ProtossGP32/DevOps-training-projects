@@ -1,0 +1,223 @@
+---
+title: "02 - Lean Observability & Observability Architecture"
+description: "Knowing some available observability tools"
+author: ProtossGP32
+date: "2023/04/12"
+categories: ["Observability", "Monitoring", "Metrics", "Lean"]
+---
+
+# Introduction
+
+- Complete course:
+    - [oll1 - Practical Observability](https://academy.o11y.io/courses/practical-observability)
+
+    ![When your teacher is a Jedi, you know you chose the course wisely](../../images/devops/observability-oll1-practical-observability.png)
+
+- Objectives:
+    - Understand what Lean Observability is
+    - Understand the basics of an Observability architecture
+
+# Episodes
+## Episode 5 - Lean Observability
+_Where do we start and what do we need?_
+
+- Observability is a continual learning process
+- Many different tools to observe different parts of your system, depending on your environment and your needs
+- The catch is that you don't know all of your environment or your needs. Modern computing systems are very complex, and so are the observation tools
+- Start small and iterate
+
+Lean Observability principles:
+
+- Eliminate waste: don't overinvest in any particular kind of instrumentation upfront. Implement minimum viable monitoring quickly in the spots you need them the most, such as synthetic monitoring to check the system is up and logging for furthed debugging
+- Amplify learning: improve on those as you learn or add other instrumentation in your data blindspots
+- Decide as late as possible: take advantage of as much gathered information as possible prior to reaching a conclusion
+- Deliver as fast as possible: thanks to the previous advice, delivery of fixes is done in less time and less error-prone
+- Empower the team: as you build up your observability framework, continue to practice system's (?) thinking on both your technical environment and the people surrounding them.
+- Build integrity in: Continue to ask yourself how everyone can benefit from the observability tooling and remain focused on the whole system.
+- Optimize the whole: it's easy to dive too deep in one area and spend money and time on tooling that doesn't help you understand the overall health of your system, or implementing tooling that doesn't help all of your stakeholders.
+    - Departments like Development, Operations and Business stakeholders need to see this data too
+    - There's a high risk of creating dashboards with hundreds of graphs that don't help understand your own system
+
+:::{.callout-note}
+## Ancient Observability proverb
+_Ignorance leads to the indiscriminate gathering of metrics,_
+_metrics leads to reliance on NagiOS,_
+_and NagiOS leads to suffering._
+:::
+
+Each type of instrumentation can be applied in different places in your system:
+
+- Synthetic endpoint monitoring can be applied to the **furthest and most external API endpoint from the Internet**, or **all the way down to the liveness probes on individual Kubernetes pods**
+- The best place to start is to first understand what are the most critical parts of your environment and then monitor them
+- Next, keep iterating and improving while you and your organization learn more about how your system behaves
+
+:::{.callout-note}
+## Lean software development principles should be used when designing and implementing your observability toolchain
+Lean software development principles aren't just useful for developing software. If applied correctly these same principles can help virtually any team:
+
+1. Eliminate waste
+1. Amplify learning
+1. Decide as late as possible
+1. Deliver as fast as possible
+1. Empower the team
+1. Build integrity
+1. Optimize
+:::
+
+:::{.callout-note}
+## Observability data is _only_ useful to engineering teams?
+**No!** Observability data -- when sourced from a wide variety of outputs -- can empower virtually any team within an organization to make better decisions.
+:::
+
+:::{.callout-note}
+## What is the first step when designing your observability solution?
+Understand the most critical parts of your environment and then monitor them.
+:::
+
+## Episode 6 - Observability Architecture
+_How do you mold your observability stack together and consume it in a useful way, without it overwhelming you? Carefully_
+
+As you gather tools into your instrumentation stack, you'd better have a plan for them.
+
+### Telemetry
+Telemetry is the responsible to get the gathered data to a collection point.
+
+- For example, Prometheus gathers Kuberentes cluster observability data and OpenTelemetry captures and transmits it to a datastore for analysis later
+
+### Datastore
+In the previous example, before even thinking about sending data with OpenTelemetry, we need to know where this data is going.
+
+- Tools like InfluxDB would be a typical choice
+
+Choosing a database isn't a difficult task, but you have to consider costs of storing this data and how easy it gets you to your observability goals. It's easy to end up with a bunch of datastores that can complicate your life.
+
+### Consume, analyze and visualize the data, as well as alerting
+Grafana is an industry-standard when it comes to data visualization and alerting. But from here things get complicated.
+
+Usually open-source tools are good at only one thing (i.e. Prometheus is great for telemetry), and rarely provide integrated UI for other sources. You can end up in an scenario where you have to choose the best components but this integrates duplicity to your system if they share some things.
+
+In the end, **you have to build a complex system that can instrument, collect, index, store, archive and manage large volumes of data BEFORE you can properly observe your system.**
+
+- Buying tools can eliminate some of the second-system burden for you.
+- The other option is just to build it yourself
+    - Carefully plan out its architecture, starting with your needs
+        - Create a **resource model** of your system that you can reason about
+    - As you build out the visualization and alerting portion of your tooling, you'll want to lever your resource model so you can understand your observability data in the context of your actual environment
+
+
+### Resource analysis methods
+You want to understand the metrics you collect. What methods can we use to take decisions?
+#### USE Method
+For every resource, check utilization, saturation and errors
+
+- Utilization: the average time that the resource was busy servicing work
+- Saturation: the degree to which the resource has extra work which it can't service, often queued
+- Errors: the count of error events
+
+For example, a disk array may tipically have a throughput metric (usage), a wait/queue metric (saturation) and I/O error metric (errors)
+
+#### RED Method
+The three key metrics you should measure for every microservice in your architecture.
+
+- (Request) Rate: the number of requests per secon your services are serving
+- (Request) Errors: the number of failed requests per second
+- (Request) Duration: distribution of the amount of time each request takes
+
+These are metrics more focused on applications.
+
+
+# Conclusion
+It's tempting to collect a bunch of metrics and tools, but this can end up being expensive and confusing in the long term. It's better to aim for a simple and comprehensive view of your system state. After all, if you don't understand it, is it really observable?
+
+:::{.callout-note}
+## Which tool was mentioned as a possible datastore for observability data?
+InfluxDB is only one example of a datastore, any time-series database will do. There are many options available both _closed_ and _open_ just as with data collectors and forwarders.
+:::
+
+:::{.callout-note}
+## What are the **TWO** methods mentioned that can help you determine the most important metrics for you and your team?
+The USE method and the RED method. But remember:
+- This isn't an _either-or_ choice you have to make
+- Google discusses the "Four Golden Signals" they use for observability in their Site Reliability Engineering book which effectively combines the USE and RED methods into one
+:::
+
+:::{.callout-note}
+## What is the key metric Netflix uses to describe its service health?
+The number of video streams started per second.
+:::
+
+## Episode 7 - Learn the Ways of Observability
+_There's plenty of ways to alert, visualize, and trend your observability data - some of them painful and deceptive, others cool and froody. Let's meditate upon the difference._
+
+### Some tips
+
+- Design observability into your system as you're building it
+    - Having to decide how to monitor your system when its complexity has increased is a recipe to failure
+- Build your observability stack declaratively as code
+    - Create Status endpoints into your APIs to reveal what your service knows about your states
+- Application logs tell you whatever you want them to tell, so make sure you instrument them to give an accurate picture of your application state
+    - During development, try to debug your application just by using its logs. In a couple of iterations, you should be able to significantly improve its observability just by observing its log data
+    - If you're unable to understand what's going on in your app from its logs, you can be sure no one else can either
+- Simple things like HTTP error codes and severity levels vary greatly between organizations and even teams
+    - It's worth spending some time to develop logging standards and criticallity levels to be used across your organization
+    - This way your organization has a common language to use when reasoning about your application performance
+
+### Visualizing metrics
+Most tools give averages of metrics as the base measurement, but they don't tend to be useful as they hide the unexpected behaviour you're looking for
+
+- The best practice is to use percentiles or histograms to see the outlier behaviour
+
+### Alerting
+It's pretty easy to get alert fatigue. Too many on-call alerts can degrade your quality of life (even alert text can drain each other out in modest volumes).
+
+- The initial tendency is to over-alert because you don't want to miss anything that lead to or even hit at an outage
+- The most likely outcome is, precisely, what you try to avoid the most: missing alerts
+
+**Make sure you only service alerts on the most critical things and prioritize eliminating false positives.**
+
+Some people use the concept of Service Level Objectives (SLO) to create more actionable alerts. According to the SRE Workbook:
+
+>_- An error budget is 1 minus the SLO of the service. A 99.9% SLO service has a 0.1% error budget._
+>
+>_- If our service receives 1,000,000 requests in four weeks, a 99.9% availability SLO gives us a budget of 1,000 errors over that period._
+
+In a complex system, if you ask if anything's wrong, the answer is always _yes_. So instead:
+
+- Select critical metrics that matter
+- Set clear levels of acceptable failure
+- Alert when they exceed or are trending to exceed that budget
+- Send context along with the alerts, specifically _What's the real problem in hand?_, _What does it mean for application service?_ and _Are there any common resolution steps?_
+
+**Try to make SRE's lives as easy as possible**
+
+### Practice interpreting your own observability data
+Don't wait until a production incident to dig into the data, become familiar with it beforehand
+
+### Apply your observability tooling in development and testing environments as well
+This way it's easy if changes in your app or service change its observability profile too.
+
+# Conclusion
+Observability isn't just knowing your production problems before your customers do. You need to demonstrate the business value of the stuff you're building, it's also a way to document your application or environment - and the way it's impacted by users.
+
+:::{.callout-note}
+## During development, try to debug your app just by using ______. In a couple of iterations, you should be able to drastically improve its observability, just by observing this _type_ of data.
+The missing word is **Logs**.
+Application logging is often an afterthough, though it shouldn't be.
+This method of debugging can help you iterate quickly on your logging strategy so that you and your team know exactly _what_ you need to know to fix your application. Also, your SRE(s) and DevOps will thank you.
+:::
+
+:::{.callout-note}
+## Observability isn't just about becoming aware of production problems before your customers do, it's also...
+
+- A way to document your application or environment -- and the way it's impacted by users
+- A tool to help demonstrate the busieness value of the application, or service you and your organization are developing
+
+Observability is essentially a high-level abstraction of your application(s) and its environment that can be a useful way to illustrate many concepts in many different applications.
+:::
+
+:::{.callout-note}
+## What are TWO common practices for creating more actionable alerts?
+
+- Setting SLO's
+- Creating error budgets
+:::

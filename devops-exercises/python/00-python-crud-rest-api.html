@@ -400,12 +400,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#dockerfile" id="toc-dockerfile" class="nav-link" data-scroll-target="#dockerfile">Dockerfile</a></li>
   <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose">Docker Compose</a></li>
+  <li><a href="#env-file" id="toc-env-file" class="nav-link" data-scroll-target="#env-file"><code>.env</code> file</a></li>
   </ul></li>
   <li><a href="#prepare-a-deployment-server" id="toc-prepare-a-deployment-server" class="nav-link" data-scroll-target="#prepare-a-deployment-server">Prepare a deployment server</a>
   <ul class="collapse">
   <li><a href="#create-an-alpine-lxc-with-docker" id="toc-create-an-alpine-lxc-with-docker" class="nav-link" data-scroll-target="#create-an-alpine-lxc-with-docker">Create an Alpine LXC with Docker</a></li>
   <li><a href="#launch-the-project" id="toc-launch-the-project" class="nav-link" data-scroll-target="#launch-the-project">Launch the project</a></li>
   </ul></li>
+  <li><a href="#test-the-application" id="toc-test-the-application" class="nav-link" data-scroll-target="#test-the-application">Test the application</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/devops-exercises/python/00-python-crud-rest-api.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -944,6 +946,23 @@ Comparison with Spring Boot
 <li>If we don’t want the Postgres data to be stored in the default Docker path, we can replace the volume name with an absolute or relative path of the host where it will run</li>
 </ul></li>
 </ul>
+</section>
+<section id="env-file" class="level2">
+<h2 class="anchored" data-anchor-id="env-file"><code>.env</code> file</h2>
+<p>Some values in the <code>docker-compose.yml</code> file can depend on the deployment environment, such as the <code>ALLOWED_HOSTS</code> in the <code>settings.py</code> (you need to specify the allowed IPs where HTTP requests can be queried). We’ll define a <code>HOST_IP</code> variable in the <code>.env</code> file, include it in the <code>docker-compose.yml</code> and then pass it to the <code>settings.py</code> file</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+TODO: Add the required snippets here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
 <p>At this point we should be able to deploy our application and start testing it.</p>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -975,9 +994,13 @@ TODO: Finish the tutorial!!
 </div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
 </section>
+</section>
+<section id="test-the-application" class="level1">
+<h1>Test the application</h1>
+<p>Now the Django server should be reachable through <code>&lt;LXC-IP&gt;:8000</code>.</p>
+
+
 </section>
 
 </main> <!-- /main -->

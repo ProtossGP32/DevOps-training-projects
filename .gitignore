@@ -1,6 +1,0 @@
-**/.terraform
-**/.terraform.*
-**/nextcloud/compose/*.txt
-**/.vscode
-
-/.luarc.json

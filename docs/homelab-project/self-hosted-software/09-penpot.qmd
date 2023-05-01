@@ -60,6 +60,10 @@ PENPOT_LDAP_ATTRS_FULLNAME=cn
 PENPOT_LDAP_ATTRS_PHOTO=jpegPhoto
 ```
 
+To improve security, define each of these variables as an environment variable inside a `.env` file and link them to the `docker-compose.yml` file. Then, change the permissions of the `.env` file to 600 and don't share it with anyone else.
+
+Right now, Penpot only allows email as the authentication credential. A [bug](https://github.com/penpot/penpot/issues/3181) is open in the official repository to also allow the use of usernames.
+
 ### Create user using CLI
 By default, email verification process is completely disabled for new registrations. You can create additional profiles using the command line interface:
 

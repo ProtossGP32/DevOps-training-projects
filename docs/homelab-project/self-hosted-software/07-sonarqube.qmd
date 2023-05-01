@@ -195,3 +195,10 @@ jobs:
 Commit and push both the workflow file and the `pom.xml`. Now, for any new push, SonarQube should have available the Code Coverage results:
 
 ![SonarQube - Code Coverage with JaCoCo](../../images/productivity-tools/sonarqube-code-coverage.png)
+
+# Upgrade Sonarqube
+After some time, SonarQube might advise you to update your version due to end of lifetime. This is easily done by pulling the latest SonarQube image, but some things must be taken into account:
+
+- Database indexes must be refreshed
+	- To do so, simply access `https://<your.sonarqube.url>/setup`. SonarQube will warn you that the database must be updated and that you should do a backup of it for safety measures
+	- Accept the update. After some minutes, the SonarQube login page shall appear again.

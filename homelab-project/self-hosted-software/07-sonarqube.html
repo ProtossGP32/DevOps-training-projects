@@ -510,6 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#adding-code-coverage" id="toc-adding-code-coverage" class="nav-link" data-scroll-target="#adding-code-coverage">Adding Code Coverage</a></li>
   </ul></li>
+  <li><a href="#upgrade-sonarqube" id="toc-upgrade-sonarqube" class="nav-link" data-scroll-target="#upgrade-sonarqube">Upgrade Sonarqube</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/protossgp32/DevOps-training-projects/edit/main/docs/homelab-project/self-hosted-software/07-sonarqube.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/protossgp32/DevOps-training-projects/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -780,9 +781,20 @@ Review and fix the YAML file according to your project!
 <figcaption class="figure-caption">SonarQube - Code Coverage with JaCoCo</figcaption>
 </figure>
 </div>
-
-
 </section>
+</section>
+<section id="upgrade-sonarqube" class="level1">
+<h1>Upgrade Sonarqube</h1>
+<p>After some time, SonarQube might advise you to update your version due to end of lifetime. This is easily done by pulling the latest SonarQube image, but some things must be taken into account:</p>
+<ul>
+<li>Database indexes must be refreshed
+<ul>
+<li>To do so, simply access <code>https://&lt;your.sonarqube.url&gt;/setup</code>. SonarQube will warn you that the database must be updated and that you should do a backup of it for safety measures</li>
+<li>Accept the update. After some minutes, the SonarQube login page shall appear again.</li>
+</ul></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
